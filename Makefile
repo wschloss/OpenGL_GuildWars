@@ -1,5 +1,5 @@
 TARGET = guildwars
-OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o BezierPatch.o
+OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o BezierPatch.o color.o building.o tree.o vect.o mouse.o
 
 CXX    = g++
 CFLAGS = -Wall -g
@@ -84,3 +84,9 @@ Point.o: Point.cpp Point.h
 ArcBallCamera.o: ArcBallCamera.cpp ArcBallCamera.h
 BezierCurve.o: BezierCurve.cpp BezierCurve.h
 BezierPatch.o: BezierPatch.cpp BezierPatch.h
+color.o: color.cpp color.h
+building.o: building.cpp building.h
+tree.o: tree.cpp tree.h
+vect.o: vect.cpp vect.h
+mouse.o: mouse.cpp mouse.h
+
