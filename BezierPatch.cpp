@@ -93,7 +93,7 @@ void BezierPatch::renderBezierPatchWireframe(vector< vector<Point> >& computedPo
   Point* current, *right, *up, *diag;
   // Setup color, width, no lighting
   glDisable(GL_LIGHTING);
-  glColor3f(0,0,1);
+  glColor3f(0,1,0);
   glLineWidth(2.0);
 
   // Iterate over the 2d vector and draw lines
@@ -127,7 +127,7 @@ void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoint
   // Points to draw the quad
   Point* current, *right, *up, *diag;
   // Iterate over all computed points and draw quads
-  glColor3f(0,0,1);
+  glColor3f(0,1,0);
   glBegin(GL_QUADS); 
   for (size_t i = 0; i < computedPoints.size() - 1; i++) {
     for (size_t j = 0; j < computedPoints[i].size() - 1; j++) {

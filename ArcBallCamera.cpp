@@ -9,7 +9,7 @@
 ArcBallCamera::ArcBallCamera() {
   this->x = this->y = this->z = 0;
   this->lookX = this->lookY = this->lookZ = 0;
-  this->r = 20;
+  this->r = 200;
   this->theta = -M_PI/3.0f;
   this->phi = M_PI/2.8f;
   this->upX = this->upZ = 0;

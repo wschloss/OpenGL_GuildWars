@@ -54,30 +54,6 @@ ArcBallCamera cam;
 // Surface instance
 BezierPatch bezierPatch;
 
-// drawGrid() ////////////////////////////////////////////////////////////////// 
-// 
-//  Function to draw a grid in the XZ-Plane using OpenGL 2D Primitives (GL_LINES) 
-// 
-//////////////////////////////////////////////////////////////////////////////// 
-void drawGrid() {
-  glDisable( GL_LIGHTING );
-
-  // Set white
-  glColor3f(1,1,1);
-  glBegin(GL_LINES); {
-    for (int i = -50; i < 51; i++) {
-      for (int j = -50; j < 51; j++) {
-          glVertex3f(i,0,j);
-          glVertex3f(i,0,j+1);
-          glVertex3f(i,0,j);
-          glVertex3f(i+1,0,j);
-      }
-    }
-  } glEnd();
-
-  glEnable( GL_LIGHTING ); 
-}
-
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
 // 
 //  This function creates a display list with the code to draw a simple  
@@ -87,7 +63,6 @@ void drawGrid() {
 void generateEnvironmentDL() {
     environmentDL = glGenLists(1);
     glNewList(environmentDL, GL_COMPILE); {
-      drawGrid();
       // TESTING ///////////
       bezierPatch.drawFilled();
       // END TESTING ///////
