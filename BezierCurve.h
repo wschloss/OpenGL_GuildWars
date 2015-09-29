@@ -35,7 +35,7 @@ public:
   // Loads control points from a csv file
   bool loadControlPoints(char* filename);
   // Computes point along curve given 4 control points and parameter t [0,1]
-  Point evaluateBezierCurve(Point p0, Point p1, Point p2, Point p3, float t);
+  static Point evaluateBezierCurve(Point p0, Point p1, Point p2, Point p3, float t);
   // Renders curve given four control points
   void renderBezierCurve(Point p0, Point p1, Point p2, Point p3, int resolution);
   // Renders the cage that defines the curve (connected control points

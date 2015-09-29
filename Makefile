@@ -1,5 +1,5 @@
 TARGET = guildwars
-OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o
+OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o BezierSurface.o
 
 CXX    = g++
 CFLAGS = -Wall -g
@@ -79,7 +79,8 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CFLAGS) $(INCPATH) -o $@ $^ $(LIBPATH) $(LIBS)
 
 # DEPENDENCIES
-main.o: main.cpp Point.o ArcBallCamera.o BezierCurve.o
+main.o: main.cpp
 Point.o: Point.cpp Point.h
 ArcBallCamera.o: ArcBallCamera.cpp ArcBallCamera.h
 BezierCurve.o: BezierCurve.cpp BezierCurve.h
+BezierSurface.o: BezierSurface.cpp BezierSurface.h

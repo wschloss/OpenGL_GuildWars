@@ -33,6 +33,7 @@
 
 // Files we wrote
 #include "ArcBallCamera.h"
+#include "BezierSurface.h"
 
 using namespace std;
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
@@ -50,6 +51,8 @@ bool zoomMode = false;
 
 // Camera instance
 ArcBallCamera cam; 
+// Surface instance
+BezierSurface bezierSurface;
 
 // drawGrid() ////////////////////////////////////////////////////////////////// 
 // 
@@ -210,6 +213,10 @@ void renderScene(void)  {
 
   glCallList(environmentDL); 
 
+  // TESTING ///////////
+  bezierSurface.drawWireframe();
+  // END TESTING ///////
+
   //push the back buffer to the screen 
   glutSwapBuffers(); 
 } 
@@ -273,10 +280,23 @@ void createMenus() {
 
 // main() ////////////////////////////////////////////////////////////////////// 
 // 
-//  Program entry point. Does not process command line arguments. 
+//  Program entry point
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 int main(int argc, char **argv) { 
+  // Get file from passed argument
+  if (argc != 2) {
+    printf("Usage: %s worldfile.csv\n", argv[0]);
+    exit(1);
+  }
+  // TESTING //////////////////
+  // load up the surface points
+  if (!bezierSurface.loadControlPoints(argv[1])) {
+    printf("Could not load file: %s\n", argv[1]);
+    exit(1);
+  }
+  // END TESTING //////////////////
+
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit(&argc, argv); 
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA); 
