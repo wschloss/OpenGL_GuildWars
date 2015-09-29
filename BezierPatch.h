@@ -2,7 +2,7 @@
 
 // CSCI441
 //
-// Encapsulates a bezier surface.  Allows loading of control points,
+// Encapsulates a bezier patch.  Allows loading of control points,
 // drawing of the cage, and drawing of the surface in wireframe or
 // filled.
 
@@ -27,23 +27,23 @@
 
 using namespace std;
 
-class BezierSurface {
+class BezierPatch {
 public:
   // Default - does not load any points
-  BezierSurface();
+  BezierPatch();
   // Constructs and loads from the file automatically
-  BezierSurface(char* filename);
+  BezierPatch(char* filename);
   // Loads point from the file
   bool loadControlPoints(char* filename);
   // Computes points on the surface so drawing with triangle strips is easy
   void computeSurface(vector< vector<Point> >& computedPoints, int resolution);
   // Draws a surface over all computed points as a wireframe
-  void renderBezierSurfaceWireframe(vector< vector<Point> >& computedPoints);
+  void renderBezierPatchWireframe(vector< vector<Point> >& computedPoints);
   // Draws a surface over all computed points as filled
-  void renderBezierSurfaceFilled(vector< vector<Point> >& computedPoints);
-  // Draws entire surface in sets of 16 points filled
+  void renderBezierPatchFilled(vector< vector<Point> >& computedPoints);
+  // Convenience method to draw the whole patch filled
   void drawFilled();
-  // Draws entire surface in sets of 16 points wire
+  // Convenience method to draw the whole patch wireframe
   void drawWireframe();
 
   // Computes the y value for the surface given an x and z
@@ -55,3 +55,4 @@ private:
   // All points computed to be on the surface
   vector< vector<Point> > computedPoints;
 };
+

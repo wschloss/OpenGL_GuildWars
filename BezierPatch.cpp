@@ -1,23 +1,23 @@
 // CSCI441
 //
-// Implementation of bezier surface methods
+// Implementation of bezier patch methods
 
-#include "BezierSurface.h"
+#include "BezierPatch.h"
 
 // Default - doesn't load any points
-BezierSurface::BezierSurface() {
+BezierPatch::BezierPatch() {
 
 }
 
 // Auto loads control points
-BezierSurface::BezierSurface(char* filename) {
+BezierPatch::BezierPatch(char* filename) {
   loadControlPoints(filename);
   // Compute the surface points
   computeSurface(computedPoints, 20);
 }
 
 // Loads points from a file
-bool BezierSurface::loadControlPoints(char* filename) {
+bool BezierPatch::loadControlPoints(char* filename) {
   // Open a file stream
   ifstream input;
   input.open(filename);
@@ -51,7 +51,7 @@ bool BezierSurface::loadControlPoints(char* filename) {
 }
 
 // Computes all points on the surface and stores them in the passed vector
-void BezierSurface::computeSurface(vector< vector<Point> >& computedPoints, int resolution) {
+void BezierPatch::computeSurface(vector< vector<Point> >& computedPoints, int resolution) {
   // Iterate over u parameter for the row and v for the columns
   for (float v = 0; v <= 1; v += 1.0/resolution) {
     // Compute a row of points on the surface
@@ -88,33 +88,34 @@ void BezierSurface::computeSurface(vector< vector<Point> >& computedPoints, int 
 }
 
 // Draws a surface over all computed points as a wire frame
-void BezierSurface::renderBezierSurfaceWireframe(vector< vector<Point> >& computedPoints) {
+void BezierPatch::renderBezierPatchWireframe(vector< vector<Point> >& computedPoints) {
   // Points to draw lines between
-  Point* current, *right, *up;
+  Point* current, *right, *up, *diag;
   // Setup color, width, no lighting
   glDisable(GL_LIGHTING);
   glColor3f(0,0,1);
   glLineWidth(2.0);
 
-  glBegin(GL_LINES);
   // Iterate over the 2d vector and draw lines
-  for (int i = 0; i < computedPoints.size() - 1; i++) {
+  for (size_t i = 0; i < computedPoints.size() - 1; i++) {
 
-    for (int j = 0; j < computedPoints[i].size() - 1; j++) {
+    glBegin(GL_LINE_STRIP);
+    for (size_t j = 0; j < computedPoints[i].size() - 1; j++) {
       current = &computedPoints[i][j];
       right = &computedPoints[i][j+1];
       up = &computedPoints[i+1][j];
+      diag = &computedPoints[i+1][j+1];
       
-      // Line to the right
+      // CCW square
       glVertex3f(current->getX(), current->getY(), current->getZ());
       glVertex3f(right->getX(), right->getY(), right->getZ());
-      //Line up
-      glVertex3f(current->getX(), current->getY(), current->getZ());
+      glVertex3f(diag->getX(), diag->getY(), diag->getZ());
       glVertex3f(up->getX(), up->getY(), up->getZ());
+      glVertex3f(current->getX(), current->getY(), current->getZ());
     }
+    glEnd();
 
   }
-  glEnd();
 
   // Restore defaults
   glLineWidth(1.0);
@@ -122,21 +123,43 @@ void BezierSurface::renderBezierSurfaceWireframe(vector< vector<Point> >& comput
 }
 
 // Draws a surface over all computed points as filled
-void BezierSurface::renderBezierSurfaceFilled(vector< vector<Point> >& computedPoints) {
+void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoints) {
+  // Points to draw the quad
+  Point* current, *right, *up, *diag;
+  // Iterate over all computed points and draw quads
+  glColor3f(0,0,1);
+  glBegin(GL_QUADS); 
+  for (size_t i = 0; i < computedPoints.size() - 1; i++) {
+    for (size_t j = 0; j < computedPoints[i].size() - 1; j++) {
+      current = &computedPoints[i][j];
+      right = &computedPoints[i+1][j];
+      up = &computedPoints[i][j+1];
+      diag = &computedPoints[i+1][j+1];
 
+      // CCW square
+      glVertex3f(current->getX(), current->getY(), current->getZ());
+      glVertex3f(right->getX(), right->getY(), right->getZ());
+      glVertex3f(diag->getX(), diag->getY(), diag->getZ());
+      glVertex3f(up->getX(), up->getY(), up->getZ());
+    }
+  }
+  glEnd();
 }
 
 // Convenience method draws the filled surface
-void BezierSurface::drawFilled() {
-  renderBezierSurfaceFilled(computedPoints);
+void BezierPatch::drawFilled() {
+  renderBezierPatchFilled(computedPoints);
 }
 
 // convenience method draws the wireframe
-void BezierSurface::drawWireframe() {
-  renderBezierSurfaceWireframe(computedPoints);
+void BezierPatch::drawWireframe() {
+  renderBezierPatchWireframe(computedPoints);
 }
 
 // computes the y value (height) given an x and z in the plane
-float BezierSurface::computeY(float x, float z) {
-
+float BezierPatch::computeY(float x, float z) {
+  // TODO
+  // Search through computed points to find closest to x,z, return the y
+  // OR invert the function on paper to find u,v for the x,z and compute the y
+  return 0;
 }

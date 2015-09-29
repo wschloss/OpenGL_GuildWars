@@ -33,7 +33,7 @@
 
 // Files we wrote
 #include "ArcBallCamera.h"
-#include "BezierSurface.h"
+#include "BezierPatch.h"
 
 using namespace std;
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
@@ -52,7 +52,7 @@ bool zoomMode = false;
 // Camera instance
 ArcBallCamera cam; 
 // Surface instance
-BezierSurface bezierSurface;
+BezierPatch bezierPatch;
 
 // drawGrid() ////////////////////////////////////////////////////////////////// 
 // 
@@ -87,7 +87,10 @@ void drawGrid() {
 void generateEnvironmentDL() {
     environmentDL = glGenLists(1);
     glNewList(environmentDL, GL_COMPILE); {
-        drawGrid();
+      drawGrid();
+      // TESTING ///////////
+      bezierPatch.drawFilled();
+      // END TESTING ///////
     } glEndList();
 } 
 
@@ -213,9 +216,6 @@ void renderScene(void)  {
 
   glCallList(environmentDL); 
 
-  // TESTING ///////////
-  bezierSurface.drawWireframe();
-  // END TESTING ///////
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -291,7 +291,7 @@ int main(int argc, char **argv) {
   }
   // TESTING //////////////////
   // load up the surface points
-  if (!bezierSurface.loadControlPoints(argv[1])) {
+  if (!bezierPatch.loadControlPoints(argv[1])) {
     printf("Could not load file: %s\n", argv[1]);
     exit(1);
   }

@@ -71,7 +71,7 @@ void BezierCurve::renderBezierCurve( Point p0, Point p1, Point p2, Point p3, int
 void BezierCurve::renderCage() {
   // Draw all points in vector as green spheres of radius 0.2
   glColor3f(0,1,0);
-  for (int i = 0; i < controlPoints.size(); i++) {
+  for (size_t i = 0; i < controlPoints.size(); i++) {
     Point p = controlPoints[i];
     glPushMatrix(); {
       glTranslatef(p.getX(), p.getY(), p.getZ());
@@ -87,7 +87,7 @@ void BezierCurve::renderCage() {
 
   // Iterate over points
   glBegin(GL_LINE_STRIP); {
-    for (int i = 0; i < controlPoints.size(); i++) {
+    for (size_t i = 0; i < controlPoints.size(); i++) {
       Point p = controlPoints[i];
       glVertex3f(p.getX(), p.getY(), p.getZ());
     }
@@ -103,7 +103,7 @@ void BezierCurve::renderCage() {
 void BezierCurve::draw() {
   // Resolution of 20, so step size on t is 1/20
   // Break into sets of 4 points
-  for (int i = 0; i+3 < controlPoints.size(); i += 3) {
+  for (size_t i = 0; i+3 < controlPoints.size(); i += 3) {
     renderBezierCurve(controlPoints[i], controlPoints[i+1],
                         controlPoints[i+2], controlPoints[i+3], 20);
   }
