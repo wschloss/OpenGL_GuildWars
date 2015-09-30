@@ -34,6 +34,7 @@
 // Files we wrote
 #include "ArcBallCamera.h"
 #include "BezierPatch.h"
+#include "./mouse.h"
 
 using namespace std;
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
@@ -43,8 +44,8 @@ static size_t windowWidth  = 640;
 static size_t windowHeight = 480; 
 static float aspectRatio; 
  
-GLint leftMouseButton = GLUT_UP;                    // status of the mouse buttons 
-int mouseX = 0, mouseY = 0;                         // last known X and Y of the mouse 
+// global mouse object
+Mouse mouse;
 
 // Zoom mode flag set on the ctrl key
 bool zoomMode = false;
@@ -98,13 +99,16 @@ void resizeWindow(int w, int h) {
 //////////////////////////////////////////////////////////////////////////////// 
 void mouseCallback(int button, int state, int thisX, int thisY) { 
   // update the left mouse button states, if applicable 
-  if(button == GLUT_LEFT_BUTTON) {
-    mouseX = thisX;
-    mouseY = thisY;
-    leftMouseButton = state;     
-    if (state == GLUT_DOWN) {
-      if (glutGetModifiers() == GLUT_ACTIVE_CTRL)
+  if( button == GLUT_LEFT_BUTTON ) {
+    mouse.setX( thisX );
+    mouse.setY( thisY );
+    mouse.setLeftMouseButton( state );    
+    if( state == GLUT_DOWN ) 
+    {
+      if( glutGetModifiers() == GLUT_ACTIVE_CTRL )
+      {
         zoomMode = true;
+      }
     }
     else zoomMode = false;
   }
@@ -120,9 +124,9 @@ void mouseCallback(int button, int state, int thisX, int thisY) {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void mouseMotion(int x, int y) { 
-  if(leftMouseButton == GLUT_DOWN) { 
-    int dx = x - mouseX;
-    int dy = mouseY - y;  
+  if( mouse.getLeftMouseButton() == GLUT_DOWN ) { 
+    int dx = ( x - mouse.getX() );
+    int dy = ( mouse.getY() - y );  
     // Check for zoom
     if (zoomMode) {
       cam.incrementRadius(dy, 5);
@@ -130,8 +134,8 @@ void mouseMotion(int x, int y) {
       cam.incrementTheta(-0.005*dy);
       cam.incrementPhi(0.005*dx);
     }
-    mouseX = x;
-    mouseY = y;
+    mouse.setX( x );
+    mouse.setY( y );
 
     cam.recomputeCamPosition(0, 0, 0);     // update camera (x,y,z) based on (radius,theta,phi)
   } 

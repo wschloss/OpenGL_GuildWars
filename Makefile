@@ -6,14 +6,6 @@ CFLAGS = -Wall -g
 
 #############################
 ## SETUP GLUI
-##      We must link against
-##  GLUI before we link against
-##  GLUT.
-##
-##     If you want to build
-##  on your own machine, you
-##  need to change the
-##  appropriate paths.
 #############################
 
 # Windows Lab builds 
@@ -23,8 +15,8 @@ ifeq ($(OS), Windows_NT)
 
 # Non-Windows build
 else
-# INCPATH += -I/Users/jpaone/Desktop/include/
-# LIBPATH += -L/Users/jpaone/Desktop/lib
+	# INCPATH += -I/Users/jpaone/Desktop/include/
+	# LIBPATH += -L/Users/jpaone/Desktop/lib
 # GLUI located one directory up for my setup
 	INCPATH += -I../include/
 	LIBPATH += -L../lib/
