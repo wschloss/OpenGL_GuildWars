@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "./point.h"
+#include "./Point.h"
 
 #ifndef VECT_H
 #define VECT_H
