@@ -43,7 +43,7 @@ bool BezierPatch::loadControlPoints(char* filename) {
   input.close();
 
   // Compute the surface points
-  computeSurface(computedPoints, 20);
+  computeSurface(computedPoints, 200);
 
   return true;
 }
@@ -150,6 +150,11 @@ void BezierPatch::computeSurface(vector< vector<Point> >& computedPoints, int re
       float nx = dsdu.getY()*dsdv.getZ() - dsdu.getZ()*dsdv.getY();
       float ny = dsdu.getZ()*dsdv.getX() - dsdu.getX()*dsdv.getZ();
       float nz = dsdu.getX()*dsdv.getY() - dsdu.getY()*dsdv.getX();
+      // Normalize
+      float mag2 = pow(nx, 2) + pow(ny, 2) + pow(nz, 2);
+      nx /= sqrt(mag2);
+      ny /= sqrt(mag2);
+      nz /= sqrt(mag2);
 
       // push new normal
       normalRow.push_back(Point(nx,ny,nz));
@@ -202,8 +207,15 @@ void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoint
   Point* current, *right, *up, *diag;
   // Normals to set for the quad
   Point* nc, *nr, *nu, *nd;
+  // MATERIAL PROPS FOR TESTING
+  float difCol[4] = { 0.1, 0.35, 0.1, 1 };
+  float ambCol[4] = { 0, 0, 0, 1 };
+  float specCol[4] = { 0.45, 0.55, 0.45, 1 };
+  glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, difCol );
+  glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT, ambCol );
+  glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, specCol );
+  glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, 0.25*128 );
   // Iterate over all computed points and draw quads
-  glColor3f(0,1,0);
   glBegin(GL_QUADS); 
   for (size_t i = 0; i < computedPoints.size() - 1; i++) {
     for (size_t j = 0; j < computedPoints[i].size() - 1; j++) {

@@ -43,7 +43,7 @@ GLuint environmentDL;                       // display list for the grid
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
 static float aspectRatio; 
- 
+
 // global mouse object
 Mouse mouse;
 
@@ -53,8 +53,7 @@ bool zoomMode = false;
 // Camera instance
 ArcBallCamera cam; 
 // Surface instance
-BezierPatch bezierPatch;
-
+BezierPatch bezierPatch; 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
 // 
 //  This function creates a display list with the code to draw a simple  
@@ -151,24 +150,16 @@ void mouseMotion(int x, int y) {
 void initScene()  { 
   glEnable(GL_DEPTH_TEST); 
 
-  //****************************************************************** 
-  // this is some code to enable a default light for the scene; 
-  // feel free to play around with this, but we won't talk about 
-  // lighting in OpenGL for another couple of weeks yet. 
-  float lightCol[4] = { 1, 1, 1, 1}; 
-  float ambientCol[4] = { 0.0, 0.0, 0.0, 1.0 }; 
+  float diffuseCol[4] = { 1, 1, 1, 1}; 
+  float specularCol[4] = { 1, 1, 1, 1 };
+  float ambientCol[4] = { 0, 0, 0, 1.0 }; 
   float lPosition[4] = { 0, 10, 0, 1 }; 
-  glLightfv( GL_LIGHT0, GL_POSITION,lPosition ); 
-  glLightfv( GL_LIGHT0, GL_DIFFUSE,lightCol ); 
+  glLightfv( GL_LIGHT0, GL_POSITION, lPosition ); 
+  glLightfv( GL_LIGHT0, GL_DIFFUSE, diffuseCol ); 
   glLightfv( GL_LIGHT0, GL_AMBIENT, ambientCol ); 
+  glLightfv( GL_LIGHT0, GL_SPECULAR, specularCol );
   glEnable( GL_LIGHTING ); 
-  glEnable( GL_LIGHT0 ); 
- 
-  // tell OpenGL not to use the material system; just use whatever we  
-  // pass with glColor*() 
-  glEnable( GL_COLOR_MATERIAL ); 
-  glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE ); 
-  //******************************************************************
+  glEnable( GL_LIGHT0 );  
 
   glShadeModel(GL_FLAT); 
 
