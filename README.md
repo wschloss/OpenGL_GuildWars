@@ -13,8 +13,8 @@
 	* make different kinds of trees (if we have time)
 * Add functionality to the building class.
 	* make different kinds of buildings (if we have time)
-* Fix lighting for Bezier surface. (not that impotent)
 * Create Environment class to encapsulate things like buildings and the surface
+* Create a 4 patch world (WALTER)
 * Create FreeCamera class
 * Add characters/vehicles classes to the program.
 * Add track to environment
