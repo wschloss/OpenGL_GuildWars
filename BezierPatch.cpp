@@ -200,6 +200,8 @@ void BezierPatch::renderBezierPatchWireframe(vector< vector<Point> >& computedPo
 void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoints) {
   // Points to draw the quad
   Point* current, *right, *up, *diag;
+  // Normals to set for the quad
+  Point* nc, *nr, *nu, *nd;
   // Iterate over all computed points and draw quads
   glColor3f(0,1,0);
   glBegin(GL_QUADS); 
@@ -210,10 +212,22 @@ void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoint
       up = &computedPoints[i][j+1];
       diag = &computedPoints[i+1][j+1];
 
+      nc = &computedNormals[i][j];
+      nr = &computedNormals[i+1][j];
+      nu = &computedNormals[i][j+1];
+      nd = &computedNormals[i+1][j+1];
+
       // CCW square
+      glNormal3f(nc->getX(), nc->getY(), nc->getZ());
       glVertex3f(current->getX(), current->getY(), current->getZ());
+
+      glNormal3f(nr->getX(), nr->getY(), nr->getZ());
       glVertex3f(right->getX(), right->getY(), right->getZ());
+
+      glNormal3f(nd->getX(), nd->getY(), nd->getZ());
       glVertex3f(diag->getX(), diag->getY(), diag->getZ());
+
+      glNormal3f(nu->getX(), nu->getY(), nu->getZ());
       glVertex3f(up->getX(), up->getY(), up->getZ());
     }
   }
