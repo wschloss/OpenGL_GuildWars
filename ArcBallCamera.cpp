@@ -10,8 +10,8 @@ ArcBallCamera::ArcBallCamera() {
   this->x = this->y = this->z = 0;
   this->lookX = this->lookY = this->lookZ = 0;
   this->r = 200;
-  this->theta = -M_PI/3.0f;
-  this->phi = M_PI/2.8f;
+  this->theta = M_PI/4.0;
+  this->phi = 0;
   this->upX = this->upZ = 0;
   this->upY = 1;
 }
@@ -27,7 +27,7 @@ void ArcBallCamera::recomputeCamPosition(float lx, float ly, float lz) {
   y = r * cos(theta);
   z = r * sin(theta) * sin(phi);
 
-  // Add to car position to get actual position
+  // Add to focus position to get actual position
   x += lx;
   y += ly;
   z += lz;

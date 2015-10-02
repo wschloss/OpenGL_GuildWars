@@ -130,7 +130,7 @@ void mouseMotion(int x, int y) {
     if (zoomMode) {
       cam.incrementRadius(dy, 5);
     } else {
-      cam.incrementTheta(-0.005*dy);
+      cam.incrementTheta(0.005*dy);
       cam.incrementPhi(0.005*dx);
     }
     mouse.setX( x );
@@ -152,7 +152,7 @@ void initScene()  {
 
   float diffuseCol[4] = { 1, 1, 1, 1}; 
   float specularCol[4] = { 1, 1, 1, 1 };
-  float ambientCol[4] = { 0, 0, 0, 1.0 }; 
+  float ambientCol[4] = { 0.1, 0.1, 0.1, 1.0 }; 
   float lPosition[4] = { 0, 10, 0, 1 }; 
   glLightfv( GL_LIGHT0, GL_POSITION, lPosition ); 
   glLightfv( GL_LIGHT0, GL_DIFFUSE, diffuseCol ); 
@@ -174,7 +174,9 @@ void initScene()  {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void renderScene(void)  { 
-  //clear the render buffer glDrawBuffer( GL_BACK ); 
+  //clear the render buffer (sky blue)
+  glClearColor(0.53, 0.808, 0.922, 1);
+  glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   //update the modelview matrix based on the camera's position 

@@ -29,7 +29,10 @@ public:
   void setY(float y) { this->y = y; }
   void setZ(float z) { this->z = z; }
   // Incrementers
-  void incrementTheta(float delta) { this->theta += delta; }
+  void incrementTheta(float delta) { 
+    this->theta += delta;
+    this->theta = fmax(0.001, fmin(M_PI - 0.001, this->theta));
+  }
   void incrementPhi(float delta) { this->phi += delta; }
   void incrementRadius(float delta, float lowerbound) { 
     this->r += delta;
