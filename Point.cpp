@@ -20,3 +20,11 @@ Point operator+(Point a, Point b) {
 Point operator-(Point a, Point b) {
   return Point(a.getX() - b.getX(), a.getY() - b.getY(), a.getZ() - b.getZ());
 }
+
+// compute distance between two points
+float pointDistance(Point a, Point b) {
+  float dis2 = pow(a.getX() - b.getX(), 2) +
+              pow(a.getY() - b.getY(), 2) +
+              pow(a.getZ() - b.getZ(), 2);
+  return sqrt(dis2);
+}

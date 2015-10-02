@@ -54,6 +54,9 @@ bool zoomMode = false;
 ArcBallCamera cam; 
 // Surface instance
 BezierPatch bezierPatch; 
+// TESTING SPHERE POS
+float cubex, cubez;
+
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
 // 
 //  This function creates a display list with the code to draw a simple  
@@ -188,6 +191,28 @@ void renderScene(void)  {
 
   glCallList(environmentDL); 
 
+  // TESTING SURFACE ORIENTATION
+  //draw cube
+  float amb[4] = { 0.1745, 0.01175, 0.01175, 1 };
+  float dif[4] = { 0.61424, 0.04136, 0.04136, 1 };
+  float spec[4] = { 0.727811, 0.626959, 0.626959, 1 };
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, amb);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, dif);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.6*128);
+  glPushMatrix(); {
+    glTranslatef(cubex, 0, cubez);
+    // add some rotation in the x,z plane
+    // BUG: XZ ROTATION DOESN'T PLAY NICE RIGHT NOW
+    // ORDER OF TRANSFORMS NEEDS TO BE THOUGH OUT
+    //glRotatef(45, 0, 1, 0);
+    // Orient with the surface
+    bezierPatch.orient(cubex, cubez);
+    glutSolidCube(3);
+  } glPopMatrix();
+  
+  // END TESTING
+
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -202,6 +227,10 @@ void renderScene(void)  {
 void normalKeysDown(unsigned char key, int x, int y) { 
   if(key == 'q' || key == 'Q' || key == 27) 
     exit(0); 
+  if (key == 'w') cubex += 2;
+  if (key == 'a') cubez -= 2;
+  if (key == 's') cubex -= 2;
+  if (key == 'd') cubez += 2;
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -280,7 +309,7 @@ int main(int argc, char **argv) {
   cam.recomputeCamPosition(0,0,0);
 
   // register callback functions... 
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+  //glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
   glutKeyboardFunc(normalKeysDown); 
   glutKeyboardUpFunc(normalKeysUp);
   glutDisplayFunc(renderScene); 

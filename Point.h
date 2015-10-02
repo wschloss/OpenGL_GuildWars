@@ -3,6 +3,9 @@
 // CSCI441
 //
 // This class represents a point in 3d space
+
+// For distance computation
+#include <math.h>
 class Point {
 public:
   Point() : x(0), y(0), z(0) {}
@@ -28,3 +31,5 @@ Point operator*(float f, Point p);
 Point operator+(Point a, Point b);
 // Subtraction of two points
 Point operator-(Point a, Point b);
+// Distance between two points
+float pointDistance(Point a, Point b);

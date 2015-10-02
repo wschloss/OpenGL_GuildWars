@@ -256,10 +256,42 @@ void BezierPatch::drawWireframe() {
   renderBezierPatchWireframe(computedPoints);
 }
 
-// computes the y value (height) given an x and z in the plane
-float BezierPatch::computeY(float x, float z) {
-  // TODO
-  // Search through computed points to find closest to x,z, return the y
-  // OR invert the function on paper to find u,v for the x,z and compute the y
-  return 0;
+// Calls gl functions to rotate upvector (assumed 0,1,0) to the surface normal
+// and then translates to the surface y value.
+// Pass the x, z coord of the object to snap to the surface
+// NOTE: Push matrix befor this call, and then pop after
+void BezierPatch::orient(float x, float z) {
+  // Init vars to point at 0,0 in u,v space
+  float closesti = 0;
+  float closestj = 0;
+  float closestXZDist = 1000000;
+  // Search for the closest point in the x, z plane
+  for (size_t i = 0; i < computedPoints.size(); i++) {
+    for (size_t j = 0; j < computedPoints[i].size(); j++) {
+      float cx = computedPoints[i][j].getX();
+      float cz = computedPoints[i][j].getZ();
+      if ( pointDistance(Point(x, 0, z), Point(cx, 0, cz)) < closestXZDist) {
+        // Save as new closest
+        closestXZDist = pointDistance(Point(x, 0, z), Point(cx, 0, cz));
+        closesti = i;
+        closestj = j;
+      }
+    }
+  }
+  
+  // Now, translate to the surface height
+  float surfaceY = computedPoints[closesti][closestj].getY();
+  glTranslatef(0, surfaceY, 0);
+
+  // Find the rotation variables
+  Point normal = computedNormals[closesti][closestj];
+  // Rotation axis ( 0,1,0 cross normal )
+  float ux = normal.getZ();
+  float uy = 0;
+  float uz = -normal.getX();
+  // Angle (from 0,1,0 dot normal) in radians
+  float angle = acos(normal.getY());
+
+  // Rotate
+  glRotatef(angle * 180.0/M_PI, ux, uy, uz);
 }
