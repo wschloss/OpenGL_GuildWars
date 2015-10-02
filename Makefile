@@ -1,4 +1,4 @@
-TARGET = guildwars
+TARGET = guildWars
 OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o BezierPatch.o color.o building.o tree.o vect.o mouse.o
 
 CXX    = g++

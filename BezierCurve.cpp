@@ -47,6 +47,14 @@ Point BezierCurve::evaluateBezierCurve( Point p0, Point p1, Point p2, Point p3, 
   return f;
 }
 
+// Computes the tangent vector at the given control and parameter
+// Note this returns a vector technically, but the Point class is just x,y,z
+Point BezierCurve::evaluateCurveTangent(Point p0, Point p1, Point p2, Point p3, float t) {
+  Point fprime = 3*pow(1 - t, 2)*(p1 - p0) + 6*(1 - t)*t*(p2 - p1) +
+                  3*pow(t, 2)*(p3 - p2);
+  return fprime;
+}
+
 // Renders curve in 'resolution' segments for the 4 points passed
 void BezierCurve::renderBezierCurve( Point p0, Point p1, Point p2, Point p3, int resolution ) {
   glDisable(GL_LIGHTING);

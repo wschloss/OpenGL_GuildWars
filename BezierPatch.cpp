@@ -12,8 +12,6 @@ BezierPatch::BezierPatch() {
 // Auto loads control points
 BezierPatch::BezierPatch(char* filename) {
   loadControlPoints(filename);
-  // Compute the surface points
-  computeSurface(computedPoints, 20);
 }
 
 // Loads points from a file

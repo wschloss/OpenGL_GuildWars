@@ -36,12 +36,15 @@ public:
   bool loadControlPoints(char* filename);
   // Computes point along curve given 4 control points and parameter t [0,1]
   static Point evaluateBezierCurve(Point p0, Point p1, Point p2, Point p3, float t);
+  // Evaluates the tangent with the control points and the parameter t [0,1]
+  static Point evaluateCurveTangent(Point p0, Point p1, Point p2, Point p3, float t);
   // Renders curve given four control points
   void renderBezierCurve(Point p0, Point p1, Point p2, Point p3, int resolution);
   // Renders the cage that defines the curve (connected control points
   void renderCage();
   // Renders the entire curve in sets of 4 points for C0 continuity
   void draw();
+
 
   // Getters
   vector<Point> getControlPoints() { return controlPoints; }

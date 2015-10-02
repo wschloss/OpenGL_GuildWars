@@ -26,3 +26,5 @@ Point operator*(Point p, float f);
 Point operator*(float f, Point p);
 // Addition of two points
 Point operator+(Point a, Point b);
+// Subtraction of two points
+Point operator-(Point a, Point b);
