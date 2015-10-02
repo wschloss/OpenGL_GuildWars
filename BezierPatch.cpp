@@ -54,6 +54,8 @@ void BezierPatch::computeSurface(vector< vector<Point> >& computedPoints, int re
   for (float v = 0; v <= 1; v += 1.0/resolution) {
     // Compute a row of points on the surface
     vector<Point> row;
+    // And a row of normals
+    vector<Point> normalRow;
     for (float u = 0; u <= 1; u += 1.0/resolution) {
       Point point = BezierCurve::evaluateBezierCurve(
                 BezierCurve::evaluateBezierCurve(controlPoints[0][0],
@@ -79,9 +81,83 @@ void BezierPatch::computeSurface(vector< vector<Point> >& computedPoints, int re
                 v);
       // Add point to the surface
       row.push_back(point);
+      
+      // Compute partial w/r/t u
+      Point dsdu = pow(1 - v, 3)*BezierCurve::evaluateCurveTangent(
+                                                controlPoints[0][0],
+                                                controlPoints[0][1],
+                                                controlPoints[0][2],
+                                                controlPoints[0][3],
+                                                u)
+                + 3*pow(1 - v, 2)*v*BezierCurve::evaluateCurveTangent(
+                                                controlPoints[1][0],
+                                                controlPoints[1][1],
+                                                controlPoints[1][2],
+                                                controlPoints[1][3],
+                                                u)
+                + 3*(1 - v)*pow(v, 2)*BezierCurve::evaluateCurveTangent(
+                                                controlPoints[2][0],
+                                                controlPoints[2][1],
+                                                controlPoints[2][2],
+                                                controlPoints[2][3],
+                                                u)
+                + pow(v, 3)*BezierCurve::evaluateCurveTangent(
+                                                controlPoints[3][0],
+                                                controlPoints[3][1],
+                                                controlPoints[3][2],
+                                                controlPoints[3][3],
+                                                u);
+
+      // Compute partial w/r/t v
+      Point dsdv = 3*pow(1 - v, 2)*(BezierCurve::evaluateBezierCurve(
+                                                controlPoints[1][0],
+                                                controlPoints[1][1],
+                                                controlPoints[1][2],
+                                                controlPoints[1][3],
+                                                u) -
+                                    BezierCurve::evaluateBezierCurve(
+                                                controlPoints[0][0],
+                                                controlPoints[0][1],
+                                                controlPoints[0][2],
+                                                controlPoints[0][3],
+                                                u))
+                + 6*(1 - v)*v*(BezierCurve::evaluateBezierCurve(
+                                                controlPoints[2][0],
+                                                controlPoints[2][1],
+                                                controlPoints[2][2],
+                                                controlPoints[2][3],
+                                                u) - 
+                              BezierCurve::evaluateBezierCurve(
+                                                controlPoints[1][0],
+                                                controlPoints[1][1],
+                                                controlPoints[1][2],
+                                                controlPoints[1][3],
+                                                u))
+                + 3*pow(v, 2)*(BezierCurve::evaluateBezierCurve(
+                                                controlPoints[3][0],
+                                                controlPoints[3][1],
+                                                controlPoints[3][2],
+                                                controlPoints[3][3],
+                                                u) -
+                              BezierCurve::evaluateBezierCurve(
+                                                controlPoints[2][0],
+                                                controlPoints[2][1],
+                                                controlPoints[2][2],
+                                                controlPoints[2][3],
+                                                u));
+
+      // Cross to find the normal
+      float nx = dsdu.getY()*dsdv.getZ() - dsdu.getZ()*dsdv.getY();
+      float ny = dsdu.getZ()*dsdv.getX() - dsdu.getX()*dsdv.getZ();
+      float nz = dsdu.getX()*dsdv.getY() - dsdu.getY()*dsdv.getX();
+
+      // push new normal
+      normalRow.push_back(Point(nx,ny,nz));
     }
     // Add row of points to surface
     computedPoints.push_back(row);
+    // Add row of normals to the surface
+    computedNormals.push_back(normalRow);
   }
 }
 

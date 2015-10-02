@@ -54,5 +54,7 @@ private:
   vector< vector<Point> > controlPoints;
   // All points computed to be on the surface
   vector< vector<Point> > computedPoints;
+  // The associated normal at each computed point
+  vector< vector<Point> > computedNormals;
 };
 
