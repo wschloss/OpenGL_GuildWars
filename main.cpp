@@ -37,6 +37,7 @@
 #include "Material.h"
 #include "Color.h"
 #include "Light.h"
+#include "AllMight.h"
 #include "./mouse.h"
 
 using namespace std;
@@ -59,8 +60,9 @@ bool zoomMode = false;
 ArcBallCamera cam; 
 // Surface instance
 BezierPatch bezierPatch; 
-// TESTING SPHERE POS
-float cubex, cubez;
+
+// All Might instance
+AllMight allMight;
 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
 // 
@@ -71,9 +73,7 @@ float cubex, cubez;
 void generateEnvironmentDL() {
     environmentDL = glGenLists(1);
     glNewList(environmentDL, GL_COMPILE); {
-      // TESTING ///////////
       bezierPatch.drawFilled();
-      // END TESTING ///////
     } glEndList();
 } 
 
@@ -143,9 +143,9 @@ void mouseMotion(int x, int y) {
     }
     mouse.setX( x );
     mouse.setY( y );
-
-    cam.recomputeCamPosition(0, 0, 0);     // update camera (x,y,z) based on (radius,theta,phi)
-  } 
+    // update camera (x,y,z) based on (radius,theta,phi)
+    cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());      
+  }
 } 
  
  
@@ -162,7 +162,7 @@ void initScene()  {
   // Enable the light
   pointLight.enable();
   // Set position of the point light
-  pointLight.setPosition(0, 10, 0);
+  pointLight.setPosition(0, 100, 0);
 
   glShadeModel(GL_FLAT); 
 
@@ -191,27 +191,27 @@ void renderScene(void)  {
   // Reset point light placement
   pointLight.resetPosition();
 
+  // Draws surface
   glCallList(environmentDL); 
 
-  // TESTING SURFACE ORIENTATION
 
-  //draw cube
+  
+  // DRAW ALLMIGHT
   Material mat = Material(Color(0.1745, 0.01175, 0.01175),
                           Color(0.61424, 0.04136, 0.04136),
                           Color(0.727811, 0.626959, 0.626929),
                           0.6*128);
   mat.set_as_current_material();
   glPushMatrix(); {
-    glTranslatef(cubex, 0, cubez);
-    // Orient with the surface
-    bezierPatch.orient(cubex, cubez);
-    // add some rotation in the x,z plane
-    glRotatef(45, 0, 1, 0);
-    glutSolidCube(3);
+    // Move to location
+    glTranslatef(allMight.getX(), allMight.getY(), allMight.getZ());
+    // Orient with the surface, returns the new height (sets a glRotatef)
+    bezierPatch.orient(allMight.getX(), allMight.getZ());
+    // rotation in the x,z plane
+    glRotatef(allMight.getRot(), 0, 1, 0);
+    allMight.drawVehicle();
   } glPopMatrix();
-  
-  // END TESTING
-
+  // END DRAW ALLMIGHT
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -226,10 +226,7 @@ void renderScene(void)  {
 void normalKeysDown(unsigned char key, int x, int y) { 
   if(key == 'q' || key == 'Q' || key == 27) 
     exit(0); 
-  if (key == 'w') cubex += 2;
-  if (key == 'a') cubez -= 2;
-  if (key == 's') cubex -= 2;
-  if (key == 'd') cubez += 2;
+  allMight.respondKeyDown(key);
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -238,7 +235,7 @@ void normalKeysDown(unsigned char key, int x, int y) {
 //
 /////////////////////////////////////////////
 void normalKeysUp(unsigned char key, int x, int y) {
-
+  allMight.respondKeyUp(key);
 }
 
 // update(int val) //////////////////////////////
@@ -247,8 +244,13 @@ void normalKeysUp(unsigned char key, int x, int y) {
 //
 //////////////////////////////////// 
 void update(int val) {
+  // Hero update
+  allMight.update();
+  glPushMatrix(); {
+    allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ()));
+  } glPopMatrix();
   // Cam update
-  cam.recomputeCamPosition(0,0,0);
+  cam.recomputeCamPosition(allMight.getX(), allMight.getY(),allMight.getZ());
   glutPostRedisplay();
   glutTimerFunc(1000/60.0, update, 0);
 }
@@ -300,6 +302,10 @@ int main(int argc, char **argv) {
                                     Color(0.1, 0.35, 0.1),
                                     Color(0.45, 0.55, 0.45),
                                     0.25*128));
+  // Initial orient (to set y)
+  glPushMatrix(); {
+    allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ()));
+  } glPopMatrix();
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
@@ -309,11 +315,11 @@ int main(int argc, char **argv) {
   glutInitWindowSize(windowWidth,windowHeight); 
   glutCreateWindow("Guild Wars"); 
 
-  // Init cam coords to look at origin
-  cam.recomputeCamPosition(0,0,0);
+  // Init cam coords to look at all might
+  cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());
 
   // register callback functions... 
-  //glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
   glutKeyboardFunc(normalKeysDown); 
   glutKeyboardUpFunc(normalKeysUp);
   glutDisplayFunc(renderScene); 
@@ -329,6 +335,7 @@ int main(int argc, char **argv) {
 
   // schedule first update
   glutTimerFunc(1000/60.0, update, 0); 
+
   // and enter the GLUT loop, never to exit. 
   glutMainLoop(); 
 

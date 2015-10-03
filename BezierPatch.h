@@ -51,7 +51,7 @@ public:
   // surface normal and translate the y up to the surface.
   // Pass the x, z coord of the obejct
   // NOTE: Push matrix before this call and pop after
-  void orient(float x, float z);
+  float orient(float x, float z);
 
   // SETTERS
   void setMaterial(Material mat);

@@ -251,10 +251,10 @@ void BezierPatch::drawWireframe() {
 }
 
 // Calls gl functions to rotate upvector (assumed 0,1,0) to the surface normal
-// and then translates to the surface y value.
+// and then returns the surface y value.
 // Pass the x, z coord of the object to snap to the surface
 // NOTE: Push matrix befor this call, and then pop after
-void BezierPatch::orient(float x, float z) {
+float BezierPatch::orient(float x, float z) {
   // Init vars to point at 0,0 in u,v space
   float closesti = 0;
   float closestj = 0;
@@ -275,7 +275,6 @@ void BezierPatch::orient(float x, float z) {
   
   // Now, translate to the surface height
   float surfaceY = computedPoints[closesti][closestj].getY();
-  glTranslatef(0, surfaceY, 0);
 
   // Find the rotation variables
   Point normal = computedNormals[closesti][closestj];
@@ -288,6 +287,9 @@ void BezierPatch::orient(float x, float z) {
 
   // Rotate
   glRotatef(angle * 180.0/M_PI, ux, uy, uz);
+
+  // Return the height for reference
+  return surfaceY;
 }
 
 // Sets the material
