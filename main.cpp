@@ -34,6 +34,9 @@
 // Files we wrote
 #include "ArcBallCamera.h"
 #include "BezierPatch.h"
+#include "Material.h"
+#include "Color.h"
+#include "Light.h"
 #include "./mouse.h"
 
 using namespace std;
@@ -46,6 +49,8 @@ static float aspectRatio;
 
 // global mouse object
 Mouse mouse;
+// Point light - default color is white
+Light pointLight(GL_LIGHT0);
 
 // Zoom mode flag set on the ctrl key
 bool zoomMode = false;
@@ -153,16 +158,11 @@ void mouseMotion(int x, int y) {
 void initScene()  { 
   glEnable(GL_DEPTH_TEST); 
 
-  float diffuseCol[4] = { 1, 1, 1, 1}; 
-  float specularCol[4] = { 1, 1, 1, 1 };
-  float ambientCol[4] = { 0.1, 0.1, 0.1, 1.0 }; 
-  float lPosition[4] = { 0, 10, 0, 1 }; 
-  glLightfv( GL_LIGHT0, GL_POSITION, lPosition ); 
-  glLightfv( GL_LIGHT0, GL_DIFFUSE, diffuseCol ); 
-  glLightfv( GL_LIGHT0, GL_AMBIENT, ambientCol ); 
-  glLightfv( GL_LIGHT0, GL_SPECULAR, specularCol );
   glEnable( GL_LIGHTING ); 
-  glEnable( GL_LIGHT0 );  
+  // Enable the light
+  pointLight.enable();
+  // Set position of the point light
+  pointLight.setPosition(0, 10, 0);
 
   glShadeModel(GL_FLAT); 
 
@@ -188,19 +188,19 @@ void renderScene(void)  {
   gluLookAt( cam.getX(), cam.getY(), cam.getZ(),      // camera pos
               cam.getLookX(), cam.getLookY(), cam.getLookZ(),     // camera lookat
               cam.getUpX(), cam.getUpY(),  cam.getUpZ());     // up vector
+  // Reset point light placement
+  pointLight.resetPosition();
 
   glCallList(environmentDL); 
 
   // TESTING SURFACE ORIENTATION
 
   //draw cube
-  float amb[4] = { 0.1745, 0.01175, 0.01175, 1 };
-  float dif[4] = { 0.61424, 0.04136, 0.04136, 1 };
-  float spec[4] = { 0.727811, 0.626959, 0.626959, 1 };
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, amb);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, dif);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, spec);
-  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.6*128);
+  Material mat = Material(Color(0.1745, 0.01175, 0.01175),
+                          Color(0.61424, 0.04136, 0.04136),
+                          Color(0.727811, 0.626959, 0.626929),
+                          0.6*128);
+  mat.set_as_current_material();
   glPushMatrix(); {
     glTranslatef(cubex, 0, cubez);
     // Orient with the surface
@@ -295,6 +295,11 @@ int main(int argc, char **argv) {
     printf("Could not load file: %s\n", argv[1]);
     exit(1);
   }
+  // Set the material as green plastic
+  bezierPatch.setMaterial(Material(Color(0,0,0),
+                                    Color(0.1, 0.35, 0.1),
+                                    Color(0.45, 0.55, 0.45),
+                                    0.25*128));
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 

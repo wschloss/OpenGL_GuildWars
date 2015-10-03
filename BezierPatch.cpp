@@ -207,14 +207,6 @@ void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoint
   Point* current, *right, *up, *diag;
   // Normals to set for the quad
   Point* nc, *nr, *nu, *nd;
-  // MATERIAL PROPS FOR TESTING
-  float difCol[4] = { 0.1, 0.35, 0.1, 1 };
-  float ambCol[4] = { 0, 0, 0, 1 };
-  float specCol[4] = { 0.45, 0.55, 0.45, 1 };
-  glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, difCol );
-  glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT, ambCol );
-  glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, specCol );
-  glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, 0.25*128 );
   // Iterate over all computed points and draw quads
   glBegin(GL_QUADS); 
   for (size_t i = 0; i < computedPoints.size() - 1; i++) {
@@ -248,6 +240,8 @@ void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoint
 
 // Convenience method draws the filled surface
 void BezierPatch::drawFilled() {
+  // Set material props
+  mat.set_as_current_material();
   renderBezierPatchFilled(computedPoints);
 }
 
@@ -294,4 +288,9 @@ void BezierPatch::orient(float x, float z) {
 
   // Rotate
   glRotatef(angle * 180.0/M_PI, ux, uy, uz);
+}
+
+// Sets the material
+void BezierPatch::setMaterial(Material mat) {
+  this->mat = mat;
 }

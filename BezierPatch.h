@@ -13,6 +13,7 @@
 #include <math.h>
 #include "Point.h"
 #include "BezierCurve.h"
+#include "Material.h"
 
 // OpenGL / GLUT Libraries we need
 #ifdef __APPLE__			// if compiling on Mac OS
@@ -52,6 +53,9 @@ public:
   // NOTE: Push matrix before this call and pop after
   void orient(float x, float z);
 
+  // SETTERS
+  void setMaterial(Material mat);
+
 private:
   // 2d vector of control points
   vector< vector<Point> > controlPoints;
@@ -59,5 +63,7 @@ private:
   vector< vector<Point> > computedPoints;
   // The associated normal at each computed point
   vector< vector<Point> > computedNormals;
+  // The material used for drawing this surface filled
+  Material mat;
 };
 
