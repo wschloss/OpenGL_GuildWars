@@ -205,8 +205,9 @@ void renderScene(void)  {
   glPushMatrix(); {
     // Move to location
     glTranslatef(allMight.getX(), allMight.getY(), allMight.getZ());
-    // Orient with the surface, returns the new height (sets a glRotatef)
-    bezierPatch.orient(allMight.getX(), allMight.getZ());
+    // Orient with the surface, by applying rotation
+    vector<float> orientation = bezierPatch.orient(allMight.getX(), allMight.getZ());
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     // rotation in the x,z plane
     glRotatef(allMight.getRot(), 0, 1, 0);
     allMight.drawVehicle();
@@ -246,9 +247,7 @@ void normalKeysUp(unsigned char key, int x, int y) {
 void update(int val) {
   // Hero update
   allMight.update();
-  glPushMatrix(); {
-    allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ()));
-  } glPopMatrix();
+  allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ())[0]);
   // Cam update
   cam.recomputeCamPosition(allMight.getX(), allMight.getY(),allMight.getZ());
   glutPostRedisplay();
@@ -303,9 +302,7 @@ int main(int argc, char **argv) {
                                     Color(0.45, 0.55, 0.45),
                                     0.25*128));
   // Initial orient (to set y)
-  glPushMatrix(); {
-    allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ()));
-  } glPopMatrix();
+  allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ())[0]);
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 

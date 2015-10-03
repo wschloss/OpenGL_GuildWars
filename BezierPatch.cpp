@@ -250,11 +250,12 @@ void BezierPatch::drawWireframe() {
   renderBezierPatchWireframe(computedPoints);
 }
 
-// Calls gl functions to rotate upvector (assumed 0,1,0) to the surface normal
-// and then returns the surface y value.
-// Pass the x, z coord of the object to snap to the surface
-// NOTE: Push matrix befor this call, and then pop after
-float BezierPatch::orient(float x, float z) {
+// Computes the height and necessary rotation and returns a vector in the format
+// [ ytranslate, degrees, axisX, axisY, axisZ ]
+// To orient, call:
+// glTranslatef(0,ytranslate,0);
+// glRotatef(degrees, axisX, axisY, axisZ);
+vector<float> BezierPatch::orient(float x, float z) {
   // Init vars to point at 0,0 in u,v space
   float closesti = 0;
   float closestj = 0;
@@ -273,7 +274,7 @@ float BezierPatch::orient(float x, float z) {
     }
   }
   
-  // Now, translate to the surface height
+  // Now get the surface height
   float surfaceY = computedPoints[closesti][closestj].getY();
 
   // Find the rotation variables
@@ -284,12 +285,18 @@ float BezierPatch::orient(float x, float z) {
   float uz = -normal.getX();
   // Angle (from 0,1,0 dot normal) in radians
   float angle = acos(normal.getY());
+  //convert
+  angle *= 180.0/M_PI;
 
-  // Rotate
-  glRotatef(angle * 180.0/M_PI, ux, uy, uz);
+  // Package the values
+  vector<float> ret;
+  ret.push_back(surfaceY);
+  ret.push_back(angle);
+  ret.push_back(ux);
+  ret.push_back(uy);
+  ret.push_back(uz);
 
-  // Return the height for reference
-  return surfaceY;
+  return ret;
 }
 
 // Sets the material

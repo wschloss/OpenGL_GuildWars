@@ -47,11 +47,12 @@ public:
   // Convenience method to draw the whole patch wireframe
   void drawWireframe();
 
-  // Calls gl transforms to rotate the objects up vector (assumed 0,1,0) to the
-  // surface normal and translate the y up to the surface.
-  // Pass the x, z coord of the obejct
-  // NOTE: Push matrix before this call and pop after
-  float orient(float x, float z);
+  // Computes the height and necessary rotation and returns a vector in the format
+  // [ ytranslate, degrees, axisX, axisY, axisZ ]
+  // To orient, call:
+  // glTranslatef(0,ytranslate,0);
+  // glRotatef(degrees, axisX, axisY, axisZ);
+  vector<float> orient(float x, float z);
 
   // SETTERS
   void setMaterial(Material mat);
