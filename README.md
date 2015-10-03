@@ -9,22 +9,24 @@
 
 ## TODO:
 
-* Add functionality to the Tree class.
+* Add functionality to the Tree class. Place some trees
 	* make different kinds of trees (if we have time)
-* Add functionality to the building class.
+* Add functionality to the building class. Place some buildings
 	* make different kinds of buildings (if we have time)
 * Create Environment class to encapsulate things like buildings and the surface
-* Create a 4 patch world (WALTER)
 * Create FreeCamera class
+* Render first person cam for a hero in a sceond viewport (free cam with hero coords)
 * Add characters/vehicles classes to the program.
-* Add track to environment
-* Make sure all Hero's are animated.
+* Add track to environment (a bezier curve).
+* Extend curve class to compute/store an arclength table and convert t's to s's
 * Make one hero move by arc-length parameterization at constant speed.
 * Make another Hero move by equal parameter steps.
 * Make the final "wandering" Hero move around the terrain properly.
-* Create Light class.
-* Create Material class.
-* Make sure there are two different lights.
+* Make sure all Hero's are animated.
+* Render name above each hero.
+* Render fps to upper left corner.
+* Allow camera's to switch with menu options.
+* Make sure there are two different lights (one must be dynamic).
 * Make sure there are two different materials.
 * Update each Hero's web page
 * Create presentation
@@ -33,6 +35,8 @@
 
 ## Usage:
 1. The user can rotation the camera about the would with by holding and dragging the left mouse button.
+2. CTRL + click and drag left button zooms the camera.
+3. Right mouse button brings up option menu.
 
 ## Build Instructions:
 ### Compilation:
