@@ -192,6 +192,7 @@ void renderScene(void)  {
   glCallList(environmentDL); 
 
   // TESTING SURFACE ORIENTATION
+
   //draw cube
   float amb[4] = { 0.1745, 0.01175, 0.01175, 1 };
   float dif[4] = { 0.61424, 0.04136, 0.04136, 1 };
@@ -202,12 +203,10 @@ void renderScene(void)  {
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.6*128);
   glPushMatrix(); {
     glTranslatef(cubex, 0, cubez);
-    // add some rotation in the x,z plane
-    // BUG: XZ ROTATION DOESN'T PLAY NICE RIGHT NOW
-    // ORDER OF TRANSFORMS NEEDS TO BE THOUGH OUT
-    //glRotatef(45, 0, 1, 0);
     // Orient with the surface
     bezierPatch.orient(cubex, cubez);
+    // add some rotation in the x,z plane
+    glRotatef(45, 0, 1, 0);
     glutSolidCube(3);
   } glPopMatrix();
   
