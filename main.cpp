@@ -162,7 +162,7 @@ void initScene()  {
   // Enable the light
   pointLight.enable();
   // Set position of the point light
-  pointLight.setPosition(0, 100, 0);
+  pointLight.setPosition(0, 1000, 0);
 
   glShadeModel(GL_FLAT); 
 

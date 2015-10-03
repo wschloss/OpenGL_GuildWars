@@ -156,13 +156,13 @@ void AllMight::update() {
 // Key response functions
 void AllMight::respondKeyDown(unsigned char key) {
   if (speed == 0 && key == 'w')
-    setSpeed(5);
+    setSpeed(2.5);
   if (speed == 0 && key == 's')
-    setSpeed(-5);
+    setSpeed(-2.5);
   if (deltaRot == 0 && key == 'a')
-    setDeltaRot(10);
+    setDeltaRot(5);
   if (deltaRot == 0 && key == 'd')
-    setDeltaRot(-10);
+    setDeltaRot(-5);
 }
 
 void AllMight::respondKeyUp(unsigned char key) {

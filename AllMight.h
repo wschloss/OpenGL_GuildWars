@@ -53,10 +53,7 @@ public:
       this->x = x;
       this->x = fmax(-600, fmin(x, 600));
     }
-    void setY(float y) {
-      this->y = y;
-      this->y = fmax(-600, fmin(y, 600));
-    }
+    void setY(float y) { this->y = y; }
     void setZ(float z) {
       this->z = z;
       this->z = fmax(-600, fmin(z, 600));
