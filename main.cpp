@@ -47,6 +47,12 @@ GLuint environmentDL;                       // display list for the grid
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
 static float aspectRatio; 
+// current time in ms, used to find fps
+double current_time = 0;
+// Number of elapsed frames since last measure
+int numframes = 0;
+// current fps
+double fps;
 
 // global mouse object
 Mouse mouse;
@@ -239,6 +245,27 @@ void normalKeysUp(unsigned char key, int x, int y) {
   allMight.respondKeyUp(key);
 }
 
+// fpsUpdate() ///////////////////////////////
+//
+// Updates fps every second
+//
+//////////////////////////////////////////////
+void fpsUpdate() {
+  // increment frames
+  numframes++;
+  // get new time
+  double newt = glutGet(GLUT_ELAPSED_TIME);
+  double deltat = newt - current_time;
+  // Only update every second
+  if (deltat > 1000.0) {
+    // update and reset frame counter
+    fps = (double)numframes/(deltat /1000.0); 
+    printf("fps: %.2f\n", fps); 
+    current_time = newt;
+    numframes = 0;
+  } 
+}
+
 // update(int val) //////////////////////////////
 //
 // The timer func, runs at 60 fps, updates object positions.
@@ -250,9 +277,14 @@ void update(int val) {
   allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ())[0]);
   // Cam update
   cam.recomputeCamPosition(allMight.getX(), allMight.getY(),allMight.getZ());
+
+  // FPS update
+  fpsUpdate();
+
   glutPostRedisplay();
   glutTimerFunc(1000/60.0, update, 0);
 }
+
  
 // myMenu() ////////////////////
 //
