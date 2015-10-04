@@ -44,6 +44,7 @@ using namespace std;
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
 static GLuint environmentDL;                       // display list for the grid
  
+static GLint windowId;                             // id for our main window
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
 static float aspectRatio; 
@@ -225,14 +226,15 @@ void renderScene(void)  {
   glutSwapBuffers(); 
 } 
 
-// cleanUp()////////////////////////////////////////////////////////////////////
+// cleanup()////////////////////////////////////////////////////////////////////
 //
 // Deallocates all dynamic memory
 //
 ///////////////////////////////////////////////////////////////////////////////
-void cleanUp() {
+void cleanup() {
   delete pointLight;
   delete bezierPatch;
+  glutDestroyWindow( windowId );  // destroy our window
 }
  
  
@@ -244,7 +246,7 @@ void cleanUp() {
 void normalKeysDown(unsigned char key, int x, int y) { 
   if(key == 'q' || key == 'Q' || key == 27) {
     // clean up
-    cleanUp();
+    cleanup();
     exit(0);
   }
   allMight.respondKeyDown(key);
@@ -357,7 +359,7 @@ int main(int argc, char **argv) {
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA); 
   glutInitWindowPosition(50,50); 
   glutInitWindowSize(windowWidth,windowHeight); 
-  glutCreateWindow("Guild Wars"); 
+  windowId = glutCreateWindow("Guild Wars"); 
 
   // Init cam coords to look at all might
   cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());
