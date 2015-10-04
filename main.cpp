@@ -38,15 +38,17 @@
 #include "Color.h"
 #include "Light.h"
 #include "AllMight.h"
-#include "./mouse.h"
+#include "mouse.h"
 
 using namespace std;
+
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
 GLuint environmentDL;                       // display list for the grid
  
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
-static float aspectRatio; 
+static float aspectRatio;
+
 // current time in ms, used to find fps
 double current_time = 0;
 // Number of elapsed frames since last measure
