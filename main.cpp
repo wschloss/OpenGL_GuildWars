@@ -42,22 +42,22 @@
 
 using namespace std;
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
-GLuint environmentDL;                       // display list for the grid
+static GLuint environmentDL;                       // display list for the grid
  
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
 static float aspectRatio; 
 // current time in ms, used to find fps
-double current_time = 0;
+static double current_time = 0;
 // Number of elapsed frames since last measure
-int numframes = 0;
+static int numframes = 0;
 // current fps
 double fps;
 
 // global mouse object
 Mouse mouse;
 // Point light - default color is white
-Light pointLight(GL_LIGHT0);
+Light* pointLight;
 
 // Zoom mode flag set on the ctrl key
 bool zoomMode = false;
@@ -166,9 +166,10 @@ void initScene()  {
 
   glEnable( GL_LIGHTING ); 
   // Enable the light
-  pointLight.enable();
+  pointLight = new Light(GL_LIGHT0);
+  pointLight->enable();
   // Set position of the point light
-  pointLight.setPosition(0, 1000, 0);
+  pointLight->setPosition(0, 1000, 0);
 
   glShadeModel(GL_FLAT); 
 
@@ -195,7 +196,7 @@ void renderScene(void)  {
               cam.getLookX(), cam.getLookY(), cam.getLookZ(),     // camera lookat
               cam.getUpX(), cam.getUpY(),  cam.getUpZ());     // up vector
   // Reset point light placement
-  pointLight.resetPosition();
+  pointLight->resetPosition();
 
   // Draws surface
   glCallList(environmentDL); 
@@ -231,8 +232,11 @@ void renderScene(void)  {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void normalKeysDown(unsigned char key, int x, int y) { 
-  if(key == 'q' || key == 'Q' || key == 27) 
-    exit(0); 
+  if(key == 'q' || key == 'Q' || key == 27) {
+    // clean up
+    delete pointLight;
+    exit(0);
+  }
   allMight.respondKeyDown(key);
 } 
 
