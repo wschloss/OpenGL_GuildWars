@@ -43,31 +43,32 @@
 using namespace std;
 
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
-GLuint environmentDL;                       // display list for the grid
+static GLuint environmentDL;                       // display list for the grid
  
+static GLint windowId;                             // id for our main window
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
 static float aspectRatio;
 
 // current time in ms, used to find fps
-double current_time = 0;
+static double current_time = 0;
 // Number of elapsed frames since last measure
-int numframes = 0;
+static int numframes = 0;
 // current fps
-double fps;
+static double fps;
 
 // global mouse object
 Mouse mouse;
 // Point light - default color is white
-Light pointLight(GL_LIGHT0);
+Light* pointLight;
 
 // Zoom mode flag set on the ctrl key
-bool zoomMode = false;
+static bool zoomMode = false;
 
 // Camera instance
 ArcBallCamera cam; 
 // Surface instance
-BezierPatch bezierPatch; 
+BezierPatch* bezierPatch; 
 
 // All Might instance
 AllMight allMight;
@@ -81,7 +82,7 @@ AllMight allMight;
 void generateEnvironmentDL() {
     environmentDL = glGenLists(1);
     glNewList(environmentDL, GL_COMPILE); {
-      bezierPatch.drawFilled();
+      bezierPatch->drawFilled();
     } glEndList();
 } 
 
@@ -168,9 +169,10 @@ void initScene()  {
 
   glEnable( GL_LIGHTING ); 
   // Enable the light
-  pointLight.enable();
+  pointLight = new Light(GL_LIGHT0);
+  pointLight->enable();
   // Set position of the point light
-  pointLight.setPosition(0, 1000, 0);
+  pointLight->setPosition(0, 1000, 0);
 
   glShadeModel(GL_FLAT); 
 
@@ -197,7 +199,7 @@ void renderScene(void)  {
               cam.getLookX(), cam.getLookY(), cam.getLookZ(),     // camera lookat
               cam.getUpX(), cam.getUpY(),  cam.getUpZ());     // up vector
   // Reset point light placement
-  pointLight.resetPosition();
+  pointLight->resetPosition();
 
   // Draws surface
   glCallList(environmentDL); 
@@ -214,7 +216,7 @@ void renderScene(void)  {
     // Move to location
     glTranslatef(allMight.getX(), allMight.getY(), allMight.getZ());
     // Orient with the surface, by applying rotation
-    vector<float> orientation = bezierPatch.orient(allMight.getX(), allMight.getZ());
+    vector<float> orientation = bezierPatch->orient(allMight.getX(), allMight.getZ());
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     // rotation in the x,z plane
     glRotatef(allMight.getRot(), 0, 1, 0);
@@ -225,6 +227,17 @@ void renderScene(void)  {
   //push the back buffer to the screen 
   glutSwapBuffers(); 
 } 
+
+// cleanup()////////////////////////////////////////////////////////////////////
+//
+// Deallocates all dynamic memory
+//
+///////////////////////////////////////////////////////////////////////////////
+void cleanup() {
+  delete pointLight;
+  delete bezierPatch;
+  glutDestroyWindow( windowId );  // destroy our window
+}
  
  
 // normalKeysDown() //////////////////////////////////////////////////////////// 
@@ -233,8 +246,11 @@ void renderScene(void)  {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void normalKeysDown(unsigned char key, int x, int y) { 
-  if(key == 'q' || key == 'Q' || key == 27) 
-    exit(0); 
+  if(key == 'q' || key == 'Q' || key == 27) {
+    // clean up
+    cleanup();
+    exit(0);
+  }
   allMight.respondKeyDown(key);
 } 
 
@@ -276,7 +292,7 @@ void fpsUpdate() {
 void update(int val) {
   // Hero update
   allMight.update();
-  allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ())[0]);
+  allMight.setY(bezierPatch->orient(allMight.getX(), allMight.getZ())[0]);
   // Cam update
   cam.recomputeCamPosition(allMight.getX(), allMight.getY(),allMight.getZ());
 
@@ -326,17 +342,18 @@ int main(int argc, char **argv) {
   }
   // TESTING //////////////////
   // load up the surface points
-  if (!bezierPatch.loadControlPoints(argv[1])) {
+  bezierPatch = new BezierPatch();
+  if (!bezierPatch->loadControlPoints(argv[1])) {
     printf("Could not load file: %s\n", argv[1]);
     exit(1);
   }
   // Set the material as green plastic
-  bezierPatch.setMaterial(Material(Color(0,0,0),
+  bezierPatch->setMaterial(Material(Color(0,0,0),
                                     Color(0.1, 0.35, 0.1),
                                     Color(0.45, 0.55, 0.45),
                                     0.25*128));
   // Initial orient (to set y)
-  allMight.setY(bezierPatch.orient(allMight.getX(), allMight.getZ())[0]);
+  allMight.setY(bezierPatch->orient(allMight.getX(), allMight.getZ())[0]);
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
@@ -344,7 +361,7 @@ int main(int argc, char **argv) {
   glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA); 
   glutInitWindowPosition(50,50); 
   glutInitWindowSize(windowWidth,windowHeight); 
-  glutCreateWindow("Guild Wars"); 
+  windowId = glutCreateWindow("Guild Wars"); 
 
   // Init cam coords to look at all might
   cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());
