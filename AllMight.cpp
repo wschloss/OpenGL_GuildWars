@@ -140,7 +140,7 @@ void AllMight::draw(BezierPatch* surface) {
 // Finds heading direction based on rotation
 void AllMight::calcDirection() {
     dirX = cos(rot * M_PI/180);
-    dirZ = -sin(rot* M_PI/180);
+    dirZ = -sin(rot * M_PI/180);
 } 
 
 // Updates the state of the vehicle

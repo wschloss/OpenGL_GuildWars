@@ -15,7 +15,7 @@
 	#include <GL/glu.h>
 #endif
 
-#include<math.h>
+#include <math.h>
 
 class Color
 {
