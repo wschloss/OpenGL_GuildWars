@@ -3,7 +3,6 @@
 //
 // Material object implementation
 
-
 #include "Material.h"
 
 // Defaults to all white

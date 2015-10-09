@@ -59,7 +59,7 @@ void AllMight::drawBody() {
 }
 
 // Draws on wheel
-void AllMight:: drawWheel() {
+void AllMight::drawWheel() {
     glColor3f(0,0,1);
     glPushMatrix(); {
         glRotatef(wheelRot,0,0,-1);
