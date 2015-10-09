@@ -18,7 +18,7 @@ Color::Color( float initRed, float initGreen, float initBlue ){
   // Set and clamp to range
 	red = fmax(0, fmin(1, initRed));
 	green = fmax(0, fmin(1, initGreen));
-  blue = fmax(0, fmin(1, initBlue));
+	blue = fmax(0, fmin(1, initBlue));
 }
 
 Color::~Color() {}

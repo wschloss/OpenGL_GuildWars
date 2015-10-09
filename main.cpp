@@ -39,6 +39,7 @@
 #include "Light.h"
 #include "AllMight.h"
 #include "mouse.h"
+#include "castamere_castelli.h"
 
 using namespace std;
 
@@ -72,6 +73,10 @@ BezierPatch* bezierPatch;
 
 // All Might instance
 AllMight allMight;
+
+// Make a global CastamereCastelli character instance
+CastamereCastelli castamere;
+
 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
 // 
@@ -153,7 +158,12 @@ void mouseMotion(int x, int y) {
     mouse.setX( x );
     mouse.setY( y );
     // update camera (x,y,z) based on (radius,theta,phi)
-    cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());      
+    // cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());
+    cam.recomputeCamPosition( 
+      castamere.getX(), 
+      castamere.getY(), 
+      castamere.getZ() 
+    );           
   }
 } 
  
@@ -204,7 +214,21 @@ void renderScene(void)  {
   // Draws surface
   glCallList(environmentDL); 
 
+  // DRAW CASTAMERE
+  // vector<float> castamereOrientation = bezierPatch->orient(castamere.getX(), castamere.getZ());
 
+  // glPushMatrix();
+  // {
+  //   // glRotatef(
+  //   //   castamereOrientation[1], 
+  //   //   castamereOrientation[2], 
+  //   //   castamereOrientation[3], 
+  //   //   castamereOrientation[4]
+  //   // );
+  //     castamere.renderSelf();
+  // };
+  // glPopMatrix();
+  // END DRAW CASTAMERE
   
   // DRAW ALLMIGHT
   Material mat = Material(Color(0.1745, 0.01175, 0.01175),
@@ -251,6 +275,7 @@ void normalKeysDown(unsigned char key, int x, int y) {
     cleanup();
     exit(0);
   }
+  castamere.respondKeyDown(key);
   allMight.respondKeyDown(key);
 } 
 
@@ -260,6 +285,7 @@ void normalKeysDown(unsigned char key, int x, int y) {
 //
 /////////////////////////////////////////////
 void normalKeysUp(unsigned char key, int x, int y) {
+  castamere.respondKeyUp(key);
   allMight.respondKeyUp(key);
 }
 
@@ -292,9 +318,26 @@ void fpsUpdate() {
 void update(int val) {
   // Hero update
   allMight.update();
-  allMight.setY(bezierPatch->orient(allMight.getX(), allMight.getZ())[0]);
-  // Cam update
-  cam.recomputeCamPosition(allMight.getX(), allMight.getY(),allMight.getZ());
+  allMight.setY(
+    bezierPatch->orient(allMight.getX(), allMight.getZ())[0]
+  );
+  castamere.update();
+  castamere.setY(
+    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] + (castamere.getHeight()/2)
+  );
+  
+  // // Cam update
+  cam.recomputeCamPosition(
+    allMight.getX(), 
+    allMight.getY(),
+    allMight.getZ()
+  );
+
+  // cam.recomputeCamPosition(
+  //   castamere.getX(), 
+  //   castamere.getY(),
+  //   castamere.getZ()
+  // );
 
   // FPS update
   fpsUpdate();
@@ -340,6 +383,7 @@ int main(int argc, char **argv) {
     printf("Usage: %s worldfile.csv\n", argv[0]);
     exit(1);
   }
+
   // TESTING //////////////////
   // load up the surface points
   bezierPatch = new BezierPatch();
@@ -347,13 +391,18 @@ int main(int argc, char **argv) {
     printf("Could not load file: %s\n", argv[1]);
     exit(1);
   }
+
   // Set the material as green plastic
   bezierPatch->setMaterial(Material(Color(0,0,0),
                                     Color(0.1, 0.35, 0.1),
                                     Color(0.45, 0.55, 0.45),
                                     0.25*128));
   // Initial orient (to set y)
-  allMight.setY(bezierPatch->orient(allMight.getX(), allMight.getZ())[0]);
+  allMight.setY( bezierPatch->orient(allMight.getX(), allMight.getZ())[0] );
+  castamere.setY( 
+    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] + (castamere.getHeight()/2)
+  );
+
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
@@ -364,7 +413,17 @@ int main(int argc, char **argv) {
   windowId = glutCreateWindow("Guild Wars"); 
 
   // Init cam coords to look at all might
-  cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());
+  cam.recomputeCamPosition(
+    allMight.getX(), 
+    allMight.getY(), 
+    allMight.getZ()
+  );
+
+  // cam.recomputeCamPosition(
+  //   castamere.getX(), 
+  //   castamere.getY(), 
+  //   castamere.getZ()
+  // );
 
   // register callback functions... 
   glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
