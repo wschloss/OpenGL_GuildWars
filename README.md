@@ -21,6 +21,8 @@ WALTER
 * Make another Hero move by equal parameter steps.
 END WALTER
 
+* Make a world file format and the loading logic
+
 * Create Environment class to encapsulate things like buildings and the surface
 
 * Create FreeCamera class
