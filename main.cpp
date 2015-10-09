@@ -218,19 +218,13 @@ void renderScene(void)  {
   glCallList(environmentDL); 
 
   // DRAW CASTAMERE
-  // vector<float> castamereOrientation = bezierPatch->orient(castamere.getX(), castamere.getZ());
 
   // glPushMatrix();
   // {
-  //   // glRotatef(
-  //   //   castamereOrientation[1], 
-  //   //   castamereOrientation[2], 
-  //   //   castamereOrientation[3], 
-  //   //   castamereOrientation[4]
-  //   // );
-  //     castamere.renderSelf();
+  //     castamere.renderSelf( bezierPatch );
   // };
   // glPopMatrix();
+  
   // END DRAW CASTAMERE
   
   // DRAW ALLMIGHT
