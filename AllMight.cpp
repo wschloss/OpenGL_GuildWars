@@ -129,6 +129,14 @@ void AllMight::draw() {
     } glPopMatrix();
 }
 
+void AllMight::draw(BezierPatch* surface) {
+    glPushMatrix(); {
+        glTranslatef(x, y + 0.7, z);
+        glRotatef(-rot, 0, 1, 0);
+        drawVehicle();
+    } glPopMatrix();
+}
+
 // Finds heading direction based on rotation
 void AllMight::calcDirection() {
     dirX = cos(rot * M_PI/180);

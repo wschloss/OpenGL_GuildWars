@@ -16,6 +16,8 @@
 #endif
 #include <math.h>
 
+#include "BezierPatch.h"
+
 
 class AllMight {
 public:
@@ -32,6 +34,8 @@ public:
     void drawVehicle();
     // Draws with position transforms
     void draw();
+    // Draws at the surface
+    void draw(BezierPatch* surface);
     // Updates the state of the car (pos, rot, wheelrot, flame, etc)
     void update();
     // Finds the heading direction from the rotation
