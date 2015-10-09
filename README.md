@@ -13,21 +13,27 @@
 	* make different kinds of trees (if we have time)
 * Add functionality to the building class. Place some buildings
 	* make different kinds of buildings (if we have time)
-* Create Environment class to encapsulate things like buildings and the surface
-* Create FreeCamera class
-* Render first person cam for a hero in a sceond viewport (free cam with hero coords)
-* Add characters/vehicles classes to the program.
+
+WALTER
 * Add track to environment (a bezier curve).
 * Extend curve class to compute/store an arclength table and convert t's to s's
 * Make one hero move by arc-length parameterization at constant speed.
 * Make another Hero move by equal parameter steps.
-* Make the final "wandering" Hero move around the terrain properly.
-* Make sure all Hero's are animated.
+END WALTER
+
+* Create Environment class to encapsulate things like buildings and the surface
+
+* Create FreeCamera class
+* Add characters/vehicles classes to the program.
+* Menu to switch between arcball for each hero or first person for each hero
+* Render first person cam for a hero in a second viewport (free cam with hero coords)
+
 * Render name above each hero.
 * Render fps to upper left corner.
-* Allow camera's to switch with menu options.
+
 * Make sure there are two different lights (one must be dynamic).
-* Make sure there are two different materials.
+
+* Make sure all Hero's are animated.
 * Update each Hero's web page
 * Create presentation
 
