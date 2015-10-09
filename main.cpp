@@ -237,14 +237,7 @@ void renderScene(void)  {
                           0.6*128);
   mat.set_as_current_material();
   glPushMatrix(); {
-    // Move to location
-    glTranslatef(allMight.getX(), allMight.getY(), allMight.getZ());
-    // Orient with the surface, by applying rotation
-    vector<float> orientation = bezierPatch->orient(allMight.getX(), allMight.getZ());
-    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
-    // rotation in the x,z plane
-    glRotatef(allMight.getRot(), 0, 1, 0);
-    allMight.drawVehicle();
+    allMight.draw(bezierPatch);
   } glPopMatrix();
   // END DRAW ALLMIGHT
 
