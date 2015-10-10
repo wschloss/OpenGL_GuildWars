@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
-#include "./point.h"
+#include "./Point.h"
 
 class CoolPants
 {
