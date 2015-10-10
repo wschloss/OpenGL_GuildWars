@@ -8,9 +8,10 @@
 Mouse::Mouse(){
 	myX = 0;
 	myY = 0;
+	zoomMode = false;
 }
 
-Mouse::~Mouse(){}
+Mouse::~Mouse() {}
 
 //** Getters and Setters:
 
@@ -22,10 +23,25 @@ GLint Mouse::getLeftMouseButton()
 	return( leftMouseButton );
 }
 
+bool Mouse::getZoomMode()
+{
+	return( zoomMode );
+}
+
 // Setters:
 void Mouse::setLeftMouseButton( GLint newLeftMouseButton )
 {
 	leftMouseButton = newLeftMouseButton;
+}
+
+void Mouse::setZoomMode( bool newZoomMode )
+{
+	zoomMode = newZoomMode;
+}
+
+void Mouse::toggleZoomMode()
+{
+	zoomMode = !zoomMode;
 }
 
 //** Locations:

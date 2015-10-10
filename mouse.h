@@ -30,9 +30,12 @@ class Mouse
 
 		// Getters:
 		GLint getLeftMouseButton();
+		bool getZoomMode();
 
 		// Setters:
 		void setLeftMouseButton( GLint newLeftMouseButton );
+		void setZoomMode( bool newZoomMode );
+		void toggleZoomMode();
 
 		//** Locations:
 
@@ -50,6 +53,7 @@ class Mouse
 
 		// State:
 		GLint leftMouseButton;
+		bool zoomMode;
 
 		// Location:
 		float myX;

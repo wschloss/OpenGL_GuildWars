@@ -59,7 +59,7 @@ void AllMight::drawBody() {
 }
 
 // Draws on wheel
-void AllMight:: drawWheel() {
+void AllMight::drawWheel() {
     glColor3f(0,0,1);
     glPushMatrix(); {
         glRotatef(wheelRot,0,0,-1);
@@ -87,7 +87,6 @@ void AllMight::drawExhaust() {
 // Draws entire vehicle (no transforms for location besides height)
 void AllMight::drawVehicle() {
   glPushMatrix(); {
-    glTranslatef(0,0.7,0);
     drawBody();
     // Draw the wheels
     glPushMatrix(); {
@@ -124,9 +123,21 @@ void AllMight::drawVehicle() {
 void AllMight::draw() {
     glPushMatrix(); {
         glTranslatef(x, y + 0.7, z);
-        glRotatef(-rot, 0, 1, 0);
+        glRotatef(rot, 0, 1, 0);
         drawVehicle();
     } glPopMatrix();
+}
+
+// Draws with the surface as orientation
+void AllMight::draw(BezierPatch* surface) {
+  glPushMatrix(); {
+    glTranslatef(x, y + 0.7, z);
+    // Orient with the surface, by applying rotation
+    vector<float> orientation = surface->orient(x, z);
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
+    glRotatef(rot, 0, 1, 0);
+    drawVehicle();
+  } glPopMatrix();
 }
 
 // Finds heading direction based on rotation

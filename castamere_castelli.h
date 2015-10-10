@@ -20,11 +20,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <math.h>
-#include "./point.h"
-#include "./vect.h"
-#include "./ArcBallCamera.h"
-#include "./Color.h"
+#include "Point.h"
+#include "Material.h"
+#include "BezierPatch.h"
+#include "Color.h"
 
 class CastamereCastelli
 {
@@ -37,7 +36,7 @@ class CastamereCastelli
 	//** Rendering:
 
 		// render a 3D CastamereCastelli character.
-		void renderSelf();
+		void renderSelf( BezierPatch* surface );
 		// re-redraw self.
 		void update();
 
@@ -101,9 +100,6 @@ class CastamereCastelli
 
 	//** Variables
 
-		// Camera:
-		ArcBallCamera* cam;
-
 		// Location:
 		Point* position;
 
@@ -158,7 +154,6 @@ class CastamereCastelli
 		void renderEye();
 		void renderHat();
 		void renderBeard();
-		void renderMouth();
 		void renderNose();
 		void renderEar();
 		// Body

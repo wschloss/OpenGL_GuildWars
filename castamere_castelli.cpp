@@ -39,7 +39,7 @@ CastamereCastelli::CastamereCastelli()
 	shirtColor = Color( 0.3, 0.2, 1 ); // blue
 	pantsColor = Color( 0.21, 0.16, 0.10 ); // brown
 
-	// Make sure Catamere is up to date before we draw him.
+	// Make sure Castamere is up to date before we draw him.
 	update();
 }
 
@@ -53,13 +53,24 @@ CastamereCastelli::~CastamereCastelli()
 //** Rendering
 
 // General
-void CastamereCastelli::renderSelf()
+void CastamereCastelli::renderSelf( BezierPatch* surface )
 {
-	// Draw the all of castamere to his current position and
-	// rotated him to his current heading.
+
+	// find Castameres orientation with respect to the surface.
+    vector<float> orientation = surface->orient( getX(), getZ() );
+    
+	// Draw the all of Castamere to his current position,
+	// rotate him to his current heading and orient him with respect
+	// to the surface he is standing on.
 	glPushMatrix();
 	{
 	    glTranslatef( getX(), getY(), getZ() );
+	    glRotatef(
+	    	orientation[1], 
+	    	orientation[2], 
+	    	orientation[3], 
+	    	orientation[4]
+	    );
 	    glRotatef( (getRotationAngle() + 90), 0, 1, 0 );
 	    assembleSelf();
 	};
@@ -201,7 +212,11 @@ void CastamereCastelli::renderHead()
 
 void CastamereCastelli::renderEye()
 {
+	// used so the size of the eye and the pupil are drawn relative
+	// to one another.
 	float eyeRadius = 0.5;
+
+	// eye ball / eye whites
 	glPushMatrix();
 	{
 		glColor3f( 1, 1, 1 ); // white
@@ -209,6 +224,7 @@ void CastamereCastelli::renderEye()
 	};
 	glPopMatrix();
 
+	// pupil
 	glPushMatrix();
 	{
 		glColor3f( 0, 0, 0 ); // black
@@ -233,6 +249,7 @@ void CastamereCastelli::renderHat()
 
 	GLUquadricObj *myQuad = gluNewQuadric();
 	gluQuadricDrawStyle( myQuad, GLU_FILL );
+
 	float brim_hight = 0.30;
 	float birm_rad = 1.25;
 	float hat_res = 100;
@@ -272,12 +289,13 @@ void CastamereCastelli::renderHat()
 		glPopMatrix();
 	};
 	glPopMatrix();
+
 	gluDeleteQuadric( myQuad );
 }
 
 void CastamereCastelli::renderBeard()
 {
-	glColor3f( 0.7, 0.7, 0.7 );
+	beardColor.set_as_current_color();
 
 	// Lower beard
 	glPushMatrix();
@@ -303,9 +321,6 @@ void CastamereCastelli::renderBeard()
 
 	gluDeleteQuadric( myQuad );
 }
-
-void CastamereCastelli::renderMouth()
-{}
 
 void CastamereCastelli::renderNose()
 {

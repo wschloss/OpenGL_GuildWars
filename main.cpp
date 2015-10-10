@@ -61,14 +61,13 @@ static double fps;
 
 // global mouse object
 Mouse mouse;
+
 // Point light - default color is white
 Light* pointLight;
 
-// Zoom mode flag set on the ctrl key
-static bool zoomMode = false;
-
 // Camera instance
-ArcBallCamera cam; 
+ArcBallCamera cam;
+
 // Surface instance
 BezierPatch* bezierPatch; 
 
@@ -132,10 +131,10 @@ void mouseCallback(int button, int state, int thisX, int thisY) {
     {
       if( glutGetModifiers() == GLUT_ACTIVE_CTRL )
       {
-        zoomMode = true;
+        mouse.setZoomMode( true );
       }
     }
-    else zoomMode = false;
+    else mouse.setZoomMode( false );
   }
 } 
  
@@ -153,21 +152,25 @@ void mouseMotion(int x, int y) {
     int dx = ( x - mouse.getX() );
     int dy = ( mouse.getY() - y );  
     // Check for zoom
-    if (zoomMode) {
-      cam.incrementRadius(dy, 5);
+    if( mouse.getZoomMode() ) {
+      cam.incrementRadius( dy, 5 );
     } else {
-      cam.incrementTheta(0.005*dy);
-      cam.incrementPhi(0.005*dx);
+      cam.incrementTheta( 0.005 * dy );
+      cam.incrementPhi( 0.005 * dx );
     }
     mouse.setX( x );
     mouse.setY( y );
     // update camera (x,y,z) based on (radius,theta,phi)
-    // cam.recomputeCamPosition(allMight.getX(), allMight.getY(), allMight.getZ());
-    cam.recomputeCamPosition( 
-      castamere.getX(), 
-      castamere.getY(), 
-      castamere.getZ() 
-    );           
+    cam.recomputeCamPosition(
+      allMight.getX(), 
+      allMight.getY(), 
+      allMight.getZ()
+    );
+    // cam.recomputeCamPosition( 
+    //   castamere.getX(), 
+    //   castamere.getY(), 
+    //   castamere.getZ() 
+    // );           
   }
 } 
  
@@ -219,19 +222,13 @@ void renderScene(void)  {
   glCallList(environmentDL); 
 
   // DRAW CASTAMERE
-  // vector<float> castamereOrientation = bezierPatch->orient(castamere.getX(), castamere.getZ());
 
   // glPushMatrix();
   // {
-  //   // glRotatef(
-  //   //   castamereOrientation[1], 
-  //   //   castamereOrientation[2], 
-  //   //   castamereOrientation[3], 
-  //   //   castamereOrientation[4]
-  //   // );
-  //     castamere.renderSelf();
+  //     castamere.renderSelf( bezierPatch );
   // };
   // glPopMatrix();
+  
   // END DRAW CASTAMERE
   
   // DRAW ALLMIGHT
@@ -241,14 +238,7 @@ void renderScene(void)  {
                           0.6*128);
   mat.set_as_current_material();
   glPushMatrix(); {
-    // Move to location
-    glTranslatef(allMight.getX(), allMight.getY(), allMight.getZ());
-    // Orient with the surface, by applying rotation
-    vector<float> orientation = bezierPatch->orient(allMight.getX(), allMight.getZ());
-    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
-    // rotation in the x,z plane
-    glRotatef(allMight.getRot(), 0, 1, 0);
-    allMight.drawVehicle();
+    allMight.draw(bezierPatch);
   } glPopMatrix();
   // END DRAW ALLMIGHT
   
