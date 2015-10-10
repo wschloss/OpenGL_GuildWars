@@ -43,6 +43,7 @@
 #include "AllMight.h"
 #include "mouse.h"
 #include "castamere_castelli.h"
+#include "CoolPants.h"
 
 using namespace std;
 
@@ -82,6 +83,9 @@ AllMight allMight;
 
 // Make a global CastamereCastelli character instance
 CastamereCastelli castamere;
+
+// CoolPants instance
+CoolPants coolPants;
 
 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
@@ -250,6 +254,23 @@ void renderScene(void)  {
     allMight.draw( bezierPatch );
   } glPopMatrix();
   // END DRAW ALLMIGHT
+  
+  // DRAW COOLPANTS
+  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
+                          Color(0.780392, 0.568627, 0.113725),
+                          Color(0.05, 0.05, 0.05),
+                          0.005*128);
+  matCoolPants.set_as_current_material();
+  glPushMatrix(); {
+    // Move to location
+    glTranslatef(coolPants.getX(), coolPants.getY(), coolPants.getZ());
+    // Orient with the surface, by applying rotation
+    vector<float> orientation = bezierPatch->orient(coolPants.getX(), coolPants.getZ());
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
+    coolPants.drawHorse();
+  } glPopMatrix();
+  
+  // END DRAW COOLPANTS
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -328,6 +349,12 @@ void update( int val ) {
   castamere.setY(
     bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
       + (castamere.getHeight()/2)
+  );
+  
+  
+  coolPants.update();
+  coolPants.setY(
+    bezierPatch->orient(coolPants.getX(), coolPants.getZ() + coolPants.getH())[0]
   );
   
   // // Cam update
