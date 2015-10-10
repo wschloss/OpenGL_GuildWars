@@ -4,9 +4,12 @@
  *  Project: Guild Wars
  *  File: main.cpp
  *
- *  Author: 
+ *  Authors: Walter Carl Schlosser ( All Might )
+ *           Tyler M. Bank ( CoolPantsBro )
+ *           Zac McClain ( Castamere Castelli )
  *
- *  Description:
+ *  Description: 
+ *
  */
 
 #ifdef __APPLE__      // if compiling on Mac OS
@@ -44,9 +47,13 @@
 using namespace std;
 
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
-static GLuint environmentDL;                       // display list for the grid
+
+// display list for the surface
+static GLuint environmentDL; 
  
-static GLint windowId;                             // id for our main window
+// id for the main window
+static GLint windowId;  
+// widow dimensions                           
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
 static float aspectRatio;
@@ -84,8 +91,8 @@ CastamereCastelli castamere;
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void generateEnvironmentDL() {
-    environmentDL = glGenLists(1);
-    glNewList(environmentDL, GL_COMPILE); {
+    environmentDL = glGenLists( 1 );
+    glNewList( environmentDL, GL_COMPILE ); {
       bezierPatch->drawFilled();
     } glEndList();
 } 
@@ -95,19 +102,19 @@ void generateEnvironmentDL() {
 //  GLUT callback for window resizing. Resets GL_PROJECTION matrix and viewport. 
 // 
 //////////////////////////////////////////////////////////////////////////////// 
-void resizeWindow(int w, int h) { 
-  aspectRatio = w / (float)h; 
+void resizeWindow( int w, int h ) { 
+  aspectRatio = ( w / (float)h ); 
 
   windowWidth = w; 
   windowHeight = h; 
 
   //update the viewport to fill the window 
-  glViewport(0, 0, w, h); 
+  glViewport( 0, 0, w, h ); 
 
   //update the projection matrix with the new window properties 
-  glMatrixMode(GL_PROJECTION); 
+  glMatrixMode( GL_PROJECTION ); 
   glLoadIdentity(); 
-  gluPerspective(45.0,aspectRatio,0.1,100000); 
+  gluPerspective( 45.0, aspectRatio, 0.1, 100000 ); 
 }  
  
 // mouseCallback() ///////////////////////////////////////////////////////////// 
@@ -143,7 +150,7 @@ void mouseCallback(int button, int state, int thisX, int thisY) {
 //      buttons, the function just updates the last seen mouse X and Y coords. 
 // 
 //////////////////////////////////////////////////////////////////////////////// 
-void mouseMotion(int x, int y) { 
+void mouseMotion( int x, int y ) { 
   if( mouse.getLeftMouseButton() == GLUT_DOWN ) { 
     int dx = ( x - mouse.getX() );
     int dy = ( mouse.getY() - y );  
@@ -178,16 +185,16 @@ void mouseMotion(int x, int y) {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void initScene()  { 
-  glEnable(GL_DEPTH_TEST); 
+  glEnable( GL_DEPTH_TEST ); 
 
   glEnable( GL_LIGHTING ); 
   // Enable the light
-  pointLight = new Light(GL_LIGHT0);
+  pointLight = new Light( GL_LIGHT0 );
   pointLight->enable();
   // Set position of the point light
   pointLight->setPosition(0, 1000, 0);
 
-  glShadeModel(GL_FLAT); 
+  glShadeModel( GL_FLAT ); 
 
   generateEnvironmentDL(); 
 } 
@@ -200,22 +207,28 @@ void initScene()  {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 void renderScene(void)  { 
+  
   //clear the render buffer (sky blue)
   glClearColor(0.53, 0.808, 0.922, 1);
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   //update the modelview matrix based on the camera's position 
-  glMatrixMode(GL_MODELVIEW);              //make sure we aren't changing the projection matrix! 
+  //make sure we aren't changing the projection matrix!
+  glMatrixMode( GL_MODELVIEW );
+
   glLoadIdentity();
-  gluLookAt( cam.getX(), cam.getY(), cam.getZ(),      // camera pos
-              cam.getLookX(), cam.getLookY(), cam.getLookZ(),     // camera lookat
-              cam.getUpX(), cam.getUpY(),  cam.getUpZ());     // up vector
+  
+  gluLookAt( 
+    cam.getX(), cam.getY(), cam.getZ(),             // camera pos
+    cam.getLookX(), cam.getLookY(), cam.getLookZ(), // camera lookat
+    cam.getUpX(), cam.getUpY(),  cam.getUpZ()       // up vector
+  );    
   // Reset point light placement
   pointLight->resetPosition();
 
   // Draws surface
-  glCallList(environmentDL); 
+  glCallList( environmentDL ); 
 
   // DRAW CASTAMERE
 
@@ -224,7 +237,7 @@ void renderScene(void)  {
   //     castamere.renderSelf( bezierPatch );
   // };
   // glPopMatrix();
-  
+
   // END DRAW CASTAMERE
   
   // DRAW ALLMIGHT
@@ -234,7 +247,7 @@ void renderScene(void)  {
                           0.6*128);
   mat.set_as_current_material();
   glPushMatrix(); {
-    allMight.draw(bezierPatch);
+    allMight.draw( bezierPatch );
   } glPopMatrix();
   // END DRAW ALLMIGHT
 
@@ -259,14 +272,14 @@ void cleanup() {
 //  GLUT keyboard callback
 // 
 //////////////////////////////////////////////////////////////////////////////// 
-void normalKeysDown(unsigned char key, int x, int y) { 
-  if(key == 'q' || key == 'Q' || key == 27) {
+void normalKeysDown( unsigned char key, int x, int y ) { 
+  if( (key == 'q') || (key == 'Q') || (key == 27) ) {
     // clean up
     cleanup();
-    exit(0);
+    exit( 0 );
   }
-  castamere.respondKeyDown(key);
-  allMight.respondKeyDown(key);
+  castamere.respondKeyDown( key );
+  allMight.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -274,9 +287,9 @@ void normalKeysDown(unsigned char key, int x, int y) {
 // Callback for key up
 //
 /////////////////////////////////////////////
-void normalKeysUp(unsigned char key, int x, int y) {
-  castamere.respondKeyUp(key);
-  allMight.respondKeyUp(key);
+void normalKeysUp( unsigned char key, int x, int y ) {
+  castamere.respondKeyUp( key );
+  allMight.respondKeyUp( key );
 }
 
 // fpsUpdate() ///////////////////////////////
@@ -288,13 +301,13 @@ void fpsUpdate() {
   // increment frames
   numframes++;
   // get new time
-  double newt = glutGet(GLUT_ELAPSED_TIME);
+  double newt = glutGet( GLUT_ELAPSED_TIME );
   double deltat = newt - current_time;
   // Only update every second
   if (deltat > 1000.0) {
     // update and reset frame counter
-    fps = (double)numframes/(deltat /1000.0); 
-    printf("fps: %.2f\n", fps); 
+    fps = ( (double)numframes/(deltat /1000.0) ); 
+    printf( "fps: %.2f\n", fps ); 
     current_time = newt;
     numframes = 0;
   } 
@@ -305,7 +318,7 @@ void fpsUpdate() {
 // The timer func, runs at 60 fps, updates object positions.
 //
 //////////////////////////////////// 
-void update(int val) {
+void update( int val ) {
   // Hero update
   allMight.update();
   allMight.setY(
@@ -313,7 +326,8 @@ void update(int val) {
   );
   castamere.update();
   castamere.setY(
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] + (castamere.getHeight()/2)
+    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
+      + (castamere.getHeight()/2)
   );
   
   // // Cam update
@@ -333,7 +347,7 @@ void update(int val) {
   fpsUpdate();
 
   glutPostRedisplay();
-  glutTimerFunc(1000/60.0, update, 0);
+  glutTimerFunc( 1000/60.0, update, 0 );
 }
 
  
@@ -342,9 +356,11 @@ void update(int val) {
 // callback for the glui menu
 //
 ////////////////////////////////
-void myMenu(int value) {
+void myMenu( int value ) {
   // Quit
-  if (value == 0) exit(0);
+  if( value == 0 ) { 
+    exit( 0 );
+  }
 }
 
 // createMenus() //////////////////////////
@@ -353,12 +369,15 @@ void myMenu(int value) {
 //
 ///////////////////////////////////////////
 void createMenus() {
+
   // create with the passed callback glutCreateMenu(myMenu);
-  glutCreateMenu(myMenu);
+  glutCreateMenu( myMenu );
+
   // add options
-  glutAddMenuEntry("Quit", 0);
+  glutAddMenuEntry( "Quit", 0 );
+
   // Attach to right mouse
-  glutAttachMenu(GLUT_RIGHT_BUTTON);
+  glutAttachMenu( GLUT_RIGHT_BUTTON );
 }
 
 
@@ -367,40 +386,45 @@ void createMenus() {
 //  Program entry point
 // 
 //////////////////////////////////////////////////////////////////////////////// 
-int main(int argc, char **argv) { 
+int main( int argc, char **argv ) { 
   // Get file from passed argument
-  if (argc != 2) {
-    printf("Usage: %s worldfile.csv\n", argv[0]);
-    exit(1);
+  if( argc != 2 ) {
+    printf( "Usage: %s worldfile.csv\n", argv[0] );
+    exit( 1 );
   }
 
   // TESTING //////////////////
   // load up the surface points
   bezierPatch = new BezierPatch();
-  if (!bezierPatch->loadControlPoints(argv[1])) {
-    printf("Could not load file: %s\n", argv[1]);
-    exit(1);
+  if ( !bezierPatch->loadControlPoints(argv[1]) ) {
+    printf( "Could not load file: %s\n", argv[1] );
+    exit( 1 );
   }
 
   // Set the material as green plastic
-  bezierPatch->setMaterial(Material(Color(0,0,0),
-                                    Color(0.1, 0.35, 0.1),
-                                    Color(0.45, 0.55, 0.45),
-                                    0.25*128));
+  bezierPatch->setMaterial( 
+    Material(
+      Color(0,0,0),
+      Color(0.1, 0.35, 0.1),
+      Color(0.45, 0.55, 0.45),
+      (0.25 * 128)
+    )
+  );
   // Initial orient (to set y)
   allMight.setY( bezierPatch->orient(allMight.getX(), allMight.getZ())[0] );
   castamere.setY( 
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] + (castamere.getHeight()/2)
+    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
+      + (castamere.getHeight()/2)
   );
 
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
-  glutInit(&argc, argv); 
-  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA); 
-  glutInitWindowPosition(50,50); 
-  glutInitWindowSize(windowWidth,windowHeight); 
-  windowId = glutCreateWindow("Guild Wars"); 
+  glutInit( &argc, argv ); 
+  glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA ); 
+  glutInitWindowPosition( 50, 50 ); 
+  glutInitWindowSize( windowWidth, windowHeight ); 
+  windowId = glutCreateWindow( "Guild Wars" ); 
 
   // Init cam coords to look at all might
   cam.recomputeCamPosition(
@@ -416,13 +440,13 @@ int main(int argc, char **argv) {
   // );
 
   // register callback functions... 
-  glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
-  glutKeyboardFunc(normalKeysDown); 
-  glutKeyboardUpFunc(normalKeysUp);
-  glutDisplayFunc(renderScene); 
-  glutReshapeFunc(resizeWindow); 
-  glutMouseFunc(mouseCallback); 
-  glutMotionFunc(mouseMotion); 
+  glutSetKeyRepeat( GLUT_KEY_REPEAT_OFF );
+  glutKeyboardFunc( normalKeysDown ); 
+  glutKeyboardUpFunc( normalKeysUp );
+  glutDisplayFunc( renderScene ); 
+  glutReshapeFunc( resizeWindow ); 
+  glutMouseFunc( mouseCallback ); 
+  glutMotionFunc( mouseMotion ); 
   
   // Setup menu
   createMenus();
@@ -431,10 +455,10 @@ int main(int argc, char **argv) {
   initScene(); 
 
   // schedule first update
-  glutTimerFunc(1000/60.0, update, 0); 
+  glutTimerFunc( (1000/60.0), update, 0 ); 
 
   // and enter the GLUT loop, never to exit. 
   glutMainLoop(); 
 
-  return(0); 
+  return( 0 ); 
 } 
