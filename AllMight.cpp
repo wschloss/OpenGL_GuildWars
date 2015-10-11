@@ -7,13 +7,18 @@
 
 // Default params are all 0, flame base set to 1
 AllMight::AllMight() {
-    x = y = z = 0;
-    wheelRot = rot = 0;
-    // Find the dir vectors
-    calcDirection();
-    // Update amounts
-    speed = deltaRot = 0;
-    flameBase = 1;
+  x = y = z = 0;
+  wheelRot = rot = 0;
+  // Find the dir vectors
+  calcDirection();
+  // Update amounts
+  speed = deltaRot = 0;
+  flameBase = 1;
+
+  // Set the following vars to false
+  followMode = false;
+  t = 0;
+  path = NULL;
 }
 
 // Draws the main body of the car
@@ -148,20 +153,36 @@ void AllMight::calcDirection() {
 
 // Updates the state of the vehicle
 void AllMight::update() {
+  // follow mode moves along the curve instead
+  if (followMode) {
+    // increment follow parameter
+    t += 0.01;
+    // find the point on the curve
+    Point pos = path->findCurvePointFromParameter(t);
+    // find the heading for the curve
+    Point dir = path->findCurveTangentFromParameter(t);
+    // set this objects state now, y will be handled by the surface
+    setX(pos.getX());
+    setZ(pos.getZ());
+    dirX = dir.getX();
+    dirZ = dir.getZ();
+    rot = -atan2(dirZ,dirX) * 180/M_PI;
+  } else {
     // Update heading
     rot += deltaRot;
     calcDirection();
     // Update pos
     setX(x + speed*dirX);
     setZ(z + speed*dirZ);
-    // Wheel update
-    if (speed > 0)
-        wheelRot += 3;
-    else if (speed < 0)
-        wheelRot -= 3;
-    // Flame anim
-    flameBase += 0.1;
-    if (flameBase > 1.5) flameBase = 0.5;
+  }
+  // Wheel update
+  if (speed > 0)
+      wheelRot += 3;
+  else if (speed < 0)
+      wheelRot -= 3;
+  // Flame anim
+  flameBase += 0.1;
+  if (flameBase > 1.5) flameBase = 0.5;
 }
 
 // Key response functions
@@ -181,4 +202,13 @@ void AllMight::respondKeyUp(unsigned char key) {
     setSpeed(0);
   if (deltaRot != 0 && (key == 'a' || key == 'd'))
     setDeltaRot(0);
+}
+
+// Sets this hero to follow mode and follows the path on update
+void AllMight::setFollowPath(BezierCurve* path) {
+  this->path = path;
+  followMode = true;
+  t = 0;
+  // set speed so the wheels turn
+  setSpeed(2.5);
 }

@@ -30,7 +30,7 @@ public:
     void drawWheel();
     // Draws the exhaust pipe and flame
     void drawExhaust();
-    // Draws entire vehicle with no transforms
+    // Draws entire vehicle with no position transforms
     void drawVehicle();
     // Draws with position transforms
     void draw();
@@ -46,6 +46,10 @@ public:
     void respondKeyUp(unsigned char key);
     
     // Getters and setters
+    
+    // Sets this hero to follow mode and follows the passed curve
+    void setFollowPath(BezierCurve* path);
+    
     float getX() { return x; }
     float getY() { return y; }
     float getZ() { return z; }
@@ -78,4 +82,12 @@ private:
     float wheelRot;
     // Radius of the flame cone
     float flameBase;
+
+    // True if should enter follow mode
+    // Is set when setting a bezier curve path
+    bool followMode;
+    // Path to follow
+    BezierCurve* path;
+    // Parameter along the curve
+    float t;
 };

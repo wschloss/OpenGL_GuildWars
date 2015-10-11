@@ -6,7 +6,7 @@
 #include "BezierCurve.h"
 
 BezierCurve::BezierCurve() {
-  // Nothing, vector of control points empty
+  // Nothing to allocate
 }
 
 BezierCurve::BezierCurve(const char* filename) {

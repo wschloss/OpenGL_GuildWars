@@ -307,7 +307,6 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     exit( 0 );
   }
   castamere.respondKeyDown( key );
-  allMight.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -317,7 +316,6 @@ void normalKeysDown( unsigned char key, int x, int y ) {
 /////////////////////////////////////////////
 void normalKeysUp( unsigned char key, int x, int y ) {
   castamere.respondKeyUp( key );
-  allMight.respondKeyUp( key );
 }
 
 // fpsUpdate() ///////////////////////////////
@@ -434,8 +432,9 @@ int main( int argc, char **argv ) {
   bezierCurve = loader.constructCurve();
 
   // TESTING //////////////////
+  // Set AllMight to follow by parameter t
+  allMight.setFollowPath(bezierCurve);
   // Initial orient (to set y)
-  allMight.setY( bezierPatch->orient(allMight.getX(), allMight.getZ())[0] );
   castamere.setY( 
     bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
       + (castamere.getHeight()/2)
