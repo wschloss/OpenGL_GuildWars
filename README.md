@@ -14,11 +14,12 @@
 * Add functionality to the building class. Place some buildings
 	* make different kinds of buildings (if we have time)
 
+* (WALTER) Redraw All Might as a hero, not a car
 * Create a file that says where to put all the trees and buildings, add the loading to the WorldLoader.
 
 * Uncomment Castamere draw calls
-* Make Castamere respond to wasd controls
-* (WALTER) Menu to switch between arcball for each hero 
+* Make Castamere animated on wasd movement
+* (WALTER) Implement menu options to switch between arcball for each hero 
 
 * Create FreeCamera class
 * Render first person cam for a hero in a second viewport (free cam with hero coords)

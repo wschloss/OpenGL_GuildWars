@@ -174,15 +174,10 @@ void mouseMotion( int x, int y ) {
     mouse.setY( y );
     // update camera (x,y,z) based on (radius,theta,phi)
     cam.recomputeCamPosition(
-      coolPants.getX(), 
-      coolPants.getY(), 
-      coolPants.getZ()
+      castamere.getX(), 
+      castamere.getY(), 
+      castamere.getZ()
     );
-    // cam.recomputeCamPosition( 
-    //   castamere.getX(), 
-    //   castamere.getY(), 
-    //   castamere.getZ() 
-    // );           
   }
 } 
  
@@ -241,11 +236,11 @@ void renderScene(void)  {
 
   // DRAW CASTAMERE
 
-  // glPushMatrix();
-  // {
-  //     castamere.renderSelf( bezierPatch );
-  // };
-  // glPopMatrix();
+  glPushMatrix();
+  {
+    castamere.renderSelf( bezierPatch );
+  };
+  glPopMatrix();
 
   // END DRAW CASTAMERE
   
@@ -359,16 +354,10 @@ void update( int val ) {
   
   // Cam update
   cam.recomputeCamPosition(
-    coolPants.getX(), 
-    coolPants.getY(),
-    coolPants.getZ()
+    castamere.getX(), 
+    castamere.getY(),
+    castamere.getZ()
   );
-
-  // cam.recomputeCamPosition(
-  //   castamere.getX(), 
-  //   castamere.getY(),
-  //   castamere.getZ()
-  // );
 
   // FPS update
   fpsUpdate();
@@ -384,8 +373,30 @@ void update( int val ) {
 //
 ////////////////////////////////
 void myMenu( int value ) {
-  // Quit
-  if( value == 0 ) { 
+  if ( value == 0 ) {
+    // switch to arball on allmight
+  }
+  else if ( value == 1 ) {
+    // switch to arcball on castamere
+  }
+  else if ( value == 2 ) {
+    // switch to arcball on coolpants
+  }
+  else if ( value == 3 ) {
+    // toggle first person viewport on all might
+  }
+  else if ( value == 4 ) {
+    // toggle first person viewport on castamere
+  }
+  else if ( value == 5 ) {
+    // toggle first person viewport on coolpants
+  }
+  else if ( value == 6 ) {
+    // main view to free camera with wasd controls
+  }
+  else if( value == 7 ) { 
+    // quit
+    cleanup();
     exit( 0 );
   }
 }
@@ -396,12 +407,29 @@ void myMenu( int value ) {
 //
 ///////////////////////////////////////////
 void createMenus() {
+  // Create the submenu for arcball views
+  int arcball_submenu = glutCreateMenu( myMenu );
+  // add the three hero options
+  glutAddMenuEntry( "All Might", 0 );
+  glutAddMenuEntry( "Castamere", 1 );
+  glutAddMenuEntry( "CoolPants", 2 );
 
-  // create with the passed callback glutCreateMenu(myMenu);
+  // Create the submenu for the first person views in the second viewport
+  int firstperson_submenu = glutCreateMenu( myMenu );
+  glutAddMenuEntry( "All Might", 3 );
+  glutAddMenuEntry( "Castamere", 4 );
+  glutAddMenuEntry( "CoolPants", 5 );
+
+  // create main menu
   glutCreateMenu( myMenu );
 
-  // add options
-  glutAddMenuEntry( "Quit", 0 );
+  // add submenus
+  glutAddSubMenu( "Arcball", arcball_submenu );
+  glutAddSubMenu( "First Person", firstperson_submenu );
+
+  // Freecam option and quit
+  glutAddMenuEntry( "Free Camera", 6 );
+  glutAddMenuEntry( "Quit", 7 );
 
   // Attach to right mouse
   glutAttachMenu( GLUT_RIGHT_BUTTON );
@@ -445,18 +473,12 @@ int main( int argc, char **argv ) {
   glutInitWindowSize( windowWidth, windowHeight ); 
   windowId = glutCreateWindow( "Guild Wars" ); 
 
-  // Init cam coords to look at all might
+  // Init cam coords to look at castamere
   cam.recomputeCamPosition(
-    coolPants.getX(), 
-    coolPants.getY(), 
-    coolPants.getZ()
+    castamere.getX(), 
+    castamere.getY(), 
+    castamere.getZ()
   );
-
-  // cam.recomputeCamPosition(
-  //   castamere.getX(), 
-  //   castamere.getY(), 
-  //   castamere.getZ()
-  // );
 
   // register callback functions... 
   glutSetKeyRepeat( GLUT_KEY_REPEAT_OFF );
