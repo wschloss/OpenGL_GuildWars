@@ -1,7 +1,7 @@
 TARGET = guildWars
 OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o BezierPatch.o Color.o \
 		  building.o tree.o vect.o mouse.o Material.o Light.o AllMight.o \
-		  castamere_castelli.o CoolPants.o WorldLoader.o
+		  castamere_castelli.o CoolPants.o WorldLoader.o Campfire.o
 
 CXX    = g++
 CFLAGS = -Wall -g
@@ -89,3 +89,4 @@ AllMight.o: AllMight.cpp AllMight.h
 castamere_castelli.o: castamere_castelli.cpp castamere_castelli.h
 CoolPants.o: CoolPants.cpp CoolPants.h
 WorldLoader.o: WorldLoader.cpp WorldLoader.h
+Campfire.o: Campfire.cpp Campfire.h

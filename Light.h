@@ -3,6 +3,8 @@
 //
 // Encapsulates functionality for a light
 
+#pragma once
+
 #include "Color.h"
 
 #ifdef __APPLE__      // if compiling on Mac OS
@@ -28,6 +30,8 @@ public:
   void resetPosition();
   // Enable this light
   void enable();
+  // Set the colors
+  void setColors(Color amb, Color dif, Color spec);
   
 private:
   // The number of this light

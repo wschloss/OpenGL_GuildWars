@@ -45,6 +45,7 @@
 #include "castamere_castelli.h"
 #include "CoolPants.h"
 #include "WorldLoader.h"
+#include "Campfire.h"
 
 using namespace std;
 
@@ -72,6 +73,9 @@ Mouse mouse;
 
 // Point light - default color is white
 Light* pointLight;
+
+// Campfire, draws and also flickers a light
+Campfire campfire;
 
 // Camera instance
 ArcBallCamera arcballCam;
@@ -109,6 +113,7 @@ void generateEnvironmentDL() {
     glNewList( environmentDL, GL_COMPILE ); {
       bezierPatch->drawFilled();
       bezierCurve->draw();
+      campfire.draw();
     } glEndList();
 } 
 
@@ -212,11 +217,19 @@ void initScene()  {
   glEnable( GL_LIGHTING ); 
   // Enable the light
   pointLight = new Light( GL_LIGHT0 );
+  pointLight->setColors(
+    Color( 0.5, 0.5, 0.5 ),
+    Color( 0.5, 0.5, 0.5 ),
+    Color( 0.5, 0.5, 0.5 )
+  );
   pointLight->enable();
   // Set position of the point light
   pointLight->setPosition(0, 1000, 0);
 
-  glShadeModel( GL_FLAT ); 
+  // Enable the campfire for lighting
+  campfire.enable();
+
+  glShadeModel( GL_SMOOTH ); 
 
   generateEnvironmentDL(); 
 } 
@@ -231,7 +244,7 @@ void initScene()  {
 void renderScene(void)  { 
   
   //clear the render buffer (sky blue)
-  glClearColor(0.53, 0.808, 0.922, 1);
+  glClearColor(0.23, 0.508, 0.622, 1);
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -247,7 +260,8 @@ void renderScene(void)  {
     arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
   );    
   // Reset point light placement
-  pointLight->resetPosition();
+  // NOTE: This light call looks like it doesn't even matter
+  //pointLight->resetPosition();
 
   // Draws surface
   glCallList( environmentDL ); 
@@ -341,6 +355,9 @@ void update( int val ) {
   coolPants.setY(
     bezierPatch->orient(coolPants.getX(), coolPants.getZ())[0]
   );
+
+  // campfire light update
+  campfire.update();
   
   // update the arcball cam based on the target
   float tx, ty, tz;
@@ -458,17 +475,13 @@ int main( int argc, char **argv ) {
   bezierPatch = loader.constructSurface();
   bezierCurve = loader.constructCurve();
 
-  // TESTING //////////////////
   // Set AllMight to follow by parameter t
   allMight.setFollowPath(bezierCurve);
   // Set CoolPants to follow by arclength s 
   coolPants.setFollowPath(bezierCurve);
-  // Initial orient (to set y)
-  castamere.setY( 
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
-      + (castamere.getHeight()/2)
-  );
-  // END TESTING //////////////////
+
+  // Orient the campfire
+  campfire.setOrientation(bezierPatch);
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit( &argc, argv ); 

@@ -9,7 +9,7 @@ Light::Light(GLenum number) {
   this->number = number;
   float dif4[4] = { 1, 1, 1, 1}; 
   float spec4[4] = { 1, 1, 1, 1 };
-  float amb4[4] = { 0.1, 0.1, 0.1, 1.0 }; 
+  float amb4[4] = { 0.5, 0.5, 0.5, 1.0 }; 
   glLightfv(number, GL_AMBIENT, amb4);
   glLightfv(number, GL_DIFFUSE, dif4);
   glLightfv(number, GL_SPECULAR, spec4);
@@ -55,3 +55,15 @@ void Light::enable() {
   glEnable(number);
 }
 
+// Sets the colors
+void Light::setColors(Color amb, Color dif, Color spec) {
+  this->amb = amb;
+  this->dif = dif;
+  this->spec = spec;
+  float amb4[4] = { amb.get_red(), amb.get_green(), amb.get_blue(), 1 };
+  float dif4[4] = { dif.get_red(), dif.get_green(), dif.get_blue(), 1 };
+  float spec4[4] = { spec.get_red(), spec.get_green(), spec.get_blue(), 1 };
+  glLightfv(number, GL_AMBIENT, amb4);
+  glLightfv(number, GL_DIFFUSE, dif4);
+  glLightfv(number, GL_SPECULAR, spec4);
+}
