@@ -126,15 +126,29 @@ void AllMight::drawVehicle() {
 
 // Draws vehicle with coord transforms
 void AllMight::draw() {
-    glPushMatrix(); {
-        glTranslatef(x, y + 0.7, z);
-        glRotatef(rot, 0, 1, 0);
-        drawVehicle();
-    } glPopMatrix();
+  // Set a material for now
+  Material mat = Material(Color(0.1745, 0.01175, 0.01175),
+                          Color(0.61424, 0.04136, 0.04136),
+                          Color(0.727811, 0.626959, 0.626929),
+                          0.6*128);
+  mat.set_as_current_material();
+
+  glPushMatrix(); {
+    glTranslatef(x, y + 0.7, z);
+    glRotatef(rot, 0, 1, 0);
+    drawVehicle();
+  } glPopMatrix();
 }
 
 // Draws with the surface as orientation
 void AllMight::draw(BezierPatch* surface) {
+  // Set a material for now
+  Material mat = Material(Color(0.1745, 0.01175, 0.01175),
+                          Color(0.61424, 0.04136, 0.04136),
+                          Color(0.727811, 0.626959, 0.626929),
+                          0.6*128);
+  mat.set_as_current_material();
+
   glPushMatrix(); {
     glTranslatef(x, y + 0.7, z);
     // Orient with the surface, by applying rotation

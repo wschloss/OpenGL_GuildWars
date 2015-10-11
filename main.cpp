@@ -74,7 +74,7 @@ Mouse mouse;
 Light* pointLight;
 
 // Camera instance
-ArcBallCamera cam;
+ArcBallCamera arcballCam;
 
 // Surface instance
 BezierPatch* bezierPatch; 
@@ -90,6 +90,12 @@ CastamereCastelli castamere;
 
 // CoolPants instance
 CoolPants coolPants;
+
+// Enum for camera targets
+enum CharacterTarget { ALL_MIGHT, CASTAMERE, COOL_PANTS };
+
+// The current target for the arcball camera, init to castamere
+CharacterTarget arcballTarget = CASTAMERE;
 
 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
@@ -165,19 +171,31 @@ void mouseMotion( int x, int y ) {
     int dy = ( mouse.getY() - y );  
     // Check for zoom
     if( mouse.getZoomMode() ) {
-      cam.incrementRadius( dy, 5 );
+      arcballCam.incrementRadius( dy, 5 );
     } else {
-      cam.incrementTheta( 0.005 * dy );
-      cam.incrementPhi( 0.005 * dx );
+      arcballCam.incrementTheta( 0.005 * dy );
+      arcballCam.incrementPhi( 0.005 * dx );
     }
     mouse.setX( x );
     mouse.setY( y );
-    // update camera (x,y,z) based on (radius,theta,phi)
-    cam.recomputeCamPosition(
-      castamere.getX(), 
-      castamere.getY(), 
-      castamere.getZ()
-    );
+
+    // update the arcball cam based on the target
+    float tx, ty, tz;
+    switch ( arcballTarget ) {
+      case ALL_MIGHT:
+        tx = allMight.getX(); ty = allMight.getY(); tz = allMight.getZ();
+        break;
+      case CASTAMERE:
+        tx = castamere.getX(); ty = castamere.getY(); tz = castamere.getZ();
+        break;
+      case COOL_PANTS:
+        tx = coolPants.getX(); ty = coolPants.getY(); tz = coolPants.getZ();
+        break;
+      default:
+        // Should get here
+        tx = ty = tz = 0;
+    }
+    arcballCam.recomputeCamPosition( tx, ty, tz );
   }
 } 
  
@@ -224,9 +242,9 @@ void renderScene(void)  {
   glLoadIdentity();
   
   gluLookAt( 
-    cam.getX(), cam.getY(), cam.getZ(),             // camera pos
-    cam.getLookX(), cam.getLookY(), cam.getLookZ(), // camera lookat
-    cam.getUpX(), cam.getUpY(),  cam.getUpZ()       // up vector
+    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
   );    
   // Reset point light placement
   pointLight->resetPosition();
@@ -234,38 +252,10 @@ void renderScene(void)  {
   // Draws surface
   glCallList( environmentDL ); 
 
-  // DRAW CASTAMERE
-
-  glPushMatrix();
-  {
-    castamere.renderSelf( bezierPatch );
-  };
-  glPopMatrix();
-
-  // END DRAW CASTAMERE
-  
-  // DRAW ALLMIGHT
-  Material mat = Material(Color(0.1745, 0.01175, 0.01175),
-                          Color(0.61424, 0.04136, 0.04136),
-                          Color(0.727811, 0.626959, 0.626929),
-                          0.6*128);
-  mat.set_as_current_material();
-  glPushMatrix(); {
-    allMight.draw( bezierPatch );
-  } glPopMatrix();
-  // END DRAW ALLMIGHT
-  
-  // DRAW COOLPANTS
-  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
-                          Color(0.780392, 0.568627, 0.113725),
-                          Color(0.05, 0.05, 0.05),
-                          0.005*128);
-  matCoolPants.set_as_current_material();
-  glPushMatrix(); {
-    coolPants.draw(bezierPatch);
-  } glPopMatrix();
-  
-  // END DRAW COOLPANTS
+  // DRAW THE THREE CHARACTERS
+  castamere.renderSelf( bezierPatch ); 
+  allMight.draw( bezierPatch ); 
+  coolPants.draw(bezierPatch);  
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -352,12 +342,23 @@ void update( int val ) {
     bezierPatch->orient(coolPants.getX(), coolPants.getZ())[0]
   );
   
-  // Cam update
-  cam.recomputeCamPosition(
-    castamere.getX(), 
-    castamere.getY(),
-    castamere.getZ()
-  );
+  // update the arcball cam based on the target
+  float tx, ty, tz;
+  switch ( arcballTarget ) {
+    case ALL_MIGHT:
+      tx = allMight.getX(); ty = allMight.getY(); tz = allMight.getZ();
+      break;
+    case CASTAMERE:
+      tx = castamere.getX(); ty = castamere.getY(); tz = castamere.getZ();
+      break;
+    case COOL_PANTS:
+      tx = coolPants.getX(); ty = coolPants.getY(); tz = coolPants.getZ();
+      break;
+    default:
+      // Should get here
+      tx = ty = tz = 0;
+  }
+  arcballCam.recomputeCamPosition( tx, ty, tz );
 
   // FPS update
   fpsUpdate();
@@ -374,13 +375,16 @@ void update( int val ) {
 ////////////////////////////////
 void myMenu( int value ) {
   if ( value == 0 ) {
-    // switch to arball on allmight
+    // switch to arcball on allmight
+    arcballTarget = ALL_MIGHT;
   }
   else if ( value == 1 ) {
     // switch to arcball on castamere
+    arcballTarget = CASTAMERE;
   }
   else if ( value == 2 ) {
     // switch to arcball on coolpants
+    arcballTarget = COOL_PANTS;
   }
   else if ( value == 3 ) {
     // toggle first person viewport on all might
@@ -472,13 +476,6 @@ int main( int argc, char **argv ) {
   glutInitWindowPosition( 50, 50 ); 
   glutInitWindowSize( windowWidth, windowHeight ); 
   windowId = glutCreateWindow( "Guild Wars" ); 
-
-  // Init cam coords to look at castamere
-  cam.recomputeCamPosition(
-    castamere.getX(), 
-    castamere.getY(), 
-    castamere.getZ()
-  );
 
   // register callback functions... 
   glutSetKeyRepeat( GLUT_KEY_REPEAT_OFF );

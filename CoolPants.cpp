@@ -362,6 +362,13 @@ void CoolPants::drawWheel()
 // Draws and snaps to the surface
 void CoolPants::draw(BezierPatch* surface)
 {
+  // Set a material for now
+  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
+                          Color(0.780392, 0.568627, 0.113725),
+                          Color(0.05, 0.05, 0.05),
+                          0.005*128);
+  matCoolPants.set_as_current_material();
+
   glPushMatrix(); {
     // Move to location
     glTranslatef(getX(), getY() + 2.5, getZ());

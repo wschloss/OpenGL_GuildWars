@@ -57,7 +57,7 @@ void CastamereCastelli::renderSelf( BezierPatch* surface )
 {
 
 	// find Castameres orientation with respect to the surface.
-    vector<float> orientation = surface->orient( getX(), getZ() );
+  vector<float> orientation = surface->orient( getX(), getZ() );
     
 	// Draw the all of Castamere to his current position,
 	// rotate him to his current heading and orient him with respect
@@ -74,7 +74,7 @@ void CastamereCastelli::renderSelf( BezierPatch* surface )
 	    glRotatef( (getRotationAngle() + 90), 0, 1, 0 );
 	    assembleSelf();
 	};
-    glPopMatrix();
+  glPopMatrix();
 }
 
 void CastamereCastelli::update()
