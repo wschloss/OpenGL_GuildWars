@@ -14,17 +14,16 @@
 * Add functionality to the building class. Place some buildings
 	* make different kinds of buildings (if we have time)
 
-* (WALTER) Make one hero move by arc-length parameterization at constant speed.
-* (WALTER) Make another Hero move by equal parameter steps.
-
 * Create a file that says where to put all the trees and buildings, add the loading to the WorldLoader.
 
-* Create Environment class to encapsulate things like buildings and the surface
+* Uncomment Castamere draw calls
+* Make Castamere respond to wasd controls
+* (WALTER) Menu to switch between arcball for each hero 
 
 * Create FreeCamera class
-* Add characters/vehicles classes to the program.
-* Menu to switch between arcball for each hero or first person for each hero
 * Render first person cam for a hero in a second viewport (free cam with hero coords)
+* Menu to switch the first person view on/off and between heroes
+* Menu to have free cam controlled by wasd
 
 * Render name above each hero.
 * Render fps to upper left corner.
@@ -32,6 +31,8 @@
 * Make sure there are two different lights (one must be dynamic).
 
 * Think about improving the efficiency (surface orient call is expensive since it's currently a linear search)
+
+* Any refactoring we care to do if we have time.
 
 * Make sure all Hero's are animated.
 * Update each Hero's web page
