@@ -174,9 +174,9 @@ void mouseMotion( int x, int y ) {
     mouse.setY( y );
     // update camera (x,y,z) based on (radius,theta,phi)
     cam.recomputeCamPosition(
-      allMight.getX(), 
-      allMight.getY(), 
-      allMight.getZ()
+      coolPants.getX(), 
+      coolPants.getY(), 
+      coolPants.getZ()
     );
     // cam.recomputeCamPosition( 
     //   castamere.getX(), 
@@ -267,12 +267,7 @@ void renderScene(void)  {
                           0.005*128);
   matCoolPants.set_as_current_material();
   glPushMatrix(); {
-    // Move to location
-    glTranslatef(coolPants.getX(), coolPants.getY(), coolPants.getZ());
-    // Orient with the surface, by applying rotation
-    vector<float> orientation = bezierPatch->orient(coolPants.getX(), coolPants.getZ());
-    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
-    coolPants.drawHorse();
+    coolPants.drawToSurface(bezierPatch);
   } glPopMatrix();
   
   // END DRAW COOLPANTS
@@ -362,11 +357,11 @@ void update( int val ) {
     bezierPatch->orient(coolPants.getX(), coolPants.getZ() + coolPants.getH())[0]
   );
   
-  // // Cam update
+  // Cam update
   cam.recomputeCamPosition(
-    allMight.getX(), 
-    allMight.getY(),
-    allMight.getZ()
+    coolPants.getX(), 
+    coolPants.getY(),
+    coolPants.getZ()
   );
 
   // cam.recomputeCamPosition(
@@ -450,9 +445,9 @@ int main( int argc, char **argv ) {
 
   // Init cam coords to look at all might
   cam.recomputeCamPosition(
-    allMight.getX(), 
-    allMight.getY(), 
-    allMight.getZ()
+    coolPants.getX(), 
+    coolPants.getY(), 
+    coolPants.getZ()
   );
 
   // cam.recomputeCamPosition(

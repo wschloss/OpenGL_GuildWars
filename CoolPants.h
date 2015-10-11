@@ -9,6 +9,8 @@
 #include <iostream>
 #include <math.h>
 #include "./Point.h"
+#include "./BezierCurve.h"
+#include "./BezierPatch.h"
 
 class CoolPants
 {
@@ -17,6 +19,15 @@ class CoolPants
 		float angle;
 		float height;
 		int polyCount;
+    // rotation in the xz plane
+    float xzrot;
+    // True if follows the path
+    bool followMode;
+    // Path to follow
+    BezierCurve* path;
+    // Parameter (arclength) to denote position on curve
+    float s;
+    
 		
 		void drawBody();
 		void drawLeftLeg();
@@ -25,11 +36,15 @@ class CoolPants
 		void drawHead();
 		void drawLimb();
 		void drawWheel();
+
 	public:
 		CoolPants();
 		CoolPants( Point position );
 		
 		void drawHorse();
+
+    // Draws with the surface orientation
+    void drawToSurface(BezierPatch* surface);
 		
 		void update();
 		

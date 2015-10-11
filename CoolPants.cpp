@@ -22,6 +22,12 @@ CoolPants::CoolPants()
 	position = Point(0, height, 0);
 	angle = 0;
 	polyCount = 50;
+  xzrot = 0;
+
+  // Init follow params to not follow
+  followMode = false;
+  path = NULL;
+  s = 0;
 }
 
 CoolPants::CoolPants( Point position )
@@ -29,6 +35,12 @@ CoolPants::CoolPants( Point position )
 	this->position = position;
 	angle = 0;
 	polyCount = 50;
+  xzrot = 0;
+
+  // Init follow params to not follow
+  followMode = false;
+  path = NULL;
+  s = 0;
 }
 
 void CoolPants::update()
@@ -329,4 +341,20 @@ void CoolPants::drawWheel()
 		//glColor3f( 0, 0, 0 );
 		glutSolidCube( 0.5 );
 	};glPopMatrix();
+}
+
+// Draws and snaps to the surface
+void CoolPants::drawToSurface(BezierPatch* surface) {
+  glPushMatrix(); {
+    // Move to location
+    glTranslatef(getX(), getY(), getZ());
+
+    // Orient with the surface, by applying rotation
+    vector<float> orientation = 
+      surface->orient(getX(), getZ());
+
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
+    glRotatef(xzrot, 0, 1, 0);
+    drawHorse();
+  } glPopMatrix();
 }
