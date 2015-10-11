@@ -44,6 +44,7 @@
 #include "mouse.h"
 #include "castamere_castelli.h"
 #include "CoolPants.h"
+#include "WorldLoader.h"
 
 using namespace std;
 
@@ -77,6 +78,9 @@ ArcBallCamera cam;
 
 // Surface instance
 BezierPatch* bezierPatch; 
+
+// Curve instance for the track
+BezierCurve* bezierCurve;
 
 // All Might instance
 AllMight allMight;
@@ -284,7 +288,9 @@ void renderScene(void)  {
 void cleanup() {
   delete pointLight;
   delete bezierPatch;
-  glutDestroyWindow( windowId );  // destroy our window
+  delete bezierCurve;
+  // destroy our window
+  glutDestroyWindow( windowId );
 }
  
  
@@ -416,7 +422,7 @@ void createMenus() {
 int main( int argc, char **argv ) { 
   // Get file from passed argument
   if( argc != 2 ) {
-    printf( "Usage: %s worldfile.csv\n", argv[0] );
+    printf( "Usage: %s worldfile.txt\n", argv[0] );
     exit( 1 );
   }
 

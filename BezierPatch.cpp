@@ -10,12 +10,12 @@ BezierPatch::BezierPatch() {
 }
 
 // Auto loads control points
-BezierPatch::BezierPatch(char* filename) {
+BezierPatch::BezierPatch(const char* filename) {
   loadControlPoints(filename);
 }
 
 // Loads points from a file
-bool BezierPatch::loadControlPoints(char* filename) {
+bool BezierPatch::loadControlPoints(const char* filename) {
   // Open a file stream
   ifstream input;
   input.open(filename);

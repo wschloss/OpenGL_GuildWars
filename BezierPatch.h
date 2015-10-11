@@ -33,9 +33,9 @@ public:
   // Default - does not load any points
   BezierPatch();
   // Constructs and loads from the file automatically
-  BezierPatch(char* filename);
+  BezierPatch(const char* filename);
   // Loads point from the file
-  bool loadControlPoints(char* filename);
+  bool loadControlPoints(const char* filename);
   // Computes points on the surface so drawing with triangle strips is easy
   void computeSurface(vector< vector<Point> >& computedPoints, int resolution);
   // Draws a surface over all computed points as a wireframe
