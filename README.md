@@ -14,14 +14,10 @@
 * Add functionality to the building class. Place some buildings
 	* make different kinds of buildings (if we have time)
 
-WALTER
-* Add track to environment (a bezier curve).
-* Extend curve class to compute/store an arclength table and convert t's to s's
-* Make one hero move by arc-length parameterization at constant speed.
-* Make another Hero move by equal parameter steps.
-END WALTER
+* (WALTER) Make one hero move by arc-length parameterization at constant speed.
+* (WALTER) Make another Hero move by equal parameter steps.
 
-* Make a world file format and the loading logic
+* Create a file that says where to put all the trees and buildings, add the loading to the WorldLoader.
 
 * Create Environment class to encapsulate things like buildings and the surface
 
@@ -34,6 +30,8 @@ END WALTER
 * Render fps to upper left corner.
 
 * Make sure there are two different lights (one must be dynamic).
+
+* Think about improving the efficiency (surface orient call is expensive since it's currently a linear search)
 
 * Make sure all Hero's are animated.
 * Update each Hero's web page
@@ -50,9 +48,9 @@ END WALTER
 ### Compilation:
 	~/path/to/main.cpp $ make
         if( OS X or *nix )
-            ~/path/to/main.cpp $ ./guildwars
+            ~/path/to/main.cpp $ ./guildwars world.txt
         else
-            ~/path/to/main.cpp $ ./guildwars.exe
+            ~/path/to/main.cpp $ ./guildwars.exe world.txt
         end
 
 ### Input File Format:
