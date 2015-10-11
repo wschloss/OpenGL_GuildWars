@@ -8,12 +8,11 @@
 // Default params are all 0, flame base set to 1
 AllMight::AllMight() {
   x = y = z = 0;
-  wheelRot = rot = 0;
+  hairRot = legRot = rot = 0;
   // Find the dir vectors
   calcDirection();
   // Update amounts
   speed = deltaRot = 0;
-  flameBase = 1;
 
   // Set the following vars to false
   followMode = false;
@@ -23,105 +22,153 @@ AllMight::AllMight() {
 
 // Draws the main body of the car
 void AllMight::drawBody() {
-    glColor3f(1,0,0);
-    // main body
-    glPushMatrix(); {
-        glScalef(3,1,2);
-        glutSolidCube(1);
-    } glPopMatrix();
+  // Steel Material
+  Material mat(
+    Color(0.192, 0.192, 0.192),
+    Color(0.508, 0.508, 0.508),
+    Color(0.508, 0.508, 0.508),
+    51.2
+  );
+  mat.set_as_current_material();
 
-    // front hood
-    glPushMatrix(); {
-        glTranslatef(1.5,0.5,0);
-        glRotatef(45,0,0,-1);
-        glScalef(1,0.5,2.5);
-        glutSolidCube(1);
-    } glPopMatrix();
-
-    // Spoiler
-    glPushMatrix(); {
-        glTranslatef(-1,1,0);
-        glRotatef(20,0,0,-1);
-        glScalef(1.1,0.25,2.5);
-        glutSolidCube(1);
-    } glPopMatrix();
-
-    // Spoiler cylinders
-    glColor3f(0.1,0.1,0.1);
-    GLUquadric* quad = gluNewQuadric();
-    glPushMatrix(); {
-        glTranslatef(-1,0.5,-0.5);
-        glRotatef(90,-1,0,0);
-        gluCylinder(quad, 0.25, 0.25, 0.5,10,10);   
-    } glPopMatrix();
-
-    glPushMatrix(); {
-        glTranslatef(-1,0.5,0.5);
-        glRotatef(90,-1,0,0);
-        gluCylinder(quad, 0.25, 0.25, 0.5,10,10);   
-    } glPopMatrix();
-    gluDeleteQuadric(quad);
-}
-
-// Draws on wheel
-void AllMight::drawWheel() {
-    glColor3f(0,0,1);
-    glPushMatrix(); {
-        glRotatef(wheelRot,0,0,-1);
-        glutSolidTorus(0.1,0.5,10,6);
-    } glPopMatrix();
-}
-
-// Draws the exhaust
-void AllMight::drawExhaust() {
-    // Draw the cone flame
-    glColor3f(1,0.65,0);
-    glPushMatrix(); {
-        glTranslatef(0,0,-0.5);
-        glutSolidCone(flameBase,1,10,10);
-    } glPopMatrix();
-
-    // draw the cylinder
-    glColor3f(0.1,0.1,0.1);
-    GLUquadric* quad = gluNewQuadric();
-    gluCylinder(quad, 0.25, 0.25, 0.75, 10, 10);
-    gluDeleteQuadric(quad);
-
-}
-
-// Draws entire vehicle (no transforms for location besides height)
-void AllMight::drawVehicle() {
+  // body box
   glPushMatrix(); {
-    drawBody();
-    // Draw the wheels
-    glPushMatrix(); {
-        glTranslatef(0.9,-0.2,-1.2);
-        drawWheel();
-    } glPopMatrix();
-    
-    glPushMatrix(); {
-        glTranslatef(-0.9,-0.2,-1.2);
-        drawWheel();
-    } glPopMatrix();
-
-    glPushMatrix(); {
-        glTranslatef(0.9,-0.2,1.2);
-        drawWheel();
-    } glPopMatrix();
-
-    glPushMatrix(); {
-        glTranslatef(-0.9,-0.2,1.2);
-        drawWheel();
-    } glPopMatrix();
-
-    // Draw the exhaust
-    glPushMatrix(); {
-        glTranslatef(-2.25,0,0);
-        glRotatef(90,0,1,0);
-        drawExhaust();
-    } glPopMatrix();
+    glScalef(2, 3, 3);
+    glutSolidCube(1); 
   } glPopMatrix();
 
+  // Arm boxes
+  glPushMatrix(); {
+    glTranslatef(0, 0.75, 3);
+    glScalef(0.5, 0.5, 3);
+    glutSolidCube(1);
+  } glPopMatrix();
+
+  glPushMatrix(); {
+    glTranslatef(0, 0.75, -3);
+    glScalef(0.5, 0.5, 3);
+    glutSolidCube(1);
+  } glPopMatrix();
+}
+
+// draws a leg - cone and foot box
+void AllMight::drawLeg() {
+  // Steel Material
+  Material mat(
+    Color(0.192, 0.192, 0.192),
+    Color(0.508, 0.508, 0.508),
+    Color(0.508, 0.508, 0.508),
+    51.2
+  );
+  mat.set_as_current_material();
+
+  // cone
+  glPushMatrix(); {
+    glTranslatef(0, 2, 0);
+    glRotatef(90, 1, 0, 0);
+    glutSolidCone(0.5, 2, 10, 10);
+  } glPopMatrix();
+
+  // foot
+  glPushMatrix(); {
+    glTranslatef(0.25, 0, 0);
+    glScalef(1, 0.5, 0.5);
+    glutSolidCube(1);
+  } glPopMatrix();
+}
+
+// draws a head - box and hair cone and eye spheres
+void AllMight::drawHead() {
+  // Steel Material
+  Material mat(
+    Color(0.192, 0.192, 0.192),
+    Color(0.508, 0.508, 0.508),
+    Color(0.508, 0.508, 0.508),
+    51.2
+  );
+  mat.set_as_current_material();
+
+  // head box
+  glPushMatrix(); {
+    glScalef(2,2,2);
+    glutSolidCube(1);
+  } glPopMatrix();
+
+  // Red Material
+  Material mat2(
+    Color(0.35, 0.07, 0.01),
+    Color(0.35, 0.07, 0.01),
+    Color(0.35, 0.07, 0.01),
+    0.5);
+  mat2.set_as_current_material();
+
+  // head cone
+  glPushMatrix(); {
+    glTranslatef(0,1,0);
+
+    // Hair rotation
+    glRotatef(45.0*sin(hairRot), 1, 0, 0);
+    glTranslatef(0,1,0);
+
+    glRotatef(90.0, 1, 0, 0);
+    glTranslatef(0,0,-1);
+    glutSolidCone(1, 2, 10, 10);
+  } glPopMatrix();
+
+  // Black Material
+  Material mat3(
+    Color(0.05, 0.05, 0.05),
+    Color(0.05, 0.05, 0.05),
+    Color(0.05, 0.05, 0.05),
+  1);
+  mat3.set_as_current_material();
+
+  // Eyes
+  glPushMatrix(); {
+    glTranslatef(1, 0.5, -0.5);
+    glutSolidSphere(0.25, 10, 10);
+  } glPopMatrix();
+  
+  glPushMatrix(); {
+    glTranslatef(1, 0.5, 0.5);
+    glutSolidSphere(0.25, 10, 10);
+  } glPopMatrix();
+}
+
+// Draws assembled character
+void AllMight::drawComplete() {
+  // body
+  glPushMatrix(); {
+    glTranslatef(0,4,0);
+    drawBody();
+  } glPopMatrix();
+
+  // head
+  glPushMatrix(); {
+    glTranslatef(0,6.5,0);
+    drawHead();
+  } glPopMatrix();
+
+  // Legs
+  glPushMatrix(); {
+    glTranslatef(0, 0.5, -1);
+
+    // Leg rotation
+    glTranslatef(0, 2.25, 0);
+    glRotatef(45*sin(legRot), 0, 0, 1);
+    glTranslatef(0, -2.25, 0);
+    drawLeg();
+  } glPopMatrix();
+
+  glPushMatrix(); {
+    glTranslatef(0, 0.5, 1);
+    
+    // Leg rotation
+    glTranslatef(0, 2.25, 0);
+    glRotatef(-45*sin(legRot), 0, 0, 1);
+    glTranslatef(0, -2.25, 0);
+    drawLeg();
+  } glPopMatrix();
 }
 
 // Draws vehicle with coord transforms
@@ -134,9 +181,9 @@ void AllMight::draw() {
   mat.set_as_current_material();
 
   glPushMatrix(); {
-    glTranslatef(x, y + 0.7, z);
+    glTranslatef(x, y, z);
     glRotatef(rot, 0, 1, 0);
-    drawVehicle();
+    drawComplete();
   } glPopMatrix();
 }
 
@@ -150,12 +197,14 @@ void AllMight::draw(BezierPatch* surface) {
   mat.set_as_current_material();
 
   glPushMatrix(); {
-    glTranslatef(x, y + 0.7, z);
+    glTranslatef(x, y, z);
+
     // Orient with the surface, by applying rotation
     vector<float> orientation = surface->orient(x, z);
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
+
     glRotatef(rot, 0, 1, 0);
-    drawVehicle();
+    drawComplete();
   } glPopMatrix();
 }
 
@@ -189,14 +238,12 @@ void AllMight::update() {
     setX(x + speed*dirX);
     setZ(z + speed*dirZ);
   }
-  // Wheel update
-  if (speed > 0)
-      wheelRot += 3;
-  else if (speed < 0)
-      wheelRot -= 3;
-  // Flame anim
-  flameBase += 0.1;
-  if (flameBase > 1.5) flameBase = 0.5;
+
+  // every frame
+  hairRot += 1;
+  if (speed != 0) {
+    legRot += 0.5;
+  }
 }
 
 // Key response functions

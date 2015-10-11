@@ -24,19 +24,19 @@ public:
     // Default
     AllMight();
 
-    // Draws main body - head, body, and spoiler
+    // Draws main body - head and arm boxes
     void drawBody();
-    // Draws one wheel - torus
-    void drawWheel();
-    // Draws the exhaust pipe and flame
-    void drawExhaust();
-    // Draws entire vehicle with no position transforms
-    void drawVehicle();
+    // draws a leg - cone and foot box
+    void drawLeg();
+    // draws a head - box and hair cone and eye spheres
+    void drawHead();
+    // Draws entire character
+    void drawComplete();
     // Draws with position transforms
     void draw();
     // Draws at the surface
     void draw(BezierPatch* surface);
-    // Updates the state of the car (pos, rot, wheelrot, flame, etc)
+    // Updates state (pos, rot)
     void update();
     // Finds the heading direction from the rotation
     void calcDirection();
@@ -76,13 +76,12 @@ private:
     float dirX, dirZ;
     // Rotation
     float rot, deltaRot;
+    // angle for the rotation of the hair back and forth
+    float hairRot;
+    // angle for the leg rotation
+    float legRot;
     // Speed
     float speed;
-    // Wheel vars
-    float wheelRot;
-    // Radius of the flame cone
-    float flameBase;
-
     // True if should enter follow mode
     // Is set when setting a bezier curve path
     bool followMode;
