@@ -58,7 +58,7 @@ BezierPatch* WorldLoader::constructSurface() {
       Color(0,0,0),
       Color(0.1, 0.35, 0.1),
       Color(0.45, 0.55, 0.45),
-      (0.25 * 128)
+      (0.15 * 128)
     )
   );
 

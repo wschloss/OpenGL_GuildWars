@@ -112,7 +112,8 @@ void generateEnvironmentDL() {
     environmentDL = glGenLists( 1 );
     glNewList( environmentDL, GL_COMPILE ); {
       bezierPatch->drawFilled();
-      bezierCurve->draw();
+      // Call this if the curve needs to be seen/debugged
+      //bezierCurve->draw();
       campfire.draw();
     } glEndList();
 } 
@@ -217,14 +218,11 @@ void initScene()  {
   glEnable( GL_LIGHTING ); 
   // Enable the light
   pointLight = new Light( GL_LIGHT0 );
-  pointLight->setColors(
-    Color( 0.5, 0.5, 0.5 ),
-    Color( 0.5, 0.5, 0.5 ),
-    Color( 0.5, 0.5, 0.5 )
-  );
+  // Hack instead of class support... I am getting a little lazy here
+  glLightf( GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.5 );
   pointLight->enable();
   // Set position of the point light
-  pointLight->setPosition(0, 1000, 0);
+  pointLight->setPosition( 0, 1000, 0 );
 
   // Enable the campfire for lighting
   campfire.enable();

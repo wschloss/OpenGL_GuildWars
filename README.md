@@ -29,14 +29,10 @@
 * Render name above each hero.
 * Render fps to upper left corner.
 
-* Make sure there are two different lights (one must be dynamic).
-  * A campfire in the middle could be cool
-
 * Think about improving the efficiency (surface orient call is expensive since it's currently a linear search)
 
 * Any refactoring we care to do if we have time.
 
-* Make sure all Hero's are animated.
 * Update each Hero's web page
 * Create presentation
 
