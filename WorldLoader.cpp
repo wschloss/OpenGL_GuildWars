@@ -7,9 +7,9 @@
 
 // Read filenames on construct
 WorldLoader::WorldLoader( char* worldfilename ) {
-  loadWorldComponentFilenames( worldfilename );
   surfaceFilename = new string();
   curveFilename = new string();
+  loadWorldComponentFilenames( worldfilename );
 }
 
 // Loads the file lines into memory, exits program if an error occurs

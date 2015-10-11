@@ -102,6 +102,7 @@ void generateEnvironmentDL() {
     environmentDL = glGenLists( 1 );
     glNewList( environmentDL, GL_COMPILE ); {
       bezierPatch->drawFilled();
+      bezierCurve->draw();
     } glEndList();
 } 
 
@@ -426,30 +427,19 @@ int main( int argc, char **argv ) {
     exit( 1 );
   }
 
-  // TESTING //////////////////
-  // load up the surface points
-  bezierPatch = new BezierPatch();
-  if ( !bezierPatch->loadControlPoints(argv[1]) ) {
-    printf( "Could not load file: %s\n", argv[1] );
-    exit( 1 );
-  }
+  // Read the world file into a loader
+  WorldLoader loader( argv[1] );
+  // Construct object from the data files
+  bezierPatch = loader.constructSurface();
+  bezierCurve = loader.constructCurve();
 
-  // Set the material as green plastic
-  bezierPatch->setMaterial( 
-    Material(
-      Color(0,0,0),
-      Color(0.1, 0.35, 0.1),
-      Color(0.45, 0.55, 0.45),
-      (0.25 * 128)
-    )
-  );
+  // TESTING //////////////////
   // Initial orient (to set y)
   allMight.setY( bezierPatch->orient(allMight.getX(), allMight.getZ())[0] );
   castamere.setY( 
     bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
       + (castamere.getHeight()/2)
   );
-
   // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
