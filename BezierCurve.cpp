@@ -37,7 +37,8 @@ bool BezierCurve::loadControlPoints(const char* filename) {
   input.close();
 
   // Go ahead and construct the arclength table
-  constructArclengthTable(arclengthTable, 100);
+  constructArclengthTable(arclengthTable, 1000);
+
   return true;
 }
 
@@ -171,11 +172,13 @@ float BezierCurve::translateArclengthToT(float s) {
     current = (first + last) / 2; 
   } 
 
-  // narrowed down to two rows, pick the closest one
-  if (sprime - arclengthTable[first][1] < arclengthTable[last][1] - sprime)
-    return arclengthTable[first][1];
-  else
-    return arclengthTable[last][1];
+  // linear interpolation between the two rows
+  float interpolatedT = 
+                (arclengthTable[last][0] - arclengthTable[first][0]) /
+                (arclengthTable[last][1] - arclengthTable[first][1]) *
+                (sprime - arclengthTable[first][1]) +
+                arclengthTable[first][0];
+  return interpolatedT;
 }
 
 // Renders curve in 'resolution' segments for the 4 points passed

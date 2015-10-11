@@ -18,8 +18,7 @@
 
 CoolPants::CoolPants()
 {
-	height = 10;
-	position = Point(0, height, 0);
+	position = Point(0, 0, 0);
 	angle = 0;
 	polyCount = 50;
   xzrot = 0;
@@ -48,7 +47,7 @@ void CoolPants::update()
   // Update along curve
   if (followMode) {
     // increment follow parameter
-    s += 0.01;
+    s += 5;
     // Translate to the correct t value
     float t = path->translateArclengthToT(s);
     // find the point on the curve
@@ -365,14 +364,14 @@ void CoolPants::draw(BezierPatch* surface)
 {
   glPushMatrix(); {
     // Move to location
-    glTranslatef(getX(), getY(), getZ());
+    glTranslatef(getX(), getY() + 2.5, getZ());
 
     // Orient with the surface, by applying rotation
     vector<float> orientation = 
       surface->orient(getX(), getZ());
 
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
-    glRotatef(xzrot, 0, 1, 0);
+    glRotatef(xzrot + 90, 0, 1, 0);
     drawHorse();
   } glPopMatrix();
 }

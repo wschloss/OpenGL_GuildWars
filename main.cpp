@@ -328,7 +328,7 @@ void fpsUpdate() {
   if (deltat > 1000.0) {
     // update and reset frame counter
     fps = ( (double)numframes/(deltat /1000.0) ); 
-    printf( "fps: %.2f\n", fps ); 
+    //printf( "fps: %.2f\n", fps ); 
     current_time = newt;
     numframes = 0;
   } 
@@ -354,7 +354,7 @@ void update( int val ) {
    
   coolPants.update();
   coolPants.setY(
-    bezierPatch->orient(coolPants.getX(), coolPants.getZ() + coolPants.getH())[0]
+    bezierPatch->orient(coolPants.getX(), coolPants.getZ())[0]
   );
   
   // Cam update
