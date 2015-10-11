@@ -17,9 +17,9 @@
 * (WALTER) Redraw All Might as a hero, not a car
 * Create a file that says where to put all the trees and buildings, add the loading to the WorldLoader.
 
-* Uncomment Castamere draw calls
 * Make Castamere animated on wasd movement
-* (WALTER) Implement menu options to switch between arcball for each hero 
+
+* Add materials to castamere so he is colored
 
 * Create FreeCamera class
 * Render first person cam for a hero in a second viewport (free cam with hero coords)
@@ -30,6 +30,7 @@
 * Render fps to upper left corner.
 
 * Make sure there are two different lights (one must be dynamic).
+  * A campfire in the middle could be cool
 
 * Think about improving the efficiency (surface orient call is expensive since it's currently a linear search)
 
