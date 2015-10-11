@@ -267,7 +267,7 @@ void renderScene(void)  {
                           0.005*128);
   matCoolPants.set_as_current_material();
   glPushMatrix(); {
-    coolPants.drawToSurface(bezierPatch);
+    coolPants.draw(bezierPatch);
   } glPopMatrix();
   
   // END DRAW COOLPANTS
@@ -345,13 +345,13 @@ void update( int val ) {
   allMight.setY(
     bezierPatch->orient(allMight.getX(), allMight.getZ())[0]
   );
+
   castamere.update();
   castamere.setY(
     bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
       + (castamere.getHeight()/2)
   );
-  
-  
+   
   coolPants.update();
   coolPants.setY(
     bezierPatch->orient(coolPants.getX(), coolPants.getZ() + coolPants.getH())[0]
@@ -429,6 +429,8 @@ int main( int argc, char **argv ) {
   // TESTING //////////////////
   // Set AllMight to follow by parameter t
   allMight.setFollowPath(bezierCurve);
+  // Set CoolPants to follow by arclength s 
+  coolPants.setFollowPath(bezierCurve);
   // Initial orient (to set y)
   castamere.setY( 
     bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 

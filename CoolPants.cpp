@@ -45,6 +45,23 @@ CoolPants::CoolPants( Point position )
 
 void CoolPants::update()
 {
+  // Update along curve
+  if (followMode) {
+    // increment follow parameter
+    s += 0.01;
+    // Translate to the correct t value
+    float t = path->translateArclengthToT(s);
+    // find the point on the curve
+    Point pos = path->findCurvePointFromParameter(t);
+    // find the heading for the curve
+    Point dir = path->findCurveTangentFromParameter(t);
+    // set this objects state now, y will be handled by the surface
+    setX(pos.getX());
+    setZ(pos.getZ());
+    xzrot = -atan2(dir.getZ(), dir.getX()) * 180/M_PI;
+  }
+  
+  // Do every frame, no matter what follow mode is
 	angle += 0.5;
 	if(angle > 360.0)
 		angle = 0;
@@ -344,7 +361,8 @@ void CoolPants::drawWheel()
 }
 
 // Draws and snaps to the surface
-void CoolPants::drawToSurface(BezierPatch* surface) {
+void CoolPants::draw(BezierPatch* surface)
+{
   glPushMatrix(); {
     // Move to location
     glTranslatef(getX(), getY(), getZ());
@@ -357,4 +375,12 @@ void CoolPants::drawToSurface(BezierPatch* surface) {
     glRotatef(xzrot, 0, 1, 0);
     drawHorse();
   } glPopMatrix();
+}
+
+// Sets the path to follow and turns on follow mode
+void CoolPants::setFollowPath(BezierCurve* path)
+{
+  this->path = path;
+  followMode = true;
+  s = 0;
 }

@@ -44,7 +44,10 @@ class CoolPants
 		void drawHorse();
 
     // Draws with the surface orientation
-    void drawToSurface(BezierPatch* surface);
+    void draw(BezierPatch* surface);
+
+    // Sets the path to follow and turns on follow mode
+    void setFollowPath(BezierCurve* path);
 		
 		void update();
 		
