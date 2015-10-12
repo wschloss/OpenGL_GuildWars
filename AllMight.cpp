@@ -182,6 +182,8 @@ void AllMight::draw() {
 
   glPushMatrix(); {
     glTranslatef(x, y, z);
+    // Orient with the surface, by applying rotation
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(rot, 0, 1, 0);
     drawComplete();
   } glPopMatrix();
@@ -200,7 +202,7 @@ void AllMight::draw(BezierPatch* surface) {
     glTranslatef(x, y, z);
 
     // Orient with the surface, by applying rotation
-    vector<float> orientation = surface->orient(x, z);
+    orientation = surface->orient(x, z);
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
 
     glRotatef(rot, 0, 1, 0);
@@ -272,4 +274,10 @@ void AllMight::setFollowPath(BezierCurve* path) {
   t = 0;
   // set speed so the wheels turn
   setSpeed(2.5);
+}
+
+// Set the orientation vecotr to snap to the surfeace passed
+void AllMight::setOrientation(BezierPatch* surface) {
+  this->orientation = surface->orient(x, z);
+  setY(orientation[0]);
 }

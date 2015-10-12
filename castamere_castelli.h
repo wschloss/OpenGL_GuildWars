@@ -36,8 +36,8 @@ class CastamereCastelli
 	//** Rendering:
 
 		// render a 3D CastamereCastelli character.
-		void renderSelf( BezierPatch* surface );
-		// re-redraw self.
+		void renderSelf();
+    // re-redraw self.
 		void update();
 
 	//** Keyboard:
@@ -87,6 +87,7 @@ class CastamereCastelli
 		void setHairColor( Color newHatColor );
 		void setShirtColor( Color newShirtColor );
 		void setPantsColor( Color newPantsColor );
+    void setOrientation( BezierPatch* surface );
 
 		// Getters:
 		float getStepSize();
@@ -101,12 +102,15 @@ class CastamereCastelli
 	//** Variables
 
 		// Location:
-		Point* position;
+		Point* position; 
 
 		// Orientation:
 		float xHeading, zHeading;
 		float height;
 		float rotation_angle;
+
+    // Surface orientation:
+    vector<float> orientation;
 
 		// Body position:
 		float horizontal_look_angle, vertical_look_angle;

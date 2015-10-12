@@ -274,7 +274,7 @@ void renderScene(void)  {
 	    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
 	  );
   }
-  if( camTarget == FREE )
+  else if( camTarget == FREE )
   {
 	  gluLookAt( 
 	    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
@@ -290,9 +290,9 @@ void renderScene(void)  {
   glCallList( environmentDL ); 
 
   // DRAW THE THREE CHARACTERS
-  castamere.renderSelf( bezierPatch ); 
-  allMight.draw( bezierPatch ); 
-  coolPants.draw(bezierPatch);  
+  castamere.renderSelf(); 
+  allMight.draw(); 
+  coolPants.draw();  
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -354,7 +354,7 @@ void fpsUpdate() {
   if (deltat > 1000.0) {
     // update and reset frame counter
     fps = ( (double)numframes/(deltat /1000.0) ); 
-    //printf( "fps: %.2f\n", fps ); 
+    printf( "fps: %.2f\n", fps ); 
     current_time = newt;
     numframes = 0;
   } 
@@ -368,20 +368,13 @@ void fpsUpdate() {
 void update( int val ) {
   // Hero update
   allMight.update();
-  allMight.setY(
-    bezierPatch->orient(allMight.getX(), allMight.getZ())[0]
-  );
+  allMight.setOrientation(bezierPatch); 
 
   castamere.update();
-  castamere.setY(
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
-      + (castamere.getHeight()/2)
-  );
+  castamere.setOrientation(bezierPatch);
    
   coolPants.update();
-  coolPants.setY(
-    bezierPatch->orient(coolPants.getX(), coolPants.getZ())[0]
-  );
+  coolPants.setOrientation(bezierPatch);
 
   // campfire light update
   campfire.update();
@@ -496,6 +489,7 @@ void createMenus() {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 int main( int argc, char **argv ) { 
+  printf("got here");
   // Get file from passed argument
   if( argc != 2 ) {
     printf( "Usage: %s worldfile.txt\n", argv[0] );
@@ -513,8 +507,11 @@ int main( int argc, char **argv ) {
   // Set CoolPants to follow by arclength s 
   coolPants.setFollowPath(bezierCurve);
 
-  // Orient the campfire
-  campfire.setOrientation(bezierPatch);
+  // initial orient
+  campfire.setOrientation( bezierPatch );
+  allMight.setOrientation( bezierPatch );
+  castamere.setOrientation( bezierPatch );
+  coolPants.setOrientation( bezierPatch );
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit( &argc, argv ); 

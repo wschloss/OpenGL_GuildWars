@@ -69,6 +69,9 @@ public:
     void setSpeed(float speed) { this->speed = speed; }
     void setDeltaRot(float deltaRot) { this->deltaRot = deltaRot; }
 
+    // Set the orientation vector to snap to the surface passed
+    void setOrientation(BezierPatch* surface);
+
 private:
     // coords
     float x, y, z;
@@ -87,6 +90,8 @@ private:
     bool followMode;
     // Path to follow
     BezierCurve* path;
+    // Surface orientation
+    vector<float> orientation;
     // Parameter along the curve
     float t;
 };

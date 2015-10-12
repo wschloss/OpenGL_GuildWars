@@ -53,11 +53,8 @@ CastamereCastelli::~CastamereCastelli()
 //** Rendering
 
 // General
-void CastamereCastelli::renderSelf( BezierPatch* surface )
+void CastamereCastelli::renderSelf()
 {
-
-	// find Castameres orientation with respect to the surface.
-  vector<float> orientation = surface->orient( getX(), getZ() );
     
 	// Draw the all of Castamere to his current position,
 	// rotate him to his current heading and orient him with respect
@@ -968,6 +965,13 @@ void CastamereCastelli::setShirtColor( Color newShirtColor )
 void CastamereCastelli::setPantsColor( Color newPantsColor )
 {
 	pantsColor = newPantsColor;
+}
+
+// Cache the orientation to cut down number of calls
+void CastamereCastelli::setOrientation( BezierPatch* surface )
+{
+  this->orientation = surface->orient( getX(), getZ() );
+  this->setY( orientation[0] + (getHeight()/2) );
 }
 
 /// END CastamereCastelli
