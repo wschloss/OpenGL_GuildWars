@@ -43,7 +43,7 @@ bool BezierPatch::loadControlPoints(const char* filename) {
   input.close();
 
   // Compute the surface points
-  computeSurface(computedPoints, 200);
+  computeSurface(computedPoints, 150);
 
   return true;
 }

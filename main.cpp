@@ -489,7 +489,6 @@ void createMenus() {
 // 
 //////////////////////////////////////////////////////////////////////////////// 
 int main( int argc, char **argv ) { 
-  printf("got here");
   // Get file from passed argument
   if( argc != 2 ) {
     printf( "Usage: %s worldfile.txt\n", argv[0] );
