@@ -101,8 +101,12 @@ CoolPants coolPants;
 // Enum for camera targets
 enum CharacterTarget { ALL_MIGHT, CASTAMERE, COOL_PANTS };
 
+// Enum for target camera
+enum CameraTarget { ARCBALL, FREE };
+
 // The current target for the arcball camera, init to castamere
 CharacterTarget arcballTarget = CASTAMERE;
+CameraTarget camTarget = ARCBALL;
 
 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
@@ -182,11 +186,14 @@ void mouseMotion( int x, int y ) {
     if( mouse.getZoomMode() ) {
       arcballCam.incrementRadius( dy, 5 );
     } else {
-      arcballCam.incrementTheta( 0.005 * dy );
-      arcballCam.incrementPhi( 0.005 * dx );
-	  
-      freeCam.incrementTheta( 0.005 * dx );
-      freeCam.incrementPhi( 0.005 * dy );
+		if( camTarget == ARCBALL ){
+      	  	arcballCam.incrementTheta( 0.005 * dy );
+      		arcballCam.incrementPhi( 0.005 * dx );
+  		}
+		if( camTarget == FREE ){
+     	   	freeCam.incrementTheta( 0.005 * dx );
+     	 	freeCam.incrementPhi( 0.005 * dy );
+  		}
     }
     mouse.setX( x );
     mouse.setY( y );
@@ -259,17 +266,22 @@ void renderScene(void)  {
 
   glLoadIdentity();
   
-  // gluLookAt(
-  //   arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-  //   arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-  //   arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
-  // );
-  
-  gluLookAt( 
-    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
-    freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
-    freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
-  );    
+  if( camTarget == ARCBALL )
+  {
+	  gluLookAt(
+	    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+	    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+	    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+	  );
+  }
+  if( camTarget == FREE )
+  {
+	  gluLookAt( 
+	    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
+	    freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
+	    freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
+	  ); 
+  }   
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
   //pointLight->resetPosition();
@@ -311,8 +323,10 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     cleanup();
     exit( 0 );
   }
-  castamere.respondKeyDown( key );
-  freeCam.respondKeyDown( key );
+  if( camTarget == ARCBALL )
+  	castamere.respondKeyDown( key );
+  if( camTarget == FREE )
+  	freeCam.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -409,14 +423,17 @@ void myMenu( int value ) {
   if ( value == 0 ) {
     // switch to arcball on allmight
     arcballTarget = ALL_MIGHT;
+	camTarget = ARCBALL;
   }
   else if ( value == 1 ) {
     // switch to arcball on castamere
     arcballTarget = CASTAMERE;
+	camTarget = ARCBALL;
   }
   else if ( value == 2 ) {
     // switch to arcball on coolpants
     arcballTarget = COOL_PANTS;
+	camTarget = ARCBALL;
   }
   else if ( value == 3 ) {
     // toggle first person viewport on all might
@@ -429,6 +446,7 @@ void myMenu( int value ) {
   }
   else if ( value == 6 ) {
     // main view to free camera with wasd controls
+	  camTarget = FREE;
   }
   else if( value == 7 ) { 
     // quit
