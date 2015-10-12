@@ -260,6 +260,11 @@ void renderScene(void)  {
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // Enable backface culling
+  glEnable( GL_CULL_FACE );
+  glFrontFace( GL_CCW );
+  glCullFace( GL_BACK );
+
   //update the modelview matrix based on the camera's position 
   //make sure we aren't changing the projection matrix!
   glMatrixMode( GL_MODELVIEW );
@@ -284,7 +289,7 @@ void renderScene(void)  {
   }   
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
-  //pointLight->resetPosition();
+  pointLight->resetPosition();
 
   // Draws surface
   glCallList( environmentDL ); 
