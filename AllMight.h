@@ -15,6 +15,7 @@
 	#include <GL/glu.h>
 #endif
 #include <math.h>
+#include <string>
 
 #include "BezierPatch.h"
 
@@ -24,6 +25,8 @@ public:
     // Default
     AllMight();
 
+    // Draws name in stroke text
+    void drawName();
     // Draws main body - head and arm boxes
     void drawBody();
     // draws a leg - cone and foot box
@@ -96,4 +99,6 @@ private:
     vector<float> orientation;
     // Parameter along the curve
     float t;
+    // name, rendered with stroke text
+    string name;
 };

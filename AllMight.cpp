@@ -7,6 +7,8 @@
 
 // Default params are all 0, flame base set to 1
 AllMight::AllMight() {
+  name = "All Might";
+
   x = y = z = 0;
   hairRot = legRot = rot = 0;
   // Find the dir vectors
@@ -20,6 +22,27 @@ AllMight::AllMight() {
   path = NULL;
 
   scale = 3;
+}
+
+// Draws name in stroke text
+void AllMight::drawName() {
+  // White Material, no shine
+  Material mat(
+    Color(1,1,1),
+    Color(1,1,1),
+    Color(1,1,1),
+    0
+  );
+  mat.set_as_current_material();
+
+  glPushMatrix(); {
+    glTranslatef(0, 10, 0);
+    glScalef(0.01, 0.01, 0.01);
+    glRotatef(90,0,1,0);
+    for (int i = 0; i < name.length(); i++) {
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, name.at(i));
+    }
+  } glPopMatrix();
 }
 
 // Draws the main body of the car
@@ -139,6 +162,9 @@ void AllMight::drawHead() {
 
 // Draws assembled character
 void AllMight::drawComplete() {
+  // name
+  drawName();
+
   // body
   glPushMatrix(); {
     glTranslatef(0,4,0);
