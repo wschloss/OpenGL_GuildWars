@@ -111,7 +111,7 @@ void CastamereCastelli::assembleSelf()
 
 void CastamereCastelli::renderJoint()
 {
-	glutSolidSphere( 1, 100, 100 );
+	glutSolidSphere( 1, 20, 20 );
 }
 
 // Head
@@ -127,7 +127,7 @@ void CastamereCastelli::renderHead()
 	{
 		skinColor.set_as_current_color();
 	    glScalef(  head_width, head_hight, head_depth );
-	    glutSolidSphere( primitive_rad, 100, 100 );
+	    glutSolidSphere( primitive_rad, 20, 20 );
 	};
     glPopMatrix();
 
@@ -217,7 +217,7 @@ void CastamereCastelli::renderEye()
 	glPushMatrix();
 	{
 		glColor3f( 1, 1, 1 ); // white
-	    glutSolidSphere( eyeRadius, 100, 100 );
+	    glutSolidSphere( eyeRadius, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -227,7 +227,7 @@ void CastamereCastelli::renderEye()
 		glColor3f( 0, 0, 0 ); // black
 		glTranslatef( 0, 0, (eyeRadius-0.03) );
 		glScalef( 2, 2, 1 );
-	    glutSolidSphere( 0.1, 100, 100 );
+	    glutSolidSphere( 0.1, 20, 20 );
 	};
 	glPopMatrix();
 }
@@ -240,7 +240,7 @@ void CastamereCastelli::renderHat()
 	{
 		glRotatef( -90, 1, 0, 0 );
 		glTranslatef( 0, 0, 1 );
-		glutSolidCone( 0.8, 2.2, 100, 100 );
+		glutSolidCone( 0.8, 2.2, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -249,7 +249,7 @@ void CastamereCastelli::renderHat()
 
 	float brim_hight = 0.30;
 	float birm_rad = 1.25;
-	float hat_res = 100;
+	float hat_res = 20;
 
 	glPushMatrix();
 	{
@@ -299,7 +299,7 @@ void CastamereCastelli::renderBeard()
 	{
 		glRotatef( 90, 1, 0, 0 );
 		glScalef( 1.25, 0.7, 2 );
-		glutSolidCone( 1, 1, 100, 100 );
+		glutSolidCone( 1, 1, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -312,7 +312,7 @@ void CastamereCastelli::renderBeard()
 		glRotatef( 90, 1, 0, 0 );
 		glScalef( 1.25, 0.7, 2 );
 		glTranslatef( 0, 0, -0.2 );
-		gluCylinder( myQuad, 0.6, 1, 0.2, 100, 100 );
+		gluCylinder( myQuad, 0.6, 1, 0.2, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -329,7 +329,7 @@ void CastamereCastelli::renderNose()
 	glPushMatrix();
 	{
 		glRotatef( 90, 1, 0, 0 );
-		gluCylinder( myQuad, 1, 0.8, 5, 100, 100 );
+		gluCylinder( myQuad, 1, 0.8, 5, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -339,7 +339,7 @@ void CastamereCastelli::renderNose()
 	{
 		glTranslatef( 0, -5, 0 );
 		glScalef( 1.2, 1, 1.2 );
-	    glutSolidSphere( 1, 100, 100 );
+	    glutSolidSphere( 1, 20, 20 );
 	};
 	glPopMatrix();
 }
@@ -349,7 +349,7 @@ void CastamereCastelli::renderEar()
 	glPushMatrix();
 	{
 		glScalef( 1, 1.4, 0.4 );
-	    glutSolidSphere( 1, 100, 100 );
+	    glutSolidSphere( 1, 20, 20 );
 	};
 	glPopMatrix();
 }
@@ -453,20 +453,20 @@ void CastamereCastelli::renderNeck()
 
 	glPushMatrix();
 	{
-		gluCylinder( myQuad, 1, 1, 1, 100, 100 );
+		gluCylinder( myQuad, 1, 1, 1, 20, 20 );
 	};
 	glPopMatrix();
 
 	glPushMatrix();
 	{
-		gluDisk( myQuad, 0, 1, 100, 100 );
+		gluDisk( myQuad, 0, 1, 20, 20 );
 	};
 	glPopMatrix();
 
 	glPushMatrix();
 	{
 		glTranslatef( 0, 0, 1 );
-		gluDisk( myQuad, 0, 1, 100, 100 );
+		gluDisk( myQuad, 0, 1, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -482,20 +482,20 @@ void CastamereCastelli::renderTorso()
 
 	glPushMatrix();
 	{
-		gluCylinder( myQuad, 1.2, 0.8, 1.4, 100, 100 );
+		gluCylinder( myQuad, 1.2, 0.8, 1.4, 20, 20 );
 	};
 	glPopMatrix();
 
 	glPushMatrix();
 	{
-		gluDisk( myQuad, 0, 1.2, 100, 100 );
+		gluDisk( myQuad, 0, 1.2, 20, 20 );
 	};
 	glPopMatrix();
 
 	glPushMatrix();
 	{
 		glTranslatef( 0, 0, 1.4 );
-		gluDisk( myQuad, 0, 0.8, 100, 100 );
+		gluDisk( myQuad, 0, 0.8, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -524,7 +524,7 @@ void CastamereCastelli::renderBiceps()
 	glPushMatrix();
 	{
 		glRotatef( 90, 1, 0, 0 );
-		gluCylinder( myQuad, 0.6, 0.4, 1.6, 100, 100 );
+		gluCylinder( myQuad, 0.6, 0.4, 1.6, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -557,7 +557,7 @@ void CastamereCastelli::renderForarm()
 	// Forearm 
 	glPushMatrix();
 	{	
-		gluCylinder( myQuad, 0.4, 0.35, 1.45, 100, 100 );
+		gluCylinder( myQuad, 0.4, 0.35, 1.45, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -635,21 +635,21 @@ void CastamereCastelli::renderPelvis()
 	{
 		glRotatef( 180, 1, 0, 0 );
 		glTranslatef( 0, 0, -0.4 );
-		gluCylinder( myQuad, 1, 0.3, 0.5, 100, 100 );
+		gluCylinder( myQuad, 1, 0.3, 0.5, 20, 20 );
 	};
 	glPopMatrix();
 
 	glPushMatrix();
 	{
 		glTranslatef( 0, 0, 0.4 );
-		gluCylinder( myQuad, 1, 0.8, 0.3, 100, 100 );
+		gluCylinder( myQuad, 1, 0.8, 0.3, 20, 20 );
 	};
 	glPopMatrix();
 
 	glPushMatrix();
 	{
 		glTranslatef( 0, 0, -0.1 );
-		gluDisk( myQuad, 0, 0.3, 100, 100 );
+		gluDisk( myQuad, 0, 0.3, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -696,7 +696,7 @@ void CastamereCastelli::renderThigh()
 	glPushMatrix();
 	{
 		glRotatef( 90, 1, 0, 0 );
-		gluCylinder( myQuad, 0.7, 0.5, 1, 100, 100 );
+		gluCylinder( myQuad, 0.7, 0.5, 1, 20, 20 );
 	};
 	glPopMatrix();
 
@@ -729,7 +729,7 @@ void CastamereCastelli::renderCalf()
 	// Calf 
 	glPushMatrix();
 	{	
-		gluCylinder( myQuad, 0.6, 0.48, 0.8, 100, 100 );
+		gluCylinder( myQuad, 0.6, 0.48, 0.8, 20, 20 );
 	};
 	glPopMatrix();
 
