@@ -36,6 +36,7 @@
 
 // Files we wrote
 #include "ArcBallCamera.h"
+#include "FreeCamera.h"
 #include "BezierPatch.h"
 #include "Material.h"
 #include "Color.h"
@@ -77,8 +78,10 @@ Light* pointLight;
 // Campfire, draws and also flickers a light
 Campfire campfire;
 
-// Camera instance
+// Camera instances
 ArcBallCamera arcballCam;
+
+FreeCamera freeCam;
 
 // Surface instance
 BezierPatch* bezierPatch; 
@@ -181,6 +184,9 @@ void mouseMotion( int x, int y ) {
     } else {
       arcballCam.incrementTheta( 0.005 * dy );
       arcballCam.incrementPhi( 0.005 * dx );
+	  
+      freeCam.incrementTheta( 0.005 * dx );
+      freeCam.incrementPhi( 0.005 * dy );
     }
     mouse.setX( x );
     mouse.setY( y );
@@ -202,6 +208,7 @@ void mouseMotion( int x, int y ) {
         tx = ty = tz = 0;
     }
     arcballCam.recomputeCamPosition( tx, ty, tz );
+	freeCam.recomputeCamDir();
   }
 } 
  
@@ -252,10 +259,16 @@ void renderScene(void)  {
 
   glLoadIdentity();
   
+  // gluLookAt(
+  //   arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+  //   arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+  //   arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+  // );
+  
   gluLookAt( 
-    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
+    freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
+    freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
   );    
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
@@ -299,6 +312,7 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     exit( 0 );
   }
   castamere.respondKeyDown( key );
+  freeCam.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -308,6 +322,7 @@ void normalKeysDown( unsigned char key, int x, int y ) {
 /////////////////////////////////////////////
 void normalKeysUp( unsigned char key, int x, int y ) {
   castamere.respondKeyUp( key );
+  freeCam.respondKeyUp( key );
 }
 
 // fpsUpdate() ///////////////////////////////
@@ -356,6 +371,8 @@ void update( int val ) {
 
   // campfire light update
   campfire.update();
+  
+  freeCam.updatePos();
   
   // update the arcball cam based on the target
   float tx, ty, tz;
