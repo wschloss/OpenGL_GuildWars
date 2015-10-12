@@ -18,6 +18,8 @@ AllMight::AllMight() {
   followMode = false;
   t = 0;
   path = NULL;
+
+  scale = 3;
 }
 
 // Draws the main body of the car
@@ -185,6 +187,8 @@ void AllMight::draw() {
     // Orient with the surface, by applying rotation
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(rot, 0, 1, 0);
+    // SCALE
+    glScalef(scale, scale, scale);
     drawComplete();
   } glPopMatrix();
 }

@@ -27,6 +27,8 @@ CoolPants::CoolPants()
   followMode = false;
   path = NULL;
   s = 0;
+
+  scale = 3;
 }
 
 CoolPants::CoolPants( Point position )
@@ -40,6 +42,8 @@ CoolPants::CoolPants( Point position )
   followMode = false;
   path = NULL;
   s = 0;
+
+  scale = 3;
 }
 
 void CoolPants::update()
@@ -371,10 +375,13 @@ void CoolPants::draw()
 
   glPushMatrix(); {
     // Move to location
-    glTranslatef(getX(), getY() + 2.5, getZ());
+    glTranslatef(getX(), getY() + scale*2.5, getZ());
 
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(xzrot + 90, 0, 1, 0);
+
+    // Set the scale
+    glScalef(scale, scale, scale);
     drawHorse();
   } glPopMatrix();
 }

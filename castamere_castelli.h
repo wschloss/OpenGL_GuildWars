@@ -58,6 +58,7 @@ class CastamereCastelli
 		float getZ();
 		float getRotationAngle();
 		float getHeight();
+    void setOrientation( BezierPatch* surface );
 
 		// Setters:
 		void setX( float newX );
@@ -87,7 +88,6 @@ class CastamereCastelli
 		void setHairColor( Color newHatColor );
 		void setShirtColor( Color newShirtColor );
 		void setPantsColor( Color newPantsColor );
-    void setOrientation( BezierPatch* surface );
 
 		// Getters:
 		float getStepSize();
@@ -111,6 +111,9 @@ class CastamereCastelli
 
     // Surface orientation:
     vector<float> orientation;
+
+    // Scale for drawing
+    float scale;
 
 		// Body position:
 		float horizontal_look_angle, vertical_look_angle;

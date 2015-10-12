@@ -11,6 +11,9 @@ CastamereCastelli::CastamereCastelli()
 	// Set height
 	height = 10;
 
+  // Set final drawing scale
+  scale = 3;
+
 	// Setup the location:
 	// default to the origin if no parameters are given.
 	position = new Point( 0, (height/2), 0 );
@@ -69,6 +72,9 @@ void CastamereCastelli::renderSelf()
 	    	orientation[4]
 	    );
 	    glRotatef( (getRotationAngle() + 90), 0, 1, 0 );
+
+      // Set the final scale
+      glScalef(scale, scale, scale);
 	    assembleSelf();
 	};
   glPopMatrix();
@@ -881,7 +887,8 @@ float CastamereCastelli::getRotationAngle()
 
 // Setters
 void CastamereCastelli::setX( float newX ){
-	position->setX( newX );
+  // Clamp to the surface [-600,600] plus a small correction
+	position->setX( fmax(-590, fmin(590,newX)) );
 }
 
 void CastamereCastelli::setY( float newY )
@@ -891,7 +898,8 @@ void CastamereCastelli::setY( float newY )
 
 void CastamereCastelli::setZ( float newZ )
 {
-	position->setZ( newZ );
+  // Clamp to the surface [-600,600]
+	position->setZ( fmax(-590, fmin(590,newZ)) );
 }
 
 float CastamereCastelli::getHeight()
@@ -971,7 +979,7 @@ void CastamereCastelli::setPantsColor( Color newPantsColor )
 void CastamereCastelli::setOrientation( BezierPatch* surface )
 {
   this->orientation = surface->orient( getX(), getZ() );
-  this->setY( orientation[0] + (getHeight()/2) );
+  this->setY( orientation[0] + scale*(getHeight()/2) );
 }
 
 /// END CastamereCastelli

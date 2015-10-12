@@ -79,6 +79,8 @@ private:
     float dirX, dirZ;
     // Rotation
     float rot, deltaRot;
+    // The scale to draw at
+    float scale;
     // angle for the rotation of the hair back and forth
     float hairRot;
     // angle for the leg rotation

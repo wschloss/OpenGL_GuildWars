@@ -505,6 +505,8 @@ int main( int argc, char **argv ) {
   allMight.setFollowPath(bezierCurve);
   // Set CoolPants to follow by arclength s 
   coolPants.setFollowPath(bezierCurve);
+  // Move Castamere out of the fire
+  castamere.setX(-40);
 
   // initial orient
   campfire.setOrientation( bezierPatch );

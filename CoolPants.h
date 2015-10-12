@@ -28,6 +28,8 @@ class CoolPants
     BezierCurve* path;
     // Parameter (arclength) to denote position on curve
     float s;
+    // Scale to draw at
+    float scale;
     
 		
 		void drawBody();
