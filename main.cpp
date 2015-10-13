@@ -45,6 +45,8 @@
 #include "mouse.h"
 #include "castamere_castelli.h"
 #include "CoolPants.h"
+#include "WorldLoader.h"
+#include "Campfire.h"
 
 using namespace std;
 
@@ -55,7 +57,6 @@ static GLuint environmentDL;
  
 // id for the main window
 static GLint windowId;  
-
 // widow dimensions                           
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
@@ -74,16 +75,11 @@ Mouse mouse;
 // Point light - default color is white
 Light* pointLight;
 
-<<<<<<< HEAD
-// Camera instance
-ArcBallCamera cam;
-=======
 // Campfire, draws and also flickers a light
 Campfire campfire;
 
 // Camera instances
 ArcBallCamera arcballCam;
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
 
 // Free cam which can move with wasd
 FreeCamera freeCam;
@@ -93,6 +89,9 @@ FreeCamera firstPerson;
 
 // Surface instance
 BezierPatch* bezierPatch; 
+
+// Curve instance for the track
+BezierCurve* bezierCurve;
 
 // All Might instance
 AllMight allMight;
@@ -118,6 +117,7 @@ CharacterTarget fpTarget = CASTAMERE;
 // Defaultly initialize main camera to Arcball
 CameraTarget camTarget = ARCBALL;
 
+
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
 // 
 //  This function creates a display list with the code to draw a simple  
@@ -128,6 +128,9 @@ void generateEnvironmentDL() {
     environmentDL = glGenLists( 1 );
     glNewList( environmentDL, GL_COMPILE ); {
       bezierPatch->drawFilled();
+      // Call this if the curve needs to be seen/debugged
+      //bezierCurve->draw();
+      campfire.draw();
     } glEndList();
 } 
 
@@ -190,26 +193,8 @@ void mouseMotion( int x, int y ) {
     int dy = ( mouse.getY() - y );  
     // Check for zoom
     if( mouse.getZoomMode() ) {
-      cam.incrementRadius( dy, 5 );
+      arcballCam.incrementRadius( dy, 5 );
     } else {
-<<<<<<< HEAD
-      cam.incrementTheta( 0.005 * dy );
-      cam.incrementPhi( 0.005 * dx );
-    }
-    mouse.setX( x );
-    mouse.setY( y );
-    // update camera (x,y,z) based on (radius,theta,phi)
-    cam.recomputeCamPosition(
-      allMight.getX(), 
-      allMight.getY(), 
-      allMight.getZ()
-    );
-    // cam.recomputeCamPosition( 
-    //   castamere.getX(), 
-    //   castamere.getY(), 
-    //   castamere.getZ() 
-    // );           
-=======
       if( camTarget == ARCBALL ){
         arcballCam.incrementTheta( 0.005 * dy );
         arcballCam.incrementPhi( 0.005 * dx );
@@ -224,7 +209,7 @@ void mouseMotion( int x, int y ) {
 
     // update the arcball cam based on the target
     float tx, ty, tz;
-    switch ( arcballTarget ) {
+    switch( arcballTarget ) {
       case ALL_MIGHT:
         tx = allMight.getX(); ty = allMight.getY(); tz = allMight.getZ();
         break;
@@ -238,10 +223,9 @@ void mouseMotion( int x, int y ) {
         // Shouldn't get here
         tx = ty = tz = 0;
     }
-	
+  
     arcballCam.recomputeCamPosition( tx, ty, tz );
     freeCam.recomputeCamDir();
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
   }
 } 
  
@@ -258,11 +242,16 @@ void initScene()  {
   glEnable( GL_LIGHTING ); 
   // Enable the light
   pointLight = new Light( GL_LIGHT0 );
+  // Hack instead of class support... I am getting a little lazy here
+  glLightf( GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.5 );
   pointLight->enable();
   // Set position of the point light
-  pointLight->setPosition(0, 1000, 0);
+  pointLight->setPosition( 0, 1000, 0 );
 
-  glShadeModel( GL_FLAT ); 
+  // Enable the campfire for lighting
+  campfire.enable();
+
+  glShadeModel( GL_SMOOTH ); 
 
   generateEnvironmentDL(); 
 } 
@@ -277,7 +266,7 @@ void initScene()  {
 void renderScene(void)  { 
   
   //clear the render buffer (sky blue)
-  glClearColor(0.53, 0.808, 0.922, 1);
+  glClearColor(0.23, 0.508, 0.622, 1);
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -292,43 +281,34 @@ void renderScene(void)  {
 
   glLoadIdentity();
   
-<<<<<<< HEAD
-  gluLookAt( 
-    cam.getX(), cam.getY(), cam.getZ(),             // camera pos
-    cam.getLookX(), cam.getLookY(), cam.getLookZ(), // camera lookat
-    cam.getUpX(), cam.getUpY(),  cam.getUpZ()       // up vector
-  );    
-  // Reset point light placement
-=======
   if( camTarget == ARCBALL )
   {
-	  gluLookAt(
-	    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-	    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-	    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
-	  );
+    gluLookAt(
+      arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+      arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+      arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+    );
   }
   else if( camTarget == FREE )
   {
-	  gluLookAt( 
-	    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
-	    freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
-	    freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
-	  ); 
+    gluLookAt( 
+      freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
+      freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
+      freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
+    ); 
   }   
   else if( camTarget == FIRST_PERSON )
   {
-	  gluLookAt( 
+    gluLookAt( 
       firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
       firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
       firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4,             // camera pos
-	    firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
-	    firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
-	  ); 
+      firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
+      firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
+    ); 
   }  
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
   pointLight->resetPosition();
 
   // Draws surface
@@ -341,58 +321,18 @@ void renderScene(void)  {
   glBegin(GL_LINES);
   glColor3f(0,1,0);
   glVertex3f(firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
-		firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
-		firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4);
+    firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
+    firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4);
   glVertex3f(firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ());
   glEnd();
   
   glEnable(GL_LIGHTING);
   // END DEBUG
 
-<<<<<<< HEAD
-  // DRAW CASTAMERE
-
-  // glPushMatrix();
-  // {
-  //     castamere.renderSelf( bezierPatch );
-  // };
-  // glPopMatrix();
-
-  // END DRAW CASTAMERE
-  
-  // DRAW ALLMIGHT
-  Material mat = Material(Color(0.1745, 0.01175, 0.01175),
-                          Color(0.61424, 0.04136, 0.04136),
-                          Color(0.727811, 0.626959, 0.626929),
-                          0.6*128);
-  mat.set_as_current_material();
-  glPushMatrix(); {
-    allMight.draw( bezierPatch );
-  } glPopMatrix();
-  // END DRAW ALLMIGHT
-  
-  // DRAW COOLPANTS
-  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
-                          Color(0.780392, 0.568627, 0.113725),
-                          Color(0.05, 0.05, 0.05),
-                          0.005*128);
-  matCoolPants.set_as_current_material();
-  glPushMatrix(); {
-    // Move to location
-    glTranslatef(coolPants.getX(), coolPants.getY(), coolPants.getZ());
-    // Orient with the surface, by applying rotation
-    vector<float> orientation = bezierPatch->orient(coolPants.getX(), coolPants.getZ());
-    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
-    coolPants.drawHorse();
-  } glPopMatrix();
-  
-  // END DRAW COOLPANTS
-=======
   // DRAW THE THREE CHARACTERS
-  castamere.renderSelf(); 
+  castamere.draw(); 
   allMight.draw(); 
   coolPants.draw();  
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -406,7 +346,9 @@ void renderScene(void)  {
 void cleanup() {
   delete pointLight;
   delete bezierPatch;
-  glutDestroyWindow( windowId );  // destroy our window
+  delete bezierCurve;
+  // destroy our window
+  glutDestroyWindow( windowId );
 }
  
  
@@ -421,15 +363,10 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     cleanup();
     exit( 0 );
   }
-<<<<<<< HEAD
-  castamere.respondKeyDown( key );
-  allMight.respondKeyDown( key );
-=======
   if( camTarget == ARCBALL || (camTarget == FIRST_PERSON && fpTarget == CASTAMERE ))
-  	castamere.respondKeyDown( key );
+    castamere.respondKeyDown( key );
   else if( camTarget == FREE )
-  	freeCam.respondKeyDown( key );
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
+    freeCam.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -439,11 +376,7 @@ void normalKeysDown( unsigned char key, int x, int y ) {
 /////////////////////////////////////////////
 void normalKeysUp( unsigned char key, int x, int y ) {
   castamere.respondKeyUp( key );
-<<<<<<< HEAD
-  allMight.respondKeyUp( key );
-=======
   freeCam.respondKeyUp( key );
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
 }
 
 // fpsUpdate() ///////////////////////////////
@@ -475,35 +408,6 @@ void fpsUpdate() {
 void update( int val ) {
   // Hero update
   allMight.update();
-<<<<<<< HEAD
-  allMight.setY(
-    bezierPatch->orient(allMight.getX(), allMight.getZ())[0]
-  );
-  castamere.update();
-  castamere.setY(
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
-      + (castamere.getHeight()/2)
-  );
-  
-  
-  coolPants.update();
-  coolPants.setY(
-    bezierPatch->orient(coolPants.getX(), coolPants.getZ() + coolPants.getH())[0]
-  );
-  
-  // // Cam update
-  cam.recomputeCamPosition(
-    allMight.getX(), 
-    allMight.getY(),
-    allMight.getZ()
-  );
-
-  // cam.recomputeCamPosition(
-  //   castamere.getX(), 
-  //   castamere.getY(),
-  //   castamere.getZ()
-  // );
-=======
   allMight.setOrientation(bezierPatch); 
 
   castamere.update();
@@ -541,51 +445,51 @@ void update( int val ) {
   switch ( fpTarget ) {
     case ALL_MIGHT:
       fx = allMight.getX(); fy = allMight.getY() + 4.0; fz = allMight.getZ();
-	    //directional vector
-	  	dirX = cos(allMight.getRot() * M_PI/180);
+      //directional vector
+      dirX = cos(allMight.getRot() * M_PI/180);
       dirY = 0;
-	  	dirZ = -sin(allMight.getRot() * M_PI/180);
+      dirZ = -sin(allMight.getRot() * M_PI/180);
 
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
-	
+      //and normalize this vector
+      mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+      dirX /= mag; dirY /= mag; dirZ /= mag;
+  
       firstPerson.setLookX(fx + dirX*firstPerson.getRad());
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
-      firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());	  
+      firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());   
       break;
 
     case CASTAMERE:
       fx = castamere.getX(); fy = castamere.getY(); fz = castamere.getZ();
-	    //directional vector
-	  	dirX = cos(castamere.getRotationAngle() * M_PI/180);
+      //directional vector
+      dirX = cos(castamere.getRotationAngle() * M_PI/180);
       dirY = 0;
-	  	dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
+      dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
 
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
+      //and normalize this vector
+      mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+      dirX /= mag; dirY /= mag; dirZ /= mag;
       firstPerson.setLookX(fx + dirX*firstPerson.getRad());
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
       firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
       break;
-  	
+    
     case COOL_PANTS:
       fx = coolPants.getX(); fy = coolPants.getY() + coolPants.getH(); fz = coolPants.getZ();
-	    //directional vector
-	  	dirX = cos(coolPants.getRotation() * M_PI/180);
+      //directional vector
+      dirX = cos(coolPants.getRotation() * M_PI/180);
       dirY = 0;
-	  	dirZ = -sin(coolPants.getRotation() * M_PI/180);
+      dirZ = -sin(coolPants.getRotation() * M_PI/180);
 
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
-		
+      //and normalize this vector
+      mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+      dirX /= mag; dirY /= mag; dirZ /= mag;
+    
       firstPerson.setLookX(fx + dirX*firstPerson.getRad());
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
       firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
       break;
-  	
+    
     default:
       // Shouldn't get here
       fx = fy = fz = 0;
@@ -593,7 +497,6 @@ void update( int val ) {
   
   // Set correct first person cam position
   firstPerson.setX(fx); firstPerson.setY(fy); firstPerson.setZ(fz);
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
 
   // FPS update
   fpsUpdate();
@@ -609,10 +512,6 @@ void update( int val ) {
 //
 ////////////////////////////////
 void myMenu( int value ) {
-<<<<<<< HEAD
-  // Quit
-  if( value == 0 ) { 
-=======
   if ( value == 0 ) {
     // switch to arcball on allmight
     arcballTarget = ALL_MIGHT;
@@ -631,7 +530,7 @@ void myMenu( int value ) {
   else if ( value == 3 ) {
     // toggle first person viewport on all might
     fpTarget = ALL_MIGHT;
-  	camTarget = FIRST_PERSON;
+    camTarget = FIRST_PERSON;
   }
   else if ( value == 4 ) {
     // toggle first person viewport on castamere
@@ -645,12 +544,11 @@ void myMenu( int value ) {
   }
   else if ( value == 6 ) {
     // main view to free camera with wasd controls
-	  camTarget = FREE;
+    camTarget = FREE;
   }
   else if( value == 7 ) { 
     // quit
     cleanup();
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
     exit( 0 );
   }
 }
@@ -661,12 +559,29 @@ void myMenu( int value ) {
 //
 ///////////////////////////////////////////
 void createMenus() {
+  // Create the submenu for arcball views
+  int arcball_submenu = glutCreateMenu( myMenu );
+  // add the three hero options
+  glutAddMenuEntry( "All Might", 0 );
+  glutAddMenuEntry( "Castamere", 1 );
+  glutAddMenuEntry( "CoolPants", 2 );
 
-  // create with the passed callback glutCreateMenu(myMenu);
+  // Create the submenu for the first person views in the second viewport
+  int firstperson_submenu = glutCreateMenu( myMenu );
+  glutAddMenuEntry( "All Might", 3 );
+  glutAddMenuEntry( "Castamere", 4 );
+  glutAddMenuEntry( "CoolPants", 5 );
+
+  // create main menu
   glutCreateMenu( myMenu );
 
-  // add options
-  glutAddMenuEntry( "Quit", 0 );
+  // add submenus
+  glutAddSubMenu( "Arcball", arcball_submenu );
+  glutAddSubMenu( "First Person", firstperson_submenu );
+
+  // Freecam option and quit
+  glutAddMenuEntry( "Free Camera", 6 );
+  glutAddMenuEntry( "Quit", 7 );
 
   // Attach to right mouse
   glutAttachMenu( GLUT_RIGHT_BUTTON );
@@ -681,37 +596,16 @@ void createMenus() {
 int main( int argc, char **argv ) { 
   // Get file from passed argument
   if( argc != 2 ) {
-    printf( "Usage: %s worldfile.csv\n", argv[0] );
+    printf( "Usage: %s worldfile.txt\n", argv[0] );
     exit( 1 );
   }
 
-  // TESTING //////////////////
-  // load up the surface points
-  bezierPatch = new BezierPatch();
-  if ( !bezierPatch->loadControlPoints(argv[1]) ) {
-    printf( "Could not load file: %s\n", argv[1] );
-    exit( 1 );
-  }
+  // Read the world file into a loader
+  WorldLoader loader( argv[1] );
+  // Construct object from the data files
+  bezierPatch = loader.constructSurface();
+  bezierCurve = loader.constructCurve();
 
-<<<<<<< HEAD
-  // Set the material as green plastic
-  bezierPatch->setMaterial( 
-    Material(
-      Color(0,0,0),
-      Color(0.1, 0.35, 0.1),
-      Color(0.45, 0.55, 0.45),
-      (0.25 * 128)
-    )
-  );
-  // Initial orient (to set y)
-  allMight.setY( bezierPatch->orient(allMight.getX(), allMight.getZ())[0] );
-  castamere.setY( 
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
-      + (castamere.getHeight()/2)
-  );
-
-  // END TESTING //////////////////
-=======
   // Set AllMight to follow by parameter t
   allMight.setFollowPath(bezierCurve);
   // Set CoolPants to follow by arclength s 
@@ -724,7 +618,6 @@ int main( int argc, char **argv ) {
   allMight.setOrientation( bezierPatch );
   castamere.setOrientation( bezierPatch );
   coolPants.setOrientation( bezierPatch );
->>>>>>> b1ff7d451d4e45026eeddce72c752c427610c647
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit( &argc, argv ); 
@@ -732,19 +625,6 @@ int main( int argc, char **argv ) {
   glutInitWindowPosition( 50, 50 ); 
   glutInitWindowSize( windowWidth, windowHeight ); 
   windowId = glutCreateWindow( "Guild Wars" ); 
-
-  // Init cam coords to look at all might
-  cam.recomputeCamPosition(
-    allMight.getX(), 
-    allMight.getY(), 
-    allMight.getZ()
-  );
-
-  // cam.recomputeCamPosition(
-  //   castamere.getX(), 
-  //   castamere.getY(), 
-  //   castamere.getZ()
-  // );
 
   // register callback functions... 
   glutSetKeyRepeat( GLUT_KEY_REPEAT_OFF );
