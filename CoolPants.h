@@ -17,15 +17,21 @@ class CoolPants
 	private:
 		Point position;
 		float angle;
+		float height;
+		float orien;
 		int polyCount;
     // rotation in the xz plane
     float xzrot;
+    // surface orientaion
+    vector<float> orientation;
     // True if follows the path
     bool followMode;
     // Path to follow
     BezierCurve* path;
     // Parameter (arclength) to denote position on curve
     float s;
+    // Scale to draw at
+    float scale;
     
 		
 		void drawBody();
@@ -43,10 +49,13 @@ class CoolPants
 		void drawHorse();
 
     // Draws with the surface orientation
-    void draw(BezierPatch* surface);
+    void draw();
 
     // Sets the path to follow and turns on follow mode
     void setFollowPath(BezierCurve* path);
+
+    // Sets the surface orientation vector
+    void setOrientation(BezierPatch* surface);
 		
 		void update();
 		
@@ -55,6 +64,11 @@ class CoolPants
 		float getX(){return position.getX();}
 		float getY(){return position.getY();}
 		float getZ(){return position.getZ();}
+		
+		float getRotation(){ return xzrot; }
+		float getOrient(){ return orien; }
+		
+		float getH(){ return height; }
 		
 		void setX(float x){position.setX(x);}
 		void setY(float y){position.setY(y);}

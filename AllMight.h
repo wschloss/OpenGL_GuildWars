@@ -15,6 +15,7 @@
 	#include <GL/glu.h>
 #endif
 #include <math.h>
+#include <string>
 
 #include "BezierPatch.h"
 
@@ -24,6 +25,8 @@ public:
     // Default
     AllMight();
 
+    // Draws name in stroke text
+    void drawName();
     // Draws main body - head and arm boxes
     void drawBody();
     // draws a leg - cone and foot box
@@ -69,6 +72,9 @@ public:
     void setSpeed(float speed) { this->speed = speed; }
     void setDeltaRot(float deltaRot) { this->deltaRot = deltaRot; }
 
+    // Set the orientation vector to snap to the surface passed
+    void setOrientation(BezierPatch* surface);
+
 private:
     // coords
     float x, y, z;
@@ -76,6 +82,8 @@ private:
     float dirX, dirZ;
     // Rotation
     float rot, deltaRot;
+    // The scale to draw at
+    float scale;
     // angle for the rotation of the hair back and forth
     float hairRot;
     // angle for the leg rotation
@@ -87,6 +95,10 @@ private:
     bool followMode;
     // Path to follow
     BezierCurve* path;
+    // Surface orientation
+    vector<float> orientation;
     // Parameter along the curve
     float t;
+    // name, rendered with stroke text
+    string name;
 };

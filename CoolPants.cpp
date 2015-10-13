@@ -18,28 +18,36 @@
 
 CoolPants::CoolPants()
 {
-	position = Point(0, 0, 0);
+	height = 2.5;
+	position = Point(0, height, 0);
 	angle = 0;
-	polyCount = 50;
+	polyCount = 20;
   xzrot = 0;
+  orien = 0;
 
   // Init follow params to not follow
   followMode = false;
   path = NULL;
   s = 0;
+
+  scale = 3;
 }
 
 CoolPants::CoolPants( Point position )
 {
+	height = 2.5;
 	this->position = position;
 	angle = 0;
 	polyCount = 50;
   xzrot = 0;
+  orien = 0;
 
   // Init follow params to not follow
   followMode = false;
   path = NULL;
   s = 0;
+
+  scale = 3;
 }
 
 void CoolPants::update()
@@ -68,6 +76,32 @@ void CoolPants::update()
 
 void CoolPants::drawHorse()
 {
+  // Draw the name tag
+  // White Material, no shine
+  Material mat(
+    Color(1,1,1),
+    Color(1,1,1),
+    Color(1,1,1),
+    0
+  );
+  mat.set_as_current_material();
+
+  glPushMatrix(); {
+    glTranslatef(-4, 5, 0);
+    glScalef(0.01, 0.01, 0.01);
+    string name = "CoolPantsBro";
+    for (int i = 0; i < name.length(); i++) {
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, name.at(i));
+    }
+  } glPopMatrix();
+  
+  // Set a material for the rest for now
+  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
+                          Color(0.780392, 0.568627, 0.113725),
+                          Color(0.05, 0.05, 0.05),
+                          0.005*128);
+  matCoolPants.set_as_current_material();
+
 	drawBody();
 	
 	// draw head
@@ -360,25 +394,18 @@ void CoolPants::drawWheel()
 }
 
 // Draws and snaps to the surface
-void CoolPants::draw(BezierPatch* surface)
+void CoolPants::draw()
 {
-  // Set a material for now
-  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
-                          Color(0.780392, 0.568627, 0.113725),
-                          Color(0.05, 0.05, 0.05),
-                          0.005*128);
-  matCoolPants.set_as_current_material();
 
   glPushMatrix(); {
     // Move to location
-    glTranslatef(getX(), getY() + 2.5, getZ());
-
-    // Orient with the surface, by applying rotation
-    vector<float> orientation = 
-      surface->orient(getX(), getZ());
+    glTranslatef(getX(), getY() + scale*2.5, getZ());
 
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(xzrot + 90, 0, 1, 0);
+
+    // Set the scale
+    glScalef(scale, scale, scale);
     drawHorse();
   } glPopMatrix();
 }
@@ -389,4 +416,11 @@ void CoolPants::setFollowPath(BezierCurve* path)
   this->path = path;
   followMode = true;
   s = 0;
+}
+
+// Sets the surface orientation vector
+void CoolPants::setOrientation(BezierPatch* surface)
+{
+  this->orientation = surface->orient(getX(), getZ());
+  setY(orientation[0]);
 }

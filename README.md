@@ -10,21 +10,14 @@
 ## TODO:
 
 * Add functionality to the Tree class. Place some trees
-	* make different kinds of trees (if we have time)
 * Add functionality to the building class. Place some buildings
-	* make different kinds of buildings (if we have time)
 * Create a file that says where to put all the trees and buildings, add the loading to the WorldLoader.
 * Finish Castamere
   * Animate on wasd movement
   * Add materials for some color
-* Create FreeCamera class, give main an instance
-  * Render first person cam for a hero in a second viewport (free cam with hero coords)
-  * Menu to switch the first person view on/off and between heroes
-  * Menu to have free cam controlled by wasd
-* Render name above each hero.
+* Render first person cam for a hero in a second viewport
 * Render fps to upper left corner.
-* Think about improving the efficiency (surface orient call is expensive since it's currently a linear search)
-* Any refactoring we care to do if we have time.
+* Secondary: Think about improving the efficiency
 * Update each Hero's web page
 * Create presentation
 
