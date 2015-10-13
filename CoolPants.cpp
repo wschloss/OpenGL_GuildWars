@@ -379,15 +379,8 @@ void CoolPants::draw()
 
   glPushMatrix(); {
     // Move to location
-    glTranslatef(getX(), getY() + height, getZ());
-
-    // Orient with the surface, by applying rotation
-    vector<float> orientation = 
-      surface->orient(getX(), getZ());
     glTranslatef(getX(), getY() + scale*2.5, getZ());
 
-
-	orien = orientation[1];
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(xzrot + 90, 0, 1, 0);
 
