@@ -36,7 +36,7 @@ class CastamereCastelli
 	//** Rendering:
 
 		// render a 3D CastamereCastelli character.
-		void renderSelf();
+		void draw();
     // re-redraw self.
 		void update();
 
@@ -109,11 +109,11 @@ class CastamereCastelli
 		float height;
 		float rotation_angle;
 
-    // Surface orientation:
-    vector<float> orientation;
+	    // Surface orientation:
+	    vector<float> orientation;
 
-    // Scale for drawing
-    float scale;
+	    // Scale for drawing
+	    float scale;
 
 		// Body position:
 		float horizontal_look_angle, vertical_look_angle;
@@ -122,6 +122,11 @@ class CastamereCastelli
 		// Colors:
 		Color skinColor, eyeColor, hatColor;
 		Color shirtColor, pantsColor, beardColor;
+
+		// Materials:
+		Material skinMat, eyeMat, hatMat;
+		Material shirtMat, pantsMat, hairMat;
+		Material shoesMat;
 
 		// Movement:
 		float step;

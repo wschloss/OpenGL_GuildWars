@@ -11,8 +11,8 @@ CastamereCastelli::CastamereCastelli()
 	// Set height
 	height = 10;
 
-  // Set final drawing scale
-  scale = 3;
+  	// Set final drawing scale
+  	scale = 3;
 
 	// Setup the location:
 	// default to the origin if no parameters are given.
@@ -42,6 +42,14 @@ CastamereCastelli::CastamereCastelli()
 	shirtColor = Color( 0.3, 0.2, 1 ); // blue
 	pantsColor = Color( 0.21, 0.16, 0.10 ); // brown
 
+	skinMat = Material( skinColor, skinColor, skinColor, 0.5 );
+	eyeMat = Material( eyeColor, eyeColor, eyeColor, 0.5 ); 
+	hatMat = Material( hatColor, hatColor, hatColor, 0.5 );
+	shirtMat = Material( shirtColor, shirtColor, shirtColor, 0.5 );
+	pantsMat = Material( pantsColor, pantsColor, pantsColor, 0.5 ); 
+	hairMat = Material( beardColor, beardColor, beardColor, 0.5 );
+	shoesMat = Material( pantsColor, pantsColor, pantsColor, 0.5 );
+
 	// Make sure Castamere is up to date before we draw him.
 	update();
 }
@@ -56,7 +64,7 @@ CastamereCastelli::~CastamereCastelli()
 //** Rendering
 
 // General
-void CastamereCastelli::renderSelf()
+void CastamereCastelli::draw()
 {
  
 	// Draw the all of Castamere to his current position,
@@ -154,10 +162,11 @@ void CastamereCastelli::renderHead()
 	float head_depth = 1;
 	float primitive_rad = 1;
 
+	skinMat.set_as_current_material();
+
 	// head
 	glPushMatrix();
 	{
-		skinColor.set_as_current_color();
 	    glScalef(  head_width, head_hight, head_depth );
 	    glutSolidSphere( primitive_rad, 20, 20 );
 	};
@@ -248,7 +257,7 @@ void CastamereCastelli::renderEye()
 	// eye ball / eye whites
 	glPushMatrix();
 	{
-		glColor3f( 1, 1, 1 ); // white
+		Material().set_as_current_material(); // white
 	    glutSolidSphere( eyeRadius, 20, 20 );
 	};
 	glPopMatrix();
@@ -256,7 +265,7 @@ void CastamereCastelli::renderEye()
 	// pupil
 	glPushMatrix();
 	{
-		glColor3f( 0, 0, 0 ); // black
+		eyeMat.set_as_current_material();
 		glTranslatef( 0, 0, (eyeRadius-0.03) );
 		glScalef( 2, 2, 1 );
 	    glutSolidSphere( 0.1, 20, 20 );
@@ -266,7 +275,7 @@ void CastamereCastelli::renderEye()
 
 void CastamereCastelli::renderHat()
 {
-	hatColor.set_as_current_color();
+	hatMat.set_as_current_material();
 
 	glPushMatrix();
 	{
@@ -324,7 +333,7 @@ void CastamereCastelli::renderHat()
 
 void CastamereCastelli::renderBeard()
 {
-	beardColor.set_as_current_color();
+	hairMat.set_as_current_material();
 
 	// Lower beard
 	glPushMatrix();
@@ -353,7 +362,7 @@ void CastamereCastelli::renderBeard()
 
 void CastamereCastelli::renderNose()
 {
-	skinColor.set_as_current_color();
+	skinMat.set_as_current_material();
 	
 	GLUquadricObj *myQuad = gluNewQuadric();
 	gluQuadricDrawStyle( myQuad, GLU_FILL );
@@ -478,7 +487,7 @@ void CastamereCastelli::renderUpperBody()
 
 void CastamereCastelli::renderNeck()
 {
-	skinColor.set_as_current_color();
+	skinMat.set_as_current_material();
 
 	GLUquadricObj *myQuad = gluNewQuadric();
 	gluQuadricDrawStyle( myQuad, GLU_FILL );
@@ -510,7 +519,7 @@ void CastamereCastelli::renderTorso()
 	GLUquadricObj *myQuad = gluNewQuadric();
 	gluQuadricDrawStyle( myQuad, GLU_FILL );
 
-	shirtColor.set_as_current_color();
+	shirtMat.set_as_current_material();
 
 	glPushMatrix();
 	{
@@ -550,7 +559,7 @@ void CastamereCastelli::renderBiceps()
 	GLUquadricObj *myQuad = gluNewQuadric();
 	gluQuadricDrawStyle( myQuad, GLU_FILL );
 
-	shirtColor.set_as_current_color();
+	shirtMat.set_as_current_material();
 
 	// Biceps
 	glPushMatrix();
@@ -606,7 +615,7 @@ void CastamereCastelli::renderForarm()
 
 void CastamereCastelli::renderHand()
 {
-	skinColor.set_as_current_color();
+	skinMat.set_as_current_material();
 	// hand
     glPushMatrix();
     {
@@ -619,7 +628,7 @@ void CastamereCastelli::renderHand()
 // Lower body
 void CastamereCastelli::renderLowerBody()
 {
-	pantsColor.set_as_current_color();
+	pantsMat.set_as_current_material();
 
 	glPushMatrix();
 	{
@@ -661,7 +670,7 @@ void CastamereCastelli::renderPelvis()
 	GLUquadricObj *myQuad = gluNewQuadric();
 	gluQuadricDrawStyle( myQuad, GLU_FILL );
 
-	pantsColor.set_as_current_color();
+	pantsMat.set_as_current_material();
 
 	glPushMatrix();
 	{
