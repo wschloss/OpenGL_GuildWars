@@ -83,6 +83,8 @@ ArcBallCamera arcballCam;
 
 FreeCamera freeCam;
 
+FreeCamera firstPerson;
+
 // Surface instance
 BezierPatch* bezierPatch; 
 
@@ -102,10 +104,15 @@ CoolPants coolPants;
 enum CharacterTarget { ALL_MIGHT, CASTAMERE, COOL_PANTS };
 
 // Enum for target camera
-enum CameraTarget { ARCBALL, FREE };
+enum CameraTarget { ARCBALL, FREE, FIRST_PERSON };
 
 // The current target for the arcball camera, init to castamere
 CharacterTarget arcballTarget = CASTAMERE;
+
+// The current target for the first person camera, init to castamere
+CharacterTarget fpTarget = CASTAMERE;
+
+// Defaultly initialize main camera to Arcball
 CameraTarget camTarget = ARCBALL;
 
 
@@ -214,6 +221,7 @@ void mouseMotion( int x, int y ) {
         // Should get here
         tx = ty = tz = 0;
     }
+	
     arcballCam.recomputeCamPosition( tx, ty, tz );
 	freeCam.recomputeCamDir();
   }
@@ -282,12 +290,36 @@ void renderScene(void)  {
 	    freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
 	  ); 
   }   
+  if( camTarget == FIRST_PERSON )
+  {
+	  gluLookAt( 
+		firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
+		firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
+		firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4,             // camera pos
+	    firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
+	    firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
+	  ); 
+  }  
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
   //pointLight->resetPosition();
 
   // Draws surface
   glCallList( environmentDL ); 
+  
+  
+  // draw a line to show first person cam direction
+  glDisable(GL_LIGHTING);
+  
+  glBegin(GL_LINES);
+  glColor3f(0,1,0);
+  glVertex3f(firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
+		firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
+		firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4);
+  glVertex3f(firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ());
+  glEnd();
+  
+  glEnable(GL_LIGHTING);
 
   // DRAW THE THREE CHARACTERS
   castamere.renderSelf( bezierPatch ); 
@@ -323,7 +355,7 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     cleanup();
     exit( 0 );
   }
-  if( camTarget == ARCBALL )
+  if( camTarget == ARCBALL || (camTarget == FIRST_PERSON && fpTarget == CASTAMERE ))
   	castamere.respondKeyDown( key );
   if( camTarget == FREE )
   	freeCam.respondKeyDown( key );
@@ -405,6 +437,63 @@ void update( int val ) {
       tx = ty = tz = 0;
   }
   arcballCam.recomputeCamPosition( tx, ty, tz );
+  
+  // update the first person cam based on the target
+  float fx, fy, fz, dirX, dirY, dirZ;
+  switch ( fpTarget ) {
+    case ALL_MIGHT:{
+      fx = allMight.getX(); fy = allMight.getY() + 4.0; fz = allMight.getZ();
+	    //directional vector
+	  	dirX = cos(allMight.getRot() * M_PI/180);
+		dirY = 0;
+	  	dirZ = -sin(allMight.getRot() * M_PI/180);
+
+	    //and normalize this vector
+	    float mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+	    dirX /= mag; dirY /= mag; dirZ /= mag;
+	
+		firstPerson.setLookX(fx + dirX*firstPerson.getRad());
+		firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
+		firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());	  
+      break;
+  	}
+    case CASTAMERE:{
+      fx = castamere.getX(); fy = castamere.getY(); fz = castamere.getZ();
+	    //directional vector
+	  	dirX = cos(castamere.getRotationAngle() * M_PI/180);
+		dirY = 0;
+	  	dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
+
+	    //and normalize this vector
+	    float mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+	    dirX /= mag; dirY /= mag; dirZ /= mag;
+		firstPerson.setLookX(fx + dirX*firstPerson.getRad());
+		firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
+		firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
+      break;
+  	}
+    case COOL_PANTS:{
+      fx = coolPants.getX(); fy = coolPants.getY() + coolPants.getH(); fz = coolPants.getZ();
+	    //directional vector
+	  	dirX = cos(coolPants.getRotation() * M_PI/180);
+		dirY = 0;
+	  	dirZ = -sin(coolPants.getRotation() * M_PI/180);
+
+	    //and normalize this vector
+	    float mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+	    dirX /= mag; dirY /= mag; dirZ /= mag;
+		
+		firstPerson.setLookX(fx + dirX*firstPerson.getRad());
+		firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
+		firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
+      break;
+  	}
+    default:
+      // Should get here
+      fx = fy = fz = 0;
+  }
+  
+  firstPerson.setX(fx); firstPerson.setY(fy); firstPerson.setZ(fz);
 
   // FPS update
   fpsUpdate();
@@ -437,12 +526,18 @@ void myMenu( int value ) {
   }
   else if ( value == 3 ) {
     // toggle first person viewport on all might
+    fpTarget = ALL_MIGHT;
+  	camTarget = FIRST_PERSON;
   }
   else if ( value == 4 ) {
     // toggle first person viewport on castamere
+    fpTarget = CASTAMERE;
+    camTarget = FIRST_PERSON;
   }
   else if ( value == 5 ) {
     // toggle first person viewport on coolpants
+    fpTarget = COOL_PANTS;
+    camTarget = FIRST_PERSON;
   }
   else if ( value == 6 ) {
     // main view to free camera with wasd controls

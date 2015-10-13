@@ -36,6 +36,9 @@ public:
   void setX(float x) { this->x = x; }
   void setY(float y) { this->y = y; }
   void setZ(float z) { this->z = z; }
+  void setLookX(float lx) { this->lookX = lx; }
+  void setLookY(float ly) { this->lookY = ly; }
+  void setLookZ(float lz) { this->lookZ = lz; }
   
   // Incrementers
   void incrementTheta(float dT) { 

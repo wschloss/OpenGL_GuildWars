@@ -18,10 +18,12 @@
 
 CoolPants::CoolPants()
 {
-	position = Point(0, 0, 0);
+	height = 2.5;
+	position = Point(0, height, 0);
 	angle = 0;
 	polyCount = 50;
   xzrot = 0;
+  orien = 0;
 
   // Init follow params to not follow
   followMode = false;
@@ -31,10 +33,12 @@ CoolPants::CoolPants()
 
 CoolPants::CoolPants( Point position )
 {
+	height = 2.5;
 	this->position = position;
 	angle = 0;
 	polyCount = 50;
   xzrot = 0;
+  orien = 0;
 
   // Init follow params to not follow
   followMode = false;
@@ -371,12 +375,14 @@ void CoolPants::draw(BezierPatch* surface)
 
   glPushMatrix(); {
     // Move to location
-    glTranslatef(getX(), getY() + 2.5, getZ());
+    glTranslatef(getX(), getY() + height, getZ());
 
     // Orient with the surface, by applying rotation
     vector<float> orientation = 
       surface->orient(getX(), getZ());
 
+
+	orien = orientation[1];
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(xzrot + 90, 0, 1, 0);
     drawHorse();
