@@ -18,7 +18,6 @@
   * Animate on wasd movement
   * Add materials for some color
 * Render first person cam for a hero in a second viewport (free cam with hero coords)
-* Render name above each hero.
 * Render fps to upper left corner.
 * Secondary:
   * Think about improving the efficiency
