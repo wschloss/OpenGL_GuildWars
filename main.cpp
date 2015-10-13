@@ -44,8 +44,6 @@
 #include "mouse.h"
 #include "castamere_castelli.h"
 #include "CoolPants.h"
-#include "WorldLoader.h"
-#include "Campfire.h"
 
 using namespace std;
 
@@ -56,6 +54,7 @@ static GLuint environmentDL;
  
 // id for the main window
 static GLint windowId;  
+
 // widow dimensions                           
 static size_t windowWidth  = 640; 
 static size_t windowHeight = 480; 
@@ -74,17 +73,11 @@ Mouse mouse;
 // Point light - default color is white
 Light* pointLight;
 
-// Campfire, draws and also flickers a light
-Campfire campfire;
-
 // Camera instance
-ArcBallCamera arcballCam;
+ArcBallCamera cam;
 
 // Surface instance
 BezierPatch* bezierPatch; 
-
-// Curve instance for the track
-BezierCurve* bezierCurve;
 
 // All Might instance
 AllMight allMight;
@@ -94,12 +87,6 @@ CastamereCastelli castamere;
 
 // CoolPants instance
 CoolPants coolPants;
-
-// Enum for camera targets
-enum CharacterTarget { ALL_MIGHT, CASTAMERE, COOL_PANTS };
-
-// The current target for the arcball camera, init to castamere
-CharacterTarget arcballTarget = CASTAMERE;
 
 
 // generateEnvironmentDL() ///////////////////////////////////////////////////// 
@@ -112,9 +99,6 @@ void generateEnvironmentDL() {
     environmentDL = glGenLists( 1 );
     glNewList( environmentDL, GL_COMPILE ); {
       bezierPatch->drawFilled();
-      // Call this if the curve needs to be seen/debugged
-      //bezierCurve->draw();
-      campfire.draw();
     } glEndList();
 } 
 
@@ -177,31 +161,24 @@ void mouseMotion( int x, int y ) {
     int dy = ( mouse.getY() - y );  
     // Check for zoom
     if( mouse.getZoomMode() ) {
-      arcballCam.incrementRadius( dy, 5 );
+      cam.incrementRadius( dy, 5 );
     } else {
-      arcballCam.incrementTheta( 0.005 * dy );
-      arcballCam.incrementPhi( 0.005 * dx );
+      cam.incrementTheta( 0.005 * dy );
+      cam.incrementPhi( 0.005 * dx );
     }
     mouse.setX( x );
     mouse.setY( y );
-
-    // update the arcball cam based on the target
-    float tx, ty, tz;
-    switch ( arcballTarget ) {
-      case ALL_MIGHT:
-        tx = allMight.getX(); ty = allMight.getY(); tz = allMight.getZ();
-        break;
-      case CASTAMERE:
-        tx = castamere.getX(); ty = castamere.getY(); tz = castamere.getZ();
-        break;
-      case COOL_PANTS:
-        tx = coolPants.getX(); ty = coolPants.getY(); tz = coolPants.getZ();
-        break;
-      default:
-        // Should get here
-        tx = ty = tz = 0;
-    }
-    arcballCam.recomputeCamPosition( tx, ty, tz );
+    // update camera (x,y,z) based on (radius,theta,phi)
+    cam.recomputeCamPosition(
+      allMight.getX(), 
+      allMight.getY(), 
+      allMight.getZ()
+    );
+    // cam.recomputeCamPosition( 
+    //   castamere.getX(), 
+    //   castamere.getY(), 
+    //   castamere.getZ() 
+    // );           
   }
 } 
  
@@ -218,16 +195,11 @@ void initScene()  {
   glEnable( GL_LIGHTING ); 
   // Enable the light
   pointLight = new Light( GL_LIGHT0 );
-  // Hack instead of class support... I am getting a little lazy here
-  glLightf( GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1.5 );
   pointLight->enable();
   // Set position of the point light
-  pointLight->setPosition( 0, 1000, 0 );
+  pointLight->setPosition(0, 1000, 0);
 
-  // Enable the campfire for lighting
-  campfire.enable();
-
-  glShadeModel( GL_SMOOTH ); 
+  glShadeModel( GL_FLAT ); 
 
   generateEnvironmentDL(); 
 } 
@@ -242,7 +214,7 @@ void initScene()  {
 void renderScene(void)  { 
   
   //clear the render buffer (sky blue)
-  glClearColor(0.23, 0.508, 0.622, 1);
+  glClearColor(0.53, 0.808, 0.922, 1);
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -253,21 +225,53 @@ void renderScene(void)  {
   glLoadIdentity();
   
   gluLookAt( 
-    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+    cam.getX(), cam.getY(), cam.getZ(),             // camera pos
+    cam.getLookX(), cam.getLookY(), cam.getLookZ(), // camera lookat
+    cam.getUpX(), cam.getUpY(),  cam.getUpZ()       // up vector
   );    
   // Reset point light placement
-  // NOTE: This light call looks like it doesn't even matter
-  //pointLight->resetPosition();
+  pointLight->resetPosition();
 
   // Draws surface
   glCallList( environmentDL ); 
 
-  // DRAW THE THREE CHARACTERS
-  castamere.renderSelf( bezierPatch ); 
-  allMight.draw( bezierPatch ); 
-  coolPants.draw(bezierPatch);  
+  // DRAW CASTAMERE
+
+  // glPushMatrix();
+  // {
+  //     castamere.renderSelf( bezierPatch );
+  // };
+  // glPopMatrix();
+
+  // END DRAW CASTAMERE
+  
+  // DRAW ALLMIGHT
+  Material mat = Material(Color(0.1745, 0.01175, 0.01175),
+                          Color(0.61424, 0.04136, 0.04136),
+                          Color(0.727811, 0.626959, 0.626929),
+                          0.6*128);
+  mat.set_as_current_material();
+  glPushMatrix(); {
+    allMight.draw( bezierPatch );
+  } glPopMatrix();
+  // END DRAW ALLMIGHT
+  
+  // DRAW COOLPANTS
+  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
+                          Color(0.780392, 0.568627, 0.113725),
+                          Color(0.05, 0.05, 0.05),
+                          0.005*128);
+  matCoolPants.set_as_current_material();
+  glPushMatrix(); {
+    // Move to location
+    glTranslatef(coolPants.getX(), coolPants.getY(), coolPants.getZ());
+    // Orient with the surface, by applying rotation
+    vector<float> orientation = bezierPatch->orient(coolPants.getX(), coolPants.getZ());
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
+    coolPants.drawHorse();
+  } glPopMatrix();
+  
+  // END DRAW COOLPANTS
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -281,9 +285,7 @@ void renderScene(void)  {
 void cleanup() {
   delete pointLight;
   delete bezierPatch;
-  delete bezierCurve;
-  // destroy our window
-  glutDestroyWindow( windowId );
+  glutDestroyWindow( windowId );  // destroy our window
 }
  
  
@@ -299,6 +301,7 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     exit( 0 );
   }
   castamere.respondKeyDown( key );
+  allMight.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -308,6 +311,7 @@ void normalKeysDown( unsigned char key, int x, int y ) {
 /////////////////////////////////////////////
 void normalKeysUp( unsigned char key, int x, int y ) {
   castamere.respondKeyUp( key );
+  allMight.respondKeyUp( key );
 }
 
 // fpsUpdate() ///////////////////////////////
@@ -325,7 +329,7 @@ void fpsUpdate() {
   if (deltat > 1000.0) {
     // update and reset frame counter
     fps = ( (double)numframes/(deltat /1000.0) ); 
-    //printf( "fps: %.2f\n", fps ); 
+    printf( "fps: %.2f\n", fps ); 
     current_time = newt;
     numframes = 0;
   } 
@@ -342,38 +346,30 @@ void update( int val ) {
   allMight.setY(
     bezierPatch->orient(allMight.getX(), allMight.getZ())[0]
   );
-
   castamere.update();
   castamere.setY(
     bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
       + (castamere.getHeight()/2)
   );
-   
+  
+  
   coolPants.update();
   coolPants.setY(
-    bezierPatch->orient(coolPants.getX(), coolPants.getZ())[0]
+    bezierPatch->orient(coolPants.getX(), coolPants.getZ() + coolPants.getH())[0]
+  );
+  
+  // // Cam update
+  cam.recomputeCamPosition(
+    allMight.getX(), 
+    allMight.getY(),
+    allMight.getZ()
   );
 
-  // campfire light update
-  campfire.update();
-  
-  // update the arcball cam based on the target
-  float tx, ty, tz;
-  switch ( arcballTarget ) {
-    case ALL_MIGHT:
-      tx = allMight.getX(); ty = allMight.getY(); tz = allMight.getZ();
-      break;
-    case CASTAMERE:
-      tx = castamere.getX(); ty = castamere.getY(); tz = castamere.getZ();
-      break;
-    case COOL_PANTS:
-      tx = coolPants.getX(); ty = coolPants.getY(); tz = coolPants.getZ();
-      break;
-    default:
-      // Should get here
-      tx = ty = tz = 0;
-  }
-  arcballCam.recomputeCamPosition( tx, ty, tz );
+  // cam.recomputeCamPosition(
+  //   castamere.getX(), 
+  //   castamere.getY(),
+  //   castamere.getZ()
+  // );
 
   // FPS update
   fpsUpdate();
@@ -389,33 +385,8 @@ void update( int val ) {
 //
 ////////////////////////////////
 void myMenu( int value ) {
-  if ( value == 0 ) {
-    // switch to arcball on allmight
-    arcballTarget = ALL_MIGHT;
-  }
-  else if ( value == 1 ) {
-    // switch to arcball on castamere
-    arcballTarget = CASTAMERE;
-  }
-  else if ( value == 2 ) {
-    // switch to arcball on coolpants
-    arcballTarget = COOL_PANTS;
-  }
-  else if ( value == 3 ) {
-    // toggle first person viewport on all might
-  }
-  else if ( value == 4 ) {
-    // toggle first person viewport on castamere
-  }
-  else if ( value == 5 ) {
-    // toggle first person viewport on coolpants
-  }
-  else if ( value == 6 ) {
-    // main view to free camera with wasd controls
-  }
-  else if( value == 7 ) { 
-    // quit
-    cleanup();
+  // Quit
+  if( value == 0 ) { 
     exit( 0 );
   }
 }
@@ -426,29 +397,12 @@ void myMenu( int value ) {
 //
 ///////////////////////////////////////////
 void createMenus() {
-  // Create the submenu for arcball views
-  int arcball_submenu = glutCreateMenu( myMenu );
-  // add the three hero options
-  glutAddMenuEntry( "All Might", 0 );
-  glutAddMenuEntry( "Castamere", 1 );
-  glutAddMenuEntry( "CoolPants", 2 );
 
-  // Create the submenu for the first person views in the second viewport
-  int firstperson_submenu = glutCreateMenu( myMenu );
-  glutAddMenuEntry( "All Might", 3 );
-  glutAddMenuEntry( "Castamere", 4 );
-  glutAddMenuEntry( "CoolPants", 5 );
-
-  // create main menu
+  // create with the passed callback glutCreateMenu(myMenu);
   glutCreateMenu( myMenu );
 
-  // add submenus
-  glutAddSubMenu( "Arcball", arcball_submenu );
-  glutAddSubMenu( "First Person", firstperson_submenu );
-
-  // Freecam option and quit
-  glutAddMenuEntry( "Free Camera", 6 );
-  glutAddMenuEntry( "Quit", 7 );
+  // add options
+  glutAddMenuEntry( "Quit", 0 );
 
   // Attach to right mouse
   glutAttachMenu( GLUT_RIGHT_BUTTON );
@@ -463,23 +417,35 @@ void createMenus() {
 int main( int argc, char **argv ) { 
   // Get file from passed argument
   if( argc != 2 ) {
-    printf( "Usage: %s worldfile.txt\n", argv[0] );
+    printf( "Usage: %s worldfile.csv\n", argv[0] );
     exit( 1 );
   }
 
-  // Read the world file into a loader
-  WorldLoader loader( argv[1] );
-  // Construct object from the data files
-  bezierPatch = loader.constructSurface();
-  bezierCurve = loader.constructCurve();
+  // TESTING //////////////////
+  // load up the surface points
+  bezierPatch = new BezierPatch();
+  if ( !bezierPatch->loadControlPoints(argv[1]) ) {
+    printf( "Could not load file: %s\n", argv[1] );
+    exit( 1 );
+  }
 
-  // Set AllMight to follow by parameter t
-  allMight.setFollowPath(bezierCurve);
-  // Set CoolPants to follow by arclength s 
-  coolPants.setFollowPath(bezierCurve);
+  // Set the material as green plastic
+  bezierPatch->setMaterial( 
+    Material(
+      Color(0,0,0),
+      Color(0.1, 0.35, 0.1),
+      Color(0.45, 0.55, 0.45),
+      (0.25 * 128)
+    )
+  );
+  // Initial orient (to set y)
+  allMight.setY( bezierPatch->orient(allMight.getX(), allMight.getZ())[0] );
+  castamere.setY( 
+    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
+      + (castamere.getHeight()/2)
+  );
 
-  // Orient the campfire
-  campfire.setOrientation(bezierPatch);
+  // END TESTING //////////////////
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit( &argc, argv ); 
@@ -487,6 +453,19 @@ int main( int argc, char **argv ) {
   glutInitWindowPosition( 50, 50 ); 
   glutInitWindowSize( windowWidth, windowHeight ); 
   windowId = glutCreateWindow( "Guild Wars" ); 
+
+  // Init cam coords to look at all might
+  cam.recomputeCamPosition(
+    allMight.getX(), 
+    allMight.getY(), 
+    allMight.getZ()
+  );
+
+  // cam.recomputeCamPosition(
+  //   castamere.getX(), 
+  //   castamere.getY(), 
+  //   castamere.getZ()
+  // );
 
   // register callback functions... 
   glutSetKeyRepeat( GLUT_KEY_REPEAT_OFF );
