@@ -36,7 +36,7 @@ void AllMight::drawName() {
   mat.set_as_current_material();
 
   glPushMatrix(); {
-    glTranslatef(0, 10, 0);
+    glTranslatef(0, 10, 2.5);
     glScalef(0.01, 0.01, 0.01);
     glRotatef(90,0,1,0);
     for (int i = 0; i < name.length(); i++) {

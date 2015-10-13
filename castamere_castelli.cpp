@@ -58,13 +58,13 @@ CastamereCastelli::~CastamereCastelli()
 // General
 void CastamereCastelli::renderSelf()
 {
-    
+ 
 	// Draw the all of Castamere to his current position,
 	// rotate him to his current heading and orient him with respect
 	// to the surface he is standing on.
 	glPushMatrix();
 	{
-	    glTranslatef( getX(), getY(), getZ() );
+	    glTranslatef( getX(), getY() + 2, getZ() );
 	    glRotatef(
 	    	orientation[1], 
 	    	orientation[2], 
@@ -98,6 +98,32 @@ void CastamereCastelli::update()
 
 void CastamereCastelli::assembleSelf()
 {
+  // Draw the name tag
+  // White Material, no shine
+  Material mat(
+    Color(1,1,1),
+    Color(1,1,1),
+    Color(1,1,1),
+    0
+  );
+  mat.set_as_current_material();
+
+  glPushMatrix(); {
+    glTranslatef(-5, 8, 0);
+    glScalef(0.01, 0.01, 0.01);
+    string name = "Castamere Castelli";
+    for (int i = 0; i < name.length(); i++) {
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, name.at(i));
+    }
+  } glPopMatrix();
+
+  // Set a material for the rest for now
+  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
+                          Color(0.780392, 0.568627, 0.113725),
+                          Color(0.05, 0.05, 0.05),
+                          0.005*128);
+  matCoolPants.set_as_current_material();
+
 	// draw the head
 	glPushMatrix();
 	{

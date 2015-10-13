@@ -201,8 +201,8 @@ void mouseMotion( int x, int y ) {
       }
       else if( camTarget == FREE ){
         freeCam.incrementTheta( 0.005 * dx );
-     	 	freeCam.incrementPhi( 0.005 * dy );
-  		}
+        freeCam.incrementPhi( 0.005 * dy );
+      }
     }
     mouse.setX( x );
     mouse.setY( y );
