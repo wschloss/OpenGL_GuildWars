@@ -17,13 +17,12 @@
 * Finish Castamere
   * Animate on wasd movement
   * Add materials for some color
-* Create FreeCamera class, give main an instance
+* Add first person camera instance (another free cam) to main
   * Render first person cam for a hero in a second viewport (free cam with hero coords)
-  * Menu to switch the first person view on/off and between heroes
-  * Menu to have free cam controlled by wasd
+  * Implement menu to switch the first person view on/off and between heroes
 * Render name above each hero.
 * Render fps to upper left corner.
-* Think about improving the efficiency (surface orient call is expensive since it's currently a linear search)
+* Think about improving the efficiency
 * Any refactoring we care to do if we have time.
 * Update each Hero's web page
 * Create presentation

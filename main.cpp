@@ -268,6 +268,11 @@ void renderScene(void)  {
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  // Enable backface culling
+  glEnable( GL_CULL_FACE );
+  glFrontFace( GL_CCW );
+  glCullFace( GL_BACK );
+
   //update the modelview matrix based on the camera's position 
   //make sure we aren't changing the projection matrix!
   glMatrixMode( GL_MODELVIEW );
@@ -282,7 +287,7 @@ void renderScene(void)  {
 	    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
 	  );
   }
-  if( camTarget == FREE )
+  else if( camTarget == FREE )
   {
 	  gluLookAt( 
 	    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
@@ -302,7 +307,7 @@ void renderScene(void)  {
   }  
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
-  //pointLight->resetPosition();
+  pointLight->resetPosition();
 
   // Draws surface
   glCallList( environmentDL ); 
@@ -322,9 +327,9 @@ void renderScene(void)  {
   glEnable(GL_LIGHTING);
 
   // DRAW THE THREE CHARACTERS
-  castamere.renderSelf( bezierPatch ); 
-  allMight.draw( bezierPatch ); 
-  coolPants.draw(bezierPatch);  
+  castamere.renderSelf(); 
+  allMight.draw(); 
+  coolPants.draw();  
 
   //push the back buffer to the screen 
   glutSwapBuffers(); 
@@ -386,7 +391,7 @@ void fpsUpdate() {
   if (deltat > 1000.0) {
     // update and reset frame counter
     fps = ( (double)numframes/(deltat /1000.0) ); 
-    //printf( "fps: %.2f\n", fps ); 
+    printf( "fps: %.2f\n", fps ); 
     current_time = newt;
     numframes = 0;
   } 
@@ -400,20 +405,13 @@ void fpsUpdate() {
 void update( int val ) {
   // Hero update
   allMight.update();
-  allMight.setY(
-    bezierPatch->orient(allMight.getX(), allMight.getZ())[0]
-  );
+  allMight.setOrientation(bezierPatch); 
 
   castamere.update();
-  castamere.setY(
-    bezierPatch->orient(castamere.getX(), castamere.getZ())[0] 
-      + (castamere.getHeight()/2)
-  );
+  castamere.setOrientation(bezierPatch);
    
   coolPants.update();
-  coolPants.setY(
-    bezierPatch->orient(coolPants.getX(), coolPants.getZ())[0]
-  );
+  coolPants.setOrientation(bezierPatch);
 
   // campfire light update
   campfire.update();
@@ -607,9 +605,14 @@ int main( int argc, char **argv ) {
   allMight.setFollowPath(bezierCurve);
   // Set CoolPants to follow by arclength s 
   coolPants.setFollowPath(bezierCurve);
+  // Move Castamere out of the fire
+  castamere.setX(-40);
 
-  // Orient the campfire
-  campfire.setOrientation(bezierPatch);
+  // initial orient
+  campfire.setOrientation( bezierPatch );
+  allMight.setOrientation( bezierPatch );
+  castamere.setOrientation( bezierPatch );
+  coolPants.setOrientation( bezierPatch );
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit( &argc, argv ); 

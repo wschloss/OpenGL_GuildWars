@@ -7,6 +7,8 @@
 
 // Default params are all 0, flame base set to 1
 AllMight::AllMight() {
+  name = "All Might";
+
   x = y = z = 0;
   hairRot = legRot = rot = 0;
   // Find the dir vectors
@@ -18,6 +20,29 @@ AllMight::AllMight() {
   followMode = false;
   t = 0;
   path = NULL;
+
+  scale = 3;
+}
+
+// Draws name in stroke text
+void AllMight::drawName() {
+  // White Material, no shine
+  Material mat(
+    Color(1,1,1),
+    Color(1,1,1),
+    Color(1,1,1),
+    0
+  );
+  mat.set_as_current_material();
+
+  glPushMatrix(); {
+    glTranslatef(0, 10, 0);
+    glScalef(0.01, 0.01, 0.01);
+    glRotatef(90,0,1,0);
+    for (int i = 0; i < name.length(); i++) {
+      glutStrokeCharacter(GLUT_STROKE_ROMAN, name.at(i));
+    }
+  } glPopMatrix();
 }
 
 // Draws the main body of the car
@@ -137,6 +162,9 @@ void AllMight::drawHead() {
 
 // Draws assembled character
 void AllMight::drawComplete() {
+  // name
+  drawName();
+
   // body
   glPushMatrix(); {
     glTranslatef(0,4,0);
@@ -182,7 +210,11 @@ void AllMight::draw() {
 
   glPushMatrix(); {
     glTranslatef(x, y, z);
+    // Orient with the surface, by applying rotation
+    glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(rot, 0, 1, 0);
+    // SCALE
+    glScalef(scale, scale, scale);
     drawComplete();
   } glPopMatrix();
 }
@@ -200,7 +232,7 @@ void AllMight::draw(BezierPatch* surface) {
     glTranslatef(x, y, z);
 
     // Orient with the surface, by applying rotation
-    vector<float> orientation = surface->orient(x, z);
+    orientation = surface->orient(x, z);
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
 
     glRotatef(rot, 0, 1, 0);
@@ -272,4 +304,10 @@ void AllMight::setFollowPath(BezierCurve* path) {
   t = 0;
   // set speed so the wheels turn
   setSpeed(2.5);
+}
+
+// Set the orientation vecotr to snap to the surfeace passed
+void AllMight::setOrientation(BezierPatch* surface) {
+  this->orientation = surface->orient(x, z);
+  setY(orientation[0]);
 }

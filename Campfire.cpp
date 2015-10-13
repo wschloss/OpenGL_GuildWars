@@ -61,7 +61,7 @@ void Campfire::draw() {
     );
     
     // scale a little bigger
-    glScalef(2,2,2);
+    glScalef(4,4,4);
 
     // place the light at 0,6,0
     light->resetPosition();

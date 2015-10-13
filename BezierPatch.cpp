@@ -43,7 +43,7 @@ bool BezierPatch::loadControlPoints(const char* filename) {
   input.close();
 
   // Compute the surface points
-  computeSurface(computedPoints, 200);
+  computeSurface(computedPoints, 150);
 
   return true;
 }
@@ -225,14 +225,14 @@ void BezierPatch::renderBezierPatchFilled(vector< vector<Point> >& computedPoint
       glNormal3f(nc->getX(), nc->getY(), nc->getZ());
       glVertex3f(current->getX(), current->getY(), current->getZ());
 
-      glNormal3f(nr->getX(), nr->getY(), nr->getZ());
-      glVertex3f(right->getX(), right->getY(), right->getZ());
+      glNormal3f(nu->getX(), nu->getY(), nu->getZ());
+      glVertex3f(up->getX(), up->getY(), up->getZ());
 
       glNormal3f(nd->getX(), nd->getY(), nd->getZ());
       glVertex3f(diag->getX(), diag->getY(), diag->getZ());
 
-      glNormal3f(nu->getX(), nu->getY(), nu->getZ());
-      glVertex3f(up->getX(), up->getY(), up->getZ());
+      glNormal3f(nr->getX(), nr->getY(), nr->getZ());
+      glVertex3f(right->getX(), right->getY(), right->getZ());
     }
   }
   glEnd();

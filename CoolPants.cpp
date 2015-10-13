@@ -21,7 +21,7 @@ CoolPants::CoolPants()
 	height = 2.5;
 	position = Point(0, height, 0);
 	angle = 0;
-	polyCount = 50;
+	polyCount = 20;
   xzrot = 0;
   orien = 0;
 
@@ -29,6 +29,8 @@ CoolPants::CoolPants()
   followMode = false;
   path = NULL;
   s = 0;
+
+  scale = 3;
 }
 
 CoolPants::CoolPants( Point position )
@@ -44,6 +46,8 @@ CoolPants::CoolPants( Point position )
   followMode = false;
   path = NULL;
   s = 0;
+
+  scale = 3;
 }
 
 void CoolPants::update()
@@ -364,7 +368,7 @@ void CoolPants::drawWheel()
 }
 
 // Draws and snaps to the surface
-void CoolPants::draw(BezierPatch* surface)
+void CoolPants::draw()
 {
   // Set a material for now
   Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
@@ -380,11 +384,15 @@ void CoolPants::draw(BezierPatch* surface)
     // Orient with the surface, by applying rotation
     vector<float> orientation = 
       surface->orient(getX(), getZ());
+    glTranslatef(getX(), getY() + scale*2.5, getZ());
 
 
 	orien = orientation[1];
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(xzrot + 90, 0, 1, 0);
+
+    // Set the scale
+    glScalef(scale, scale, scale);
     drawHorse();
   } glPopMatrix();
 }
@@ -395,4 +403,11 @@ void CoolPants::setFollowPath(BezierCurve* path)
   this->path = path;
   followMode = true;
   s = 0;
+}
+
+// Sets the surface orientation vector
+void CoolPants::setOrientation(BezierPatch* surface)
+{
+  this->orientation = surface->orient(getX(), getZ());
+  setY(orientation[0]);
 }
