@@ -24,7 +24,7 @@ CastamereCastelli::CastamereCastelli()
 	setArmSwingCount( 0 );
 
 	// Heading
-	rotation_angle = 0;
+	rotation_angle = alt_rot = 0;
 
 	// Movement scale (speed)
     step = 0;
@@ -72,7 +72,7 @@ void CastamereCastelli::draw()
 	// to the surface he is standing on.
 	glPushMatrix();
 	{
-	    glTranslatef( getX(), getY() + 2, getZ() );
+	    glTranslatef( getX(), getY() + 1.8, getZ() );
 	    glRotatef(
 	    	orientation[1], 
 	    	orientation[2], 
@@ -91,6 +91,7 @@ void CastamereCastelli::draw()
 void CastamereCastelli::update()
 {
     if( step == 0 ) {
+    	rotation_angle += alt_rot;
     	is_moving = false;
     } else {
     	is_moving = true;
@@ -823,8 +824,11 @@ void CastamereCastelli::respondKeyDown( unsigned char key )
 
 void CastamereCastelli::respondKeyUp( unsigned char key )
 {
-	if (step != 0 && (key == 'w' || key == 's')){
+	if( (step != 0) && ((key == 'w') || (key == 's'))) {
     	step = 0;
+	}
+	if((alt_rot != 0) && ((key == 'a') || (key == 'd'))) {
+    	alt_rot = 0;
 	}
 }
 
@@ -842,12 +846,12 @@ void CastamereCastelli::moveBackward()
 
 void CastamereCastelli::ternLeft()
 {
-	rotation_angle += 90;
+	alt_rot = 5;
 }
 
 void CastamereCastelli::ternRight()
 {
-	rotation_angle -= 90;
+	alt_rot = -5;
 }
 
 void CastamereCastelli::calcHeading()

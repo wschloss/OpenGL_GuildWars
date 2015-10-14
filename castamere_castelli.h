@@ -58,7 +58,7 @@ class CastamereCastelli
 		float getZ();
 		float getRotationAngle();
 		float getHeight();
-    void setOrientation( BezierPatch* surface );
+    	void setOrientation( BezierPatch* surface );
 
 		// Setters:
 		void setX( float newX );
@@ -107,7 +107,7 @@ class CastamereCastelli
 		// Orientation:
 		float xHeading, zHeading;
 		float height;
-		float rotation_angle;
+		float rotation_angle, alt_rot;
 
 	    // Surface orientation:
 	    vector<float> orientation;
