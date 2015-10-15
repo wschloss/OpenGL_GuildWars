@@ -41,8 +41,8 @@ class CastamereCastelli
 		void update();
 
 	//** Keyboard:
-    	void respondKeyDown(unsigned char key);
-    	void respondKeyUp(unsigned char key);
+    	void respondKeyDown( unsigned char key );
+    	void respondKeyUp( unsigned char key );
 
 	//** Mouse:
 		// nothing for now.
