@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sstream>
 #include <time.h>
 #include <math.h>
  
@@ -47,6 +48,7 @@
 #include "CoolPants.h"
 #include "WorldLoader.h"
 #include "Campfire.h"
+#include "World.h"
 
 using namespace std;
 
@@ -71,6 +73,9 @@ static double fps;
 
 // global mouse object
 Mouse mouse;
+
+// World object
+World world = World( 600, 600 );
 
 // Point light - default color is white
 Light* pointLight;
@@ -151,6 +156,7 @@ void resizeWindow( int w, int h ) {
   //update the projection matrix with the new window properties 
   glMatrixMode( GL_PROJECTION ); 
   glLoadIdentity(); 
+
   gluPerspective( 45.0, aspectRatio, 0.1, 100000 ); 
 }  
  
@@ -274,13 +280,15 @@ void renderScene(void)  {
   glEnable( GL_CULL_FACE );
   glFrontFace( GL_CCW );
   glCullFace( GL_BACK );
-
+  
   //update the modelview matrix based on the camera's position 
   //make sure we aren't changing the projection matrix!
   glMatrixMode( GL_MODELVIEW );
 
   glLoadIdentity();
-  
+
+  glViewport( 0, 0, windowWidth, windowHeight );
+
   if( camTarget == ARCBALL )
   {
     gluLookAt(
@@ -306,7 +314,15 @@ void renderScene(void)  {
       firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
       firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
     ); 
-  }  
+  }
+
+  // glViewport( 0, 0, windowWidth/4, windowHeight/4 );
+  // gluLookAt(
+  //     arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+  //     arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+  //     arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+  // );
+
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
   pointLight->resetPosition();
@@ -314,20 +330,32 @@ void renderScene(void)  {
   // Draws surface
   glCallList( environmentDL ); 
   
-  
-  // DEBUG: draw a line to show first person cam direction
-  glDisable(GL_LIGHTING);
-  
-  glBegin(GL_LINES);
-  glColor3f(0,1,0);
-  glVertex3f(firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
-    firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
-    firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4);
-  glVertex3f(firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ());
-  glEnd();
-  
-  glEnable(GL_LIGHTING);
-  // END DEBUG
+  ostringstream tmp_str;
+  tmp_str << fps;
+  string fps_str = "FPS: " + tmp_str.str();
+
+  for (int i = 0; i < fps_str.length(); i++) {
+    glRasterPos3f( i * 4.2, 30, 0 );
+    glutBitmapCharacter( GLUT_BITMAP_HELVETICA_18, fps_str.at(i) );
+  }
+
+  Tree tree;
+
+  tree.setX( 50 );
+  tree.setZ( 50 );
+  tree.setOrientation( bezierPatch );
+  tree.draw();
+
+  tree.setX( -50 );
+  tree.setZ( 50 );
+  tree.setOrientation( bezierPatch );
+  tree.draw();
+
+  tree.setType( Tree::BUSH );
+  tree.setX( -50 );
+  tree.setZ( -50 );
+  tree.setOrientation( bezierPatch );
+  tree.draw();
 
   // DRAW THE THREE CHARACTERS
   castamere.draw(); 
@@ -335,7 +363,7 @@ void renderScene(void)  {
   coolPants.draw();  
 
   //push the back buffer to the screen 
-  glutSwapBuffers(); 
+  glutSwapBuffers();
 } 
 
 // cleanup()////////////////////////////////////////////////////////////////////
@@ -350,7 +378,6 @@ void cleanup() {
   // destroy our window
   glutDestroyWindow( windowId );
 }
- 
  
 // normalKeysDown() //////////////////////////////////////////////////////////// 
 // 
