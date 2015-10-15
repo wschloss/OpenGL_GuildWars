@@ -59,6 +59,8 @@ public:
     float getRot() { return rot; }
     float getSpeed() { return speed; }
     float getDeltaRot() { return deltaRot; }
+	float getScale(){ return scale; }
+    vector<float> getOrientation(){ return orientation; }
 
     void setX(float x) { 
       this->x = x;

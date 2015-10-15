@@ -23,7 +23,6 @@ CoolPants::CoolPants()
 	angle = 0;
 	polyCount = 20;
   xzrot = 0;
-  orien = 0;
 
   // Init follow params to not follow
   followMode = false;
@@ -40,7 +39,6 @@ CoolPants::CoolPants( Point position )
 	angle = 0;
 	polyCount = 50;
   xzrot = 0;
-  orien = 0;
 
   // Init follow params to not follow
   followMode = false;
@@ -403,7 +401,7 @@ void CoolPants::draw()
 
     glRotatef(orientation[1], orientation[2], orientation[3], orientation[4]);
     glRotatef(xzrot + 90, 0, 1, 0);
-
+	
     // Set the scale
     glScalef(scale, scale, scale);
     drawHorse();

@@ -48,8 +48,6 @@
 #include "WorldLoader.h"
 #include "Campfire.h"
 
-using namespace std;
-
 // GLOBAL VARIABLES //////////////////////////////////////////////////////////// 
 
 // display list for the surface
@@ -299,6 +297,8 @@ void renderScene(void)  {
   }   
   else if( camTarget == FIRST_PERSON )
   {
+	  
+	  //glRotatef(coolPants.getRotation()+90, 1, 0, 1);
 	  gluLookAt( 
       firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
       firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
@@ -444,12 +444,17 @@ void update( int val ) {
   float fx, fy, fz, dirX, dirY, dirZ, mag;
   switch ( fpTarget ) {
     case ALL_MIGHT:
-      fx = allMight.getX(); fy = allMight.getY() + 4.0; fz = allMight.getZ();
-	    //directional vector
-	  	dirX = cos(allMight.getRot() * M_PI/180);
-      dirY = 0;
-	  	dirZ = -sin(allMight.getRot() * M_PI/180);
-
+	{
+        fx = allMight.getX(); fy = allMight.getY() + 3*allMight.getScale(); fz = allMight.getZ();
+	    //calc directional vector
+		// first grab surface normals at character's location.
+	    vector<float> ori = allMight.getOrientation();
+	    dirX = cos(allMight.getRot() * M_PI/180);
+	    dirZ = -sin(allMight.getRot() * M_PI/180);
+		// y direction is the negative dot product between the surface's normal
+		// hero's xz direction.
+		dirY = -(dirX*ori[5] + dirZ*ori[7]);
+		
 	    //and normalize this vector
 	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
 	    dirX /= mag; dirY /= mag; dirZ /= mag;
@@ -458,28 +463,18 @@ void update( int val ) {
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
       firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());	  
       break;
-
+  	}
     case CASTAMERE:
-      fx = castamere.getX(); fy = castamere.getY(); fz = castamere.getZ();
-	    //directional vector
-	  	dirX = cos(castamere.getRotationAngle() * M_PI/180);
-      dirY = 0;
-	  	dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
-
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
-      firstPerson.setLookX(fx + dirX*firstPerson.getRad());
-      firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
-      firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
-      break;
-  	
-    case COOL_PANTS:
-      fx = coolPants.getX(); fy = coolPants.getY() + coolPants.getH(); fz = coolPants.getZ();
-	    //directional vector
-	  	dirX = cos(coolPants.getRotation() * M_PI/180);
-      dirY = 0;
-	  	dirZ = -sin(coolPants.getRotation() * M_PI/180);
+	{
+        fx = castamere.getX(); fy = castamere.getY(); fz = castamere.getZ();
+	    //calc directional vector
+		// first grab surface normals at character's location.
+	    vector<float> ori = castamere.getOrientation();
+	    dirX = cos(castamere.getRotationAngle() * M_PI/180);
+	    dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
+		// y direction is the negative dot product between the surface's normal
+		// hero's xz direction.
+		dirY = -(dirX*ori[5] + dirZ*ori[7]);
 
 	    //and normalize this vector
 	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
@@ -489,10 +484,33 @@ void update( int val ) {
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
       firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
       break;
-  	
+  	}
+    case COOL_PANTS:
+	{
+      fx = coolPants.getX(); fy = coolPants.getY() + 3*coolPants.getH(); fz = coolPants.getZ();
+	    //calc directional vector
+		// first grab surface normals at character's location.
+	    vector<float> ori = coolPants.getOrientation();
+	    dirX = cos(coolPants.getRotation() * M_PI/180);
+	    dirZ = -sin(coolPants.getRotation() * M_PI/180);
+		// y direction is the negative dot product between the surface's normal
+		// hero's xz direction.
+		dirY = -(dirX*ori[5] + dirZ*ori[7]);
+
+	    //and normalize this vector
+	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+	    dirX /= mag; dirY /= mag; dirZ /= mag;
+		
+      firstPerson.setLookX(fx + dirX*firstPerson.getRad());
+      firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
+      firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
+      break;
+  	}
     default:
+	{
       // Shouldn't get here
       fx = fy = fz = 0;
+  	}
   }
   
   // Set correct first person cam position
