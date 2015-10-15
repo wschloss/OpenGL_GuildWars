@@ -207,7 +207,7 @@ void mouseMotion( int x, int y ) {
 
     // update the arcball cam based on the target
     float tx, ty, tz;
-    switch ( arcballTarget ) {
+    switch( arcballTarget ) {
       case ALL_MIGHT:
         tx = allMight.getX(); ty = allMight.getY(); tz = allMight.getZ();
         break;
@@ -221,7 +221,7 @@ void mouseMotion( int x, int y ) {
         // Shouldn't get here
         tx = ty = tz = 0;
     }
-	
+  
     arcballCam.recomputeCamPosition( tx, ty, tz );
     freeCam.recomputeCamDir();
   }
@@ -281,31 +281,29 @@ void renderScene(void)  {
   
   if( camTarget == ARCBALL )
   {
-	  gluLookAt(
-	    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-	    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-	    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
-	  );
+    gluLookAt(
+      arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+      arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+      arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+    );
   }
   else if( camTarget == FREE )
   {
-	  gluLookAt( 
-	    freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
-	    freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
-	    freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
-	  ); 
+    gluLookAt( 
+      freeCam.getX(), freeCam.getY(), freeCam.getZ(),             // camera pos
+      freeCam.getLookX(), freeCam.getLookY(), freeCam.getLookZ(), // camera lookat
+      freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
+    ); 
   }   
   else if( camTarget == FIRST_PERSON )
   {
-	  
-	  //glRotatef(coolPants.getRotation()+90, 1, 0, 1);
-	  gluLookAt( 
+    gluLookAt( 
       firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
       firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
       firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4,             // camera pos
-	    firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
-	    firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
-	  ); 
+      firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
+      firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
+    ); 
   }  
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
@@ -321,8 +319,8 @@ void renderScene(void)  {
   glBegin(GL_LINES);
   glColor3f(0,1,0);
   glVertex3f(firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
-		firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
-		firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4);
+    firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
+    firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4);
   glVertex3f(firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ());
   glEnd();
   
@@ -330,7 +328,7 @@ void renderScene(void)  {
   // END DEBUG
 
   // DRAW THE THREE CHARACTERS
-  castamere.renderSelf(); 
+  castamere.draw(); 
   allMight.draw(); 
   coolPants.draw();  
 
@@ -364,9 +362,9 @@ void normalKeysDown( unsigned char key, int x, int y ) {
     exit( 0 );
   }
   if( camTarget == ARCBALL || (camTarget == FIRST_PERSON && fpTarget == CASTAMERE ))
-  	castamere.respondKeyDown( key );
+    castamere.respondKeyDown( key );
   else if( camTarget == FREE )
-  	freeCam.respondKeyDown( key );
+    freeCam.respondKeyDown( key );
 } 
 
 // normalKeysUp() /////////////////////////////
@@ -459,9 +457,19 @@ void update( int val ) {
 	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
 	    dirX /= mag; dirY /= mag; dirZ /= mag;
 	
+      fx = allMight.getX(); fy = allMight.getY() + 4.0; fz = allMight.getZ();
+      //directional vector
+      dirX = cos(allMight.getRot() * M_PI/180);
+      dirY = 0;
+      dirZ = -sin(allMight.getRot() * M_PI/180);
+
+      //and normalize this vector
+      mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+      dirX /= mag; dirY /= mag; dirZ /= mag;
+  
       firstPerson.setLookX(fx + dirX*firstPerson.getRad());
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
-      firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());	  
+      firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());   
       break;
   	}
     case CASTAMERE:
@@ -480,6 +488,16 @@ void update( int val ) {
 	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
 	    dirX /= mag; dirY /= mag; dirZ /= mag;
 		
+      fx = castamere.getX(); fy = castamere.getY(); fz = castamere.getZ();
+      //directional vector
+      dirX = cos(castamere.getRotationAngle() * M_PI/180);
+      dirY = 0;
+      dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
+
+      //and normalize this vector
+      mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+      dirX /= mag; dirY /= mag; dirZ /= mag;
+	  
       firstPerson.setLookX(fx + dirX*firstPerson.getRad());
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
       firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
@@ -497,10 +515,10 @@ void update( int val ) {
 		// hero's xz direction.
 		dirY = -(dirX*ori[5] + dirZ*ori[7]);
 
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
-		
+      //and normalize this vector
+      mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
+      dirX /= mag; dirY /= mag; dirZ /= mag;
+    
       firstPerson.setLookX(fx + dirX*firstPerson.getRad());
       firstPerson.setLookY(fy + dirY*firstPerson.getRad()); 
       firstPerson.setLookZ(fz + dirZ*firstPerson.getRad());
@@ -548,7 +566,7 @@ void myMenu( int value ) {
   else if ( value == 3 ) {
     // toggle first person viewport on all might
     fpTarget = ALL_MIGHT;
-  	camTarget = FIRST_PERSON;
+    camTarget = FIRST_PERSON;
   }
   else if ( value == 4 ) {
     // toggle first person viewport on castamere
@@ -562,7 +580,7 @@ void myMenu( int value ) {
   }
   else if ( value == 6 ) {
     // main view to free camera with wasd controls
-	  camTarget = FREE;
+    camTarget = FREE;
   }
   else if( value == 7 ) { 
     // quit
