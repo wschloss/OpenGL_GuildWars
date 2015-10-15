@@ -452,16 +452,6 @@ void update( int val ) {
 		// y direction is the negative dot product between the surface's normal
 		// hero's xz direction.
 		dirY = -(dirX*ori[5] + dirZ*ori[7]);
-		
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
-	
-      fx = allMight.getX(); fy = allMight.getY() + 4.0; fz = allMight.getZ();
-      //directional vector
-      dirX = cos(allMight.getRot() * M_PI/180);
-      dirY = 0;
-      dirZ = -sin(allMight.getRot() * M_PI/180);
 
       //and normalize this vector
       mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
@@ -483,16 +473,6 @@ void update( int val ) {
 		// y direction is the negative dot product between the surface's normal
 		// hero's xz direction.
 		dirY = -(dirX*ori[5] + dirZ*ori[7]);
-
-	    //and normalize this vector
-	    mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
-	    dirX /= mag; dirY /= mag; dirZ /= mag;
-		
-      fx = castamere.getX(); fy = castamere.getY(); fz = castamere.getZ();
-      //directional vector
-      dirX = cos(castamere.getRotationAngle() * M_PI/180);
-      dirY = 0;
-      dirZ = -sin(castamere.getRotationAngle() * M_PI/180);
 
       //and normalize this vector
       mag = sqrt( dirX*dirX + dirY*dirY + dirZ*dirZ );
