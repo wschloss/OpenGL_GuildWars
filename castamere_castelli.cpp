@@ -8,6 +8,9 @@
 
 CastamereCastelli::CastamereCastelli()
 {
+	// Set name
+	name = "Castamere Castelli";
+
 	// Set height
 	height = 10;
 
@@ -23,8 +26,7 @@ CastamereCastelli::CastamereCastelli()
 
 	// set up body position:
 	horizontal_look_angle = vertical_look_angle = 0;
-	left_arm_angle = right_arm_angle = 0;
-	setArmSwingCount( 0 );
+	arm_angle = leg_angle = 0;
 
 	// Heading
 	rotation_angle = alt_rot = 0;
@@ -35,6 +37,7 @@ CastamereCastelli::CastamereCastelli()
     is_moving = false;
 
     // Animation:
+    t = 0;
     eye_motion_count = 0;
 
 	// Setup our Colors:
@@ -45,13 +48,13 @@ CastamereCastelli::CastamereCastelli()
 	shirtColor = Color( 0.3, 0.2, 1 ); // blue
 	pantsColor = Color( 0.21, 0.16, 0.10 ); // brown
 
-	skinMat = Material( skinColor, skinColor, skinColor, 0.5 );
-	eyeMat = Material( eyeColor, eyeColor, eyeColor, 0.5 ); 
-	hatMat = Material( hatColor, hatColor, hatColor, 0.5 );
-	shirtMat = Material( shirtColor, shirtColor, shirtColor, 0.5 );
-	pantsMat = Material( pantsColor, pantsColor, pantsColor, 0.5 ); 
-	hairMat = Material( beardColor, beardColor, beardColor, 0.5 );
-	shoesMat = Material( pantsColor, pantsColor, pantsColor, 0.5 );
+	skinMat = Material( skinColor, skinColor, skinColor, 51.2 );
+	eyeMat = Material( eyeColor, eyeColor, eyeColor, 51.2 ); 
+	hatMat = Material( hatColor, hatColor, hatColor, 51.2 );
+	shirtMat = Material( shirtColor, shirtColor, shirtColor, 51.2 );
+	pantsMat = Material( pantsColor, pantsColor, pantsColor, 51.2 ); 
+	hairMat = Material( beardColor, beardColor, beardColor, 51.2 );
+	shoesMat = Material( pantsColor, pantsColor, pantsColor, 51.2 );
 
 	// Make sure Castamere is up to date before we draw him.
 	update();
@@ -69,24 +72,22 @@ CastamereCastelli::~CastamereCastelli()
 // General
 void CastamereCastelli::draw()
 {
- 
 	// Draw the all of Castamere to his current position,
 	// rotate him to his current heading and orient him with respect
 	// to the surface he is standing on.
 	glPushMatrix();
 	{
-	    glTranslatef( getX(), getY() + 1.8, getZ() );
-	    glRotatef(
-	    	orientation[1], 
-	    	orientation[2], 
-	    	orientation[3], 
-	    	orientation[4]
-	    );
-	    glRotatef( (getRotationAngle() + 90), 0, 1, 0 );
-
+	  glTranslatef( getX(), getY() + 1.8, getZ() );
+	  glRotatef(
+	    orientation[1], 
+	    orientation[2], 
+	    orientation[3], 
+	    orientation[4]
+	  );
+	  glRotatef( (getRotationAngle() + 90), 0, 1, 0 );
       // Set the final scale
-      glScalef(scale, scale, scale);
-	    assembleSelf();
+      glScalef( scale, scale, scale );
+	  assembleSelf();
 	};
   glPopMatrix();
 }
@@ -95,50 +96,48 @@ void CastamereCastelli::update()
 {
     if( key[int('a')] || key[int('d')] ) {
     	rotation_angle += alt_rot;
-    	//is_moving = false;
-    } /*else {
-    	is_moving = true;
-    }*/
+    } 
+	is_moving = false;
 	if( key[int('w')] || key[int('s')] ){
 		setX( getX() + (step * xHeading) );
 		setZ( getZ() + (step * zHeading) );
+		is_moving = true;
 	}
+
+    t += 0.01;
+    lookBackAndForth();
+
     if( is_moving ) {
     	swingArms();
     }
-	// setX( getX() + (step * xHeading) );
-//     setZ( getZ() + (step * zHeading) );
 
 	calcHeading();
 }
 
+void CastamereCastelli::renderName()
+{
+	 // White Material, no shine
+	Material mat(
+	   Color(1,1,1),
+	   Color(1,1,1),
+	   Color(1,1,1),
+	   0
+	);
+	mat.set_as_current_material();
+
+	glPushMatrix(); {
+
+	    glTranslatef(-5, 8, 0);
+	    glScalef(0.01, 0.01, 0.01);
+	    for (int i = 0; i < name.length(); i++) {
+	      glutStrokeCharacter(GLUT_STROKE_ROMAN, name.at(i));
+	    }
+  } glPopMatrix();
+}
+
 void CastamereCastelli::assembleSelf()
 {
-  // Draw the name tag
-  // White Material, no shine
-  Material mat(
-    Color(1,1,1),
-    Color(1,1,1),
-    Color(1,1,1),
-    0
-  );
-  mat.set_as_current_material();
-
-  glPushMatrix(); {
-    glTranslatef(-5, 8, 0);
-    glScalef(0.01, 0.01, 0.01);
-    string name = "Castamere Castelli";
-    for (int i = 0; i < name.length(); i++) {
-      glutStrokeCharacter(GLUT_STROKE_ROMAN, name.at(i));
-    }
-  } glPopMatrix();
-
-  // Set a material for the rest for now
-  Material matCoolPants = Material(Color(0.329412, 0.223529, 0.027451),
-                          Color(0.780392, 0.568627, 0.113725),
-                          Color(0.05, 0.05, 0.05),
-                          0.005*128);
-  matCoolPants.set_as_current_material();
+	renderName();
 
 	// draw the head
 	glPushMatrix();
@@ -189,7 +188,7 @@ void CastamereCastelli::renderHead()
     		(head_depth/1.4) 
     	);
     	glScalef( 0.8, 0.8, 0.8 );
-    	glRotatef( horizontal_look_angle, 0, 1, 0 );
+    	glRotatef( 45*sin(horizontal_look_angle), 0, 1, 0 );
     	glRotatef( vertical_look_angle, 1, 0, 0 );
     	renderEye();
     };
@@ -204,7 +203,7 @@ void CastamereCastelli::renderHead()
 			(head_depth/1.4) 
 		);
 		glScalef( 0.8, 0.8, 0.8 );
-		glRotatef( horizontal_look_angle, 0, 1, 0 );
+		glRotatef( 45*sin(horizontal_look_angle), 0, 1, 0 );
     	glRotatef( vertical_look_angle, 1, 0, 0 );
 		renderEye();
 	};
@@ -285,6 +284,7 @@ void CastamereCastelli::renderHat()
 {
 	hatMat.set_as_current_material();
 
+	// The top cone
 	glPushMatrix();
 	{
 		glRotatef( -90, 1, 0, 0 );
@@ -320,7 +320,7 @@ void CastamereCastelli::renderHat()
 		// close upper rim
 		glPushMatrix();
 		{
-			glRotatef( 90, 1, 0, 0 );
+			glRotatef( -90, 1, 0, 0 );
 			gluDisk( myQuad, 0, (birm_rad - 0.2), hat_res, hat_res );
 		};
 		glPopMatrix();
@@ -467,7 +467,7 @@ void CastamereCastelli::renderUpperBody()
     // left arm
     glPushMatrix();
     {
-    	glRotatef( left_arm_angle, 1, 0, 0 );
+    	glRotatef( 60*sin(arm_angle), 1, 0, 0 );
 	    glPushMatrix();
 	    {
 	    	glTranslatef( -1.6, 0, 0 );
@@ -481,7 +481,7 @@ void CastamereCastelli::renderUpperBody()
     // right arm
     glPushMatrix();
     {
-    	glRotatef( right_arm_angle, 1, 0, 0 );
+    	glRotatef( -60*sin(arm_angle), 1, 0, 0 );
 	    glPushMatrix();
 	    {
 	    	glTranslatef( 1.6, 0, 0 );
@@ -535,12 +535,15 @@ void CastamereCastelli::renderTorso()
 	};
 	glPopMatrix();
 
+	// closer upper torso
 	glPushMatrix();
 	{
+		glRotatef( 180, 1, 0, 0 );
 		gluDisk( myQuad, 0, 1.2, 20, 20 );
 	};
 	glPopMatrix();
 
+	// close lower torso
 	glPushMatrix();
 	{
 		glTranslatef( 0, 0, 1.4 );
@@ -883,30 +886,12 @@ void CastamereCastelli::stepBackward()
 
 void CastamereCastelli::swingArms()
 {
-	if( ((arm_swing_count < 9) && (arm_swing_count > 0)) ) {
-		left_arm_angle += 10;
-		right_arm_angle -= 10;
-		arm_swing_count++;
-	} else if( ((arm_swing_count < 18) && (arm_swing_count > 9)) ) {
-		left_arm_angle -= 10;
-		right_arm_angle += 10;
-		arm_swing_count++;
-	} else {
-		arm_swing_count = 0;
-	}
+	arm_angle += 0.5;
 }
 
 void CastamereCastelli::lookBackAndForth()
 {
-	if( (eye_motion_count > 0) && (eye_motion_count < 6) ) {
-		horizontal_look_angle += 5;
-		eye_motion_count++;
-	} else if( (eye_motion_count > 6) && (eye_motion_count < 12) ) {
-		horizontal_look_angle -= 5;
-		eye_motion_count++;
-	} else {
-		eye_motion_count = 0;
-	}
+	horizontal_look_angle += 0.1;
 }
 
 //** Getters and Setters
@@ -960,18 +945,6 @@ float CastamereCastelli::getHeight()
 }
 
 // Animations:
-
-// Getters:
-float CastamereCastelli::getArmSwingCount()
-{
-	return( arm_swing_count );
-}
-
-// Setters:
-void CastamereCastelli::setArmSwingCount( float newArmSwingCount )
-{
-	arm_swing_count = newArmSwingCount;
-}
 
 // Colors:
 

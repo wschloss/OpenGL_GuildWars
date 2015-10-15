@@ -67,12 +67,6 @@ class CastamereCastelli
 
 		// Animations:
 
-		// Getters:
-		float getArmSwingCount();
-
-		// Setters:
-		void setArmSwingCount( float newArmSwingCount );
-
 		// Colors:
 
 		// Getters:
@@ -100,9 +94,10 @@ class CastamereCastelli
 
 
 	private:
-
-
+		
 	//** Variables
+		// Name:
+		string name;
 
 		// Location:
 		Point* position; 
@@ -123,7 +118,7 @@ class CastamereCastelli
 
 		// Body position:
 		float horizontal_look_angle, vertical_look_angle;
-		float left_arm_angle, right_arm_angle;
+		float arm_angle, leg_angle;
 
 		// Colors:
 		Color skinColor, eyeColor, hatColor;
@@ -141,6 +136,7 @@ class CastamereCastelli
 		int arm_swing_count;
 
 		// Animation:
+		float t;
 		int eye_motion_count;
 
 
@@ -165,6 +161,7 @@ class CastamereCastelli
 		// Rendering:
 
 		// General
+		void renderName();
 		void assembleSelf();
 		void renderJoint();
 		// Head

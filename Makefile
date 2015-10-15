@@ -1,7 +1,8 @@
 TARGET = guildWars
 OBJECTS = main.o Point.o ArcBallCamera.o BezierCurve.o BezierPatch.o Color.o \
-		  building.o tree.o vect.o mouse.o Material.o Light.o AllMight.o \
-		  castamere_castelli.o CoolPants.o WorldLoader.o Campfire.o FreeCamera.o
+		  Building.o Tree.o vect.o mouse.o Material.o Light.o AllMight.o \
+		  castamere_castelli.o CoolPants.o WorldLoader.o Campfire.o FreeCamera.o \
+		  World.o
 
 CXX    = g++
 CFLAGS = -Wall -g
@@ -74,13 +75,14 @@ $(TARGET): $(OBJECTS)
 
 # DEPENDENCIES
 main.o: main.cpp
+world.o: world.cpp world.h
 Point.o: Point.cpp Point.h
 ArcBallCamera.o: ArcBallCamera.cpp ArcBallCamera.h
 BezierCurve.o: BezierCurve.cpp BezierCurve.h
 BezierPatch.o: BezierPatch.cpp BezierPatch.h
 Color.o: Color.cpp Color.h
-building.o: building.cpp building.h
-tree.o: tree.cpp tree.h
+Building.o: Building.cpp Building.h
+Tree.o: Tree.cpp Tree.h
 vect.o: vect.cpp vect.h
 mouse.o: mouse.cpp mouse.h
 Material.o: Material.cpp Material.h
