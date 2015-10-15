@@ -33,7 +33,7 @@ CastamereCastelli::CastamereCastelli()
 
 	// Movement scale (speed)
     step = 0;
-    stepSize = 2.5;
+    stepSize = 5;
     is_moving = false;
 
     // Animation:
@@ -92,6 +92,7 @@ void CastamereCastelli::draw()
   glPopMatrix();
 }
 
+// This function needs to be called in GLUT's timer function, for animations to work.
 void CastamereCastelli::update()
 {
     if( key[int('a')] || key[int('d')] ) {
@@ -109,6 +110,7 @@ void CastamereCastelli::update()
 
     if( is_moving ) {
     	swingArms();
+    	leg_angle += 1;
     }
 
 	calcHeading();
@@ -661,6 +663,7 @@ void CastamereCastelli::renderLowerBody()
 		glTranslatef( -0.7, 0, 0.1 );
 		glRotatef( 90, 1, 0, 0 );
 		glRotatef( -5, 0, 0, 1 );
+		glRotatef( 45*sin(leg_angle), 1, 0, 0 );
 		renderLeg();
 	};
 	glPopMatrix();
@@ -671,6 +674,7 @@ void CastamereCastelli::renderLowerBody()
 		glTranslatef( 0.7, 0, 0.1 );
 		glRotatef( 90, 1, 0, 0 );
 		glRotatef( 5, 0, 0, 1 );
+		glRotatef( -45*sin(leg_angle), 1, 0, 0 );
 		renderLeg();
 	};
 	glPopMatrix();
