@@ -106,6 +106,9 @@ class CastamereCastelli
 
 		// Location:
 		Point* position; 
+		
+		// bool array for keys
+		bool key[128];
 
 		// Orientation:
 		float xHeading, zHeading;

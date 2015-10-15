@@ -13,6 +13,9 @@ CastamereCastelli::CastamereCastelli()
 
   	// Set final drawing scale
   	scale = 3;
+	
+	// set keys that will be used to false
+	key['w'] = false; key['a'] = false; key['s'] = false; key['d'] = false;
 
 	// Setup the location:
 	// default to the origin if no parameters are given.
@@ -90,17 +93,21 @@ void CastamereCastelli::draw()
 
 void CastamereCastelli::update()
 {
-    if( step == 0 ) {
+    if( key[int('a')] || key[int('d')] ) {
     	rotation_angle += alt_rot;
-    	is_moving = false;
-    } else {
+    	//is_moving = false;
+    } /*else {
     	is_moving = true;
-    }
+    }*/
+	if( key[int('w')] || key[int('s')] ){
+		setX( getX() + (step * xHeading) );
+		setZ( getZ() + (step * zHeading) );
+	}
     if( is_moving ) {
     	swingArms();
     }
-	setX( getX() + (step * xHeading) );
-    setZ( getZ() + (step * zHeading) );
+	// setX( getX() + (step * xHeading) );
+//     setZ( getZ() + (step * zHeading) );
 
 	calcHeading();
 }
@@ -809,15 +816,19 @@ void CastamereCastelli::renderFoot()
 void CastamereCastelli::respondKeyDown( unsigned char key )
 {
 	if( key == 'w' ) {
+		this->key[int('w')] = true;
     	moveForward();
 	}
   	if( key == 's' ) {
+		this->key[int('s')] = true;
     	moveBackward();
   	}
   	if( key == 'a' ) {
+		this->key[int('a')] = true;
     	ternLeft();
   	}
   	if( key == 'd' ) {
+		this->key[int('d')] = true;
     	ternRight();
   	}
 }
@@ -826,9 +837,11 @@ void CastamereCastelli::respondKeyUp( unsigned char key )
 {
 	if( (step != 0) && ((key == 'w') || (key == 's'))) {
     	step = 0;
+		this->key[int('w')] = false; this->key[int('s')] = false;
 	}
 	if((alt_rot != 0) && ((key == 'a') || (key == 'd'))) {
     	alt_rot = 0;
+		this->key[int('a')] = false; this->key[int('d')] = false;
 	}
 }
 
