@@ -18,7 +18,6 @@ class CoolPants
 		Point position;
 		float angle;
 		float height;
-		float orien;
 		int polyCount;
     // rotation in the xz plane
     float xzrot;
@@ -65,8 +64,10 @@ class CoolPants
 		float getY(){return position.getY();}
 		float getZ(){return position.getZ();}
 		
+		// return y component of orientation.
+		vector<float> getOrientation(){ return orientation; }
+		
 		float getRotation(){ return xzrot; }
-		float getOrient(){ return orien; }
 		
 		float getH(){ return height; }
 		

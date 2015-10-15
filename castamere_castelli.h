@@ -75,6 +75,9 @@ class CastamereCastelli
 		Color getHatColor();
 		Color getShirtColor();
 		Color getPantsColor();
+		
+		// get y component of orientation
+		vector<float> getOrientation(){ return orientation; }
 
 		// Setters:
 		void setSkinColor( Color newSkinColor );

@@ -295,6 +295,9 @@ vector<float> BezierPatch::orient(float x, float z) {
   ret.push_back(ux);
   ret.push_back(uy);
   ret.push_back(uz);
+  ret.push_back(normal.getX());
+  ret.push_back(normal.getY());
+  ret.push_back(normal.getZ());
 
   return ret;
 }
