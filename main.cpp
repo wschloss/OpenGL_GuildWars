@@ -357,7 +357,7 @@ void renderScene(void)  {
 
   // START of Picture in Picture
   
-  // 'blackout' part of the screen
+  
   // glViewport( 0, 0, windowWidth/3, windowHeight/3 );
   // glMatrixMode( GL_PROJECTION );
   // glLoadIdentity();
@@ -397,6 +397,46 @@ void renderScene(void)  {
   // Actual Pic in Pic
   if(fpToggle)
   {
+	  // 'blackout' part of the screen
+  
+	  glViewport(0,0,windowWidth, windowHeight);
+	  glMatrixMode(GL_PROJECTION);
+	  
+	  // from my understanding pushing the projection matrix saves our world rendered previously.
+	  glPushMatrix();
+	  glLoadIdentity();
+	  // set up 2d projection
+	  glOrtho(0, windowWidth, windowHeight, 0, -1, 1);
+	  glMatrixMode(GL_MODELVIEW);
+	  glPushMatrix();
+	  glLoadIdentity();
+	  glDisable(GL_LIGHTING);
+	  glClear( GL_DEPTH_BUFFER_BIT );
+      
+	  // bottom left of screen at 1/3 of the size.
+	  glTranslatef(0, windowHeight*2/3, 0);
+	  // add a constant as a margin.
+	  glScalef(windowWidth/3 + 2, windowHeight/3 + 2, 1);
+	  glBegin( GL_QUADS );
+	        {
+			  glColor3f(0,0,0);
+	          glVertex2f( 0, 1 );
+	          glVertex2f( 1, 1 );
+	          glVertex2f( 1, 0 );
+	          glVertex2f( 0, 0 );
+	        };
+	        glEnd();
+
+	  glEnable(GL_LIGHTING);
+	  glMatrixMode(GL_PROJECTION);
+	  glPopMatrix();
+	  glMatrixMode(GL_MODELVIEW);
+	  glPopMatrix();	 
+	  
+	  // end 2d drawing 
+	  
+	  // picture in picture set up begins now
+	  
     glViewport( 0, 0, windowWidth/3, windowHeight/3 );
   
     glMatrixMode( GL_PROJECTION );
