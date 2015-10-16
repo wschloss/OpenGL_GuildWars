@@ -356,46 +356,47 @@ void renderScene(void)  {
   // END drawing of Bit map text
 
   // START of Picture in Picture
-  glViewport( 0, 0, windowWidth/3, windowHeight/3 );
+  
   // 'blackout' part of the screen
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
+  // glViewport( 0, 0, windowWidth/3, windowHeight/3 );
+  // glMatrixMode( GL_PROJECTION );
+  // glLoadIdentity();
 
-  glPushMatrix();
-  {
-    gluOrtho2D( 0, 1, 0, 1 );
+  // glPushMatrix();
+  // {
+  //   gluOrtho2D( 0, 1, 0, 1 );
 
-    glDisable( GL_LIGHTING );
+  //   glDisable( GL_LIGHTING );
 
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
+  //   glMatrixMode( GL_MODELVIEW );
+  //   glLoadIdentity();
 
-    glClear( GL_DEPTH_BUFFER_BIT );
+  //   glClear( GL_DEPTH_BUFFER_BIT );
 
-    glPushMatrix();
-    {
-      glColor3f( 0, 0, 0 );
-      glBegin( GL_QUADS );
-      {
-        glVertex2f( 0, 1 );
-        glVertex2f( 1, 1 );
-        glVertex2f( 1, 0 );
-        glVertex2f( 0, 0 );
-      };
-      glEnd();
-    };
-    glPopMatrix();
+  //   glPushMatrix();
+  //   {
+  //     glColor3f( 0, 0, 0 );
+  //     glBegin( GL_QUADS );
+  //     {
+  //       glVertex2f( 0, 1 );
+  //       glVertex2f( 1, 1 );
+  //       glVertex2f( 1, 0 );
+  //       glVertex2f( 0, 0 );
+  //     };
+  //     glEnd();
+  //   };
+  //   glPopMatrix();
 
-    glEnable( GL_LIGHTING );
-  };
-  glMatrixMode( GL_PROJECTION );
-  glPopMatrix();
+  //   glEnable( GL_LIGHTING );
+  // };
+  // glMatrixMode( GL_PROJECTION );
+  // glPopMatrix();
 
-  glMatrixMode( GL_MODELVIEW );
+  // glMatrixMode( GL_MODELVIEW );
 
   // Actual Pic in Pic
-  if(fpToggle)
-  {
+  // if(fpToggle)
+  // {
     glViewport( 0, 0, windowWidth/3, windowHeight/3 );
   
     glMatrixMode( GL_PROJECTION );
@@ -417,7 +418,7 @@ void renderScene(void)  {
     ); 
 
     drawStuff();
-  }
+  // }
 
   // END of Picture in Picture
 
