@@ -5,11 +5,27 @@
 
 #include "WorldLoader.h"
 
+WorldLoader::WorldLoader()
+{
+  surfaceFilename = new string();
+  curveFilename = new string();
+  is_configured = false;
+}
+
 // Read filenames on construct
 WorldLoader::WorldLoader( char* worldfilename ) {
   surfaceFilename = new string();
   curveFilename = new string();
+  is_configured = false;
   loadWorldComponentFilenames( worldfilename );
+}
+
+WorldLoader::~WorldLoader()
+{
+  delete surfaceFilename;
+  surfaceFilename = NULL;
+  delete curveFilename;
+  curveFilename = NULL;
 }
 
 // Loads the file lines into memory, exits program if an error occurs
@@ -39,16 +55,21 @@ void WorldLoader::loadWorldComponentFilenames( char* worldfilename ) {
 
   // clean up the input stream
   input.close();
+  is_configured = true;
 }
 
 // Constructs the surface and returns it.  Exits on file read fail
 BezierPatch* WorldLoader::constructSurface() {
+
+  if( !is_configured ) exit( 1 );
+
   // Allocate
   BezierPatch* patch = new BezierPatch();
+  
   // Load file
-  if ( !patch->loadControlPoints(surfaceFilename->c_str()) ) {
+  if( !patch->loadControlPoints(surfaceFilename->c_str()) ) {
     // exit
-    printf("Could not process file: %s\n", surfaceFilename->c_str());
+    printf( "Could not process file: %s\n", surfaceFilename->c_str() );
     exit( 1 );
   }
 
@@ -66,14 +87,17 @@ BezierPatch* WorldLoader::constructSurface() {
   return patch;
 }
 
-// Constructs the curve and returns it.  Exits on file read fail
+// Constructs the curve and returns it. Exits on file read fail or if the 
 BezierCurve* WorldLoader::constructCurve() {
+
+  if( !is_configured ) exit( 1 );
+
   // Allocate
   BezierCurve* curve = new BezierCurve();
   // Load file
-  if ( !curve->loadControlPoints(curveFilename->c_str()) ) {
+  if( !curve->loadControlPoints(curveFilename->c_str()) ) {
     // exit
-    printf("Could not process file: %s\n", curveFilename->c_str());
+    printf( "Could not process file: %s\n", curveFilename->c_str() );
     exit( 1 );
   }
 

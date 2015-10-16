@@ -100,6 +100,12 @@ void Campfire::draw() {
   } glPopMatrix();
 }
 
+// returns a pointer to this campfire
+Campfire* Campfire::self()
+{
+  return( this );
+}
+
 // Sets the rotation and y translate to be on the surface
 void Campfire::setOrientation(BezierPatch* surface) {
   orientation = surface->orient(0, 0);

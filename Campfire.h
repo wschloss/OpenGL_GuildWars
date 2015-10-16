@@ -40,6 +40,9 @@ public:
   // Sets up the rotation and y translate to be on the surface
   void setOrientation(BezierPatch* surface);
 
+  // returns a pointer to this campfire
+  Campfire* self();
+
 private:
   // The light this object uses
   Light* light;

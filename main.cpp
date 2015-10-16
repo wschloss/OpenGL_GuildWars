@@ -38,7 +38,6 @@
 // Files we wrote
 #include "ArcBallCamera.h"
 #include "FreeCamera.h"
-#include "BezierPatch.h"
 #include "Material.h"
 #include "Color.h"
 #include "Light.h"
@@ -73,13 +72,10 @@ static double fps;
 Mouse mouse;
 
 // World object
-World world = World( 600, 600 );
+World* world = new World();
 
 // Point light - default color is white
 Light* pointLight;
-
-// Campfire, draws and also flickers a light
-Campfire campfire;
 
 // Camera instances
 ArcBallCamera arcballCam;
@@ -89,12 +85,6 @@ FreeCamera freeCam;
 
 // Free cam used for the first person view for each hero
 FreeCamera firstPerson;
-
-// Surface instance
-BezierPatch* bezierPatch; 
-
-// Curve instance for the track
-BezierCurve* bezierCurve;
 
 // All Might instance
 AllMight allMight;
@@ -130,10 +120,11 @@ CameraTarget camTarget = ARCBALL;
 void generateEnvironmentDL() {
     environmentDL = glGenLists( 1 );
     glNewList( environmentDL, GL_COMPILE ); {
-      bezierPatch->drawFilled();
+      world->getSurface()->drawFilled();
+      world->drawForest();
       // Call this if the curve needs to be seen/debugged
-      //bezierCurve->draw();
-      campfire.draw();
+      // world->getPath()->draw();
+      world->getCompfire()->draw();
     } glEndList();
 } 
 
@@ -253,12 +244,26 @@ void initScene()  {
   pointLight->setPosition( 0, 1000, 0 );
 
   // Enable the campfire for lighting
-  campfire.enable();
+  world->getCompfire()->enable();
 
   glShadeModel( GL_SMOOTH ); 
 
   generateEnvironmentDL(); 
 } 
+
+void drawStuff(){
+  // Reset point light placement
+  // NOTE: This light call looks like it doesn't even matter
+  pointLight->resetPosition();
+
+  // Draws surface
+  glCallList( environmentDL );
+
+  // DRAW THE THREE CHARACTERS
+  castamere.draw(); 
+  allMight.draw(); 
+  coolPants.draw();   
+}
  
 // renderScene() /////////////////////////////////////////////////////////////// 
 // 
@@ -269,7 +274,12 @@ void initScene()  {
 //////////////////////////////////////////////////////////////////////////////// 
 void renderScene(void)  { 
   
-  //clear the render buffer (sky blue)
+  // Start main display
+
+  // Set Viewport to full screen
+  glViewport( 0, 0, windowWidth, windowHeight );
+
+  // Clear the render buffer (sky blue)
   glClearColor(0.23, 0.508, 0.622, 1);
   glDrawBuffer( GL_BACK ); 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -284,8 +294,6 @@ void renderScene(void)  {
   glMatrixMode( GL_MODELVIEW );
 
   glLoadIdentity();
-
-  glViewport( 0, 0, windowWidth, windowHeight );
 
   if( camTarget == ARCBALL )
   {
@@ -314,51 +322,67 @@ void renderScene(void)  {
     ); 
   }
 
-  // glViewport( 0, 0, windowWidth/4, windowHeight/4 );
-  // gluLookAt(
-  //     arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-  //     arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-  //     arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
-  // );
+  drawStuff();
 
-  // Reset point light placement
-  // NOTE: This light call looks like it doesn't even matter
-  pointLight->resetPosition();
+  // END main display
 
-  // Draws surface
-  glCallList( environmentDL ); 
+  // START drawing of Bit map text for Fps display
   
-  ostringstream tmp_str;
-  tmp_str << fps;
-  string fps_str = "FPS: " + tmp_str.str();
+  glMatrixMode( GL_PROJECTION );
+  
+  glPushMatrix();
+  {
+    glLoadIdentity();
+    glDisable( GL_LIGHTING );
 
-  for (int i = 0; i < fps_str.length(); i++) {
-    glRasterPos3f( i * 4.2, 30, 0 );
-    glutBitmapCharacter( GLUT_BITMAP_HELVETICA_18, fps_str.at(i) );
-  }
+    gluOrtho2D( 0, windowWidth, 0, windowHeight );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+    
+    ostringstream tmp_str;
+    tmp_str << fps;
+    string fps_str = "Fps:" + tmp_str.str();
+    
+    for (int i = 0; i < fps_str.length(); i++) {
+      glColor3f( 1, 1, 1 );
+      glRasterPos2f( (i * 10) + (windowWidth-(fps_str.length()*10 + 10)), 10 );
+      glutBitmapCharacter( GLUT_BITMAP_HELVETICA_18, fps_str.at(i) );
+    }
+    glEnable( GL_LIGHTING );
+    glMatrixMode( GL_PROJECTION );
+  };
+  glPopMatrix();
 
-  Tree tree;
+  glMatrixMode( GL_MODELVIEW );
+  
+  // END drawing of Bit map text
 
-  tree.setX( 50 );
-  tree.setZ( 50 );
-  tree.setOrientation( bezierPatch );
-  tree.draw();
+  // START of Picture in Picture
 
-  tree.setX( -50 );
-  tree.setZ( 50 );
-  tree.setOrientation( bezierPatch );
-  tree.draw();
+  // 'blackout' part of the screen
 
-  tree.setType( Tree::BUSH );
-  tree.setX( -50 );
-  tree.setZ( -50 );
-  tree.setOrientation( bezierPatch );
-  tree.draw();
+  // Actual Pic in Pic
+  glViewport( 0, 0, windowWidth/3, windowHeight/3 );
+  
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity();
 
-  // DRAW THE THREE CHARACTERS
-  castamere.draw(); 
-  allMight.draw(); 
-  coolPants.draw();  
+  gluPerspective( 45.0, aspectRatio, 0.1, 100000 );
+
+  glClear( GL_DEPTH_BUFFER_BIT );
+
+  glMatrixMode( GL_MODELVIEW );
+  glLoadIdentity();
+
+  gluLookAt(
+    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
+    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
+    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
+  );
+
+  drawStuff();
+
+  // END of Picture in Picture
 
   //push the back buffer to the screen 
   glutSwapBuffers();
@@ -371,8 +395,7 @@ void renderScene(void)  {
 ///////////////////////////////////////////////////////////////////////////////
 void cleanup() {
   delete pointLight;
-  delete bezierPatch;
-  delete bezierCurve;
+  delete world;
   // destroy our window
   glutDestroyWindow( windowId );
 }
@@ -419,7 +442,7 @@ void fpsUpdate() {
   if (deltat > 1000.0) {
     // update and reset frame counter
     fps = ( (double)numframes/(deltat /1000.0) ); 
-    printf( "fps: %.2f\n", fps ); 
+    // printf( "fps: %.2f\n", fps ); 
     current_time = newt;
     numframes = 0;
   } 
@@ -433,16 +456,16 @@ void fpsUpdate() {
 void update( int val ) {
   // Hero update
   allMight.update();
-  allMight.setOrientation(bezierPatch); 
+  allMight.setOrientation( world->getSurface() ); 
 
   castamere.update();
-  castamere.setOrientation(bezierPatch);
+  castamere.setOrientation( world->getSurface() );
    
   coolPants.update();
-  coolPants.setOrientation(bezierPatch);
+  coolPants.setOrientation( world->getSurface() );
 
   // campfire light update
-  campfire.update();
+  world->getCompfire()->update();
   
   // Free wasd cam update
   freeCam.updatePos();
@@ -642,25 +665,24 @@ int main( int argc, char **argv ) {
     printf( "Usage: %s worldfile.txt\n", argv[0] );
     exit( 1 );
   }
+  
+  world->loadWorld( argv[1] );
 
   // Read the world file into a loader
   WorldLoader loader( argv[1] );
   // Construct object from the data files
-  bezierPatch = loader.constructSurface();
-  bezierCurve = loader.constructCurve();
 
   // Set AllMight to follow by parameter t
-  allMight.setFollowPath(bezierCurve);
+  allMight.setFollowPath( world->getPath() );
   // Set CoolPants to follow by arclength s 
-  coolPants.setFollowPath(bezierCurve);
+  coolPants.setFollowPath( world->getPath() );
   // Move Castamere out of the fire
   castamere.setX(-40);
 
   // initial orient
-  campfire.setOrientation( bezierPatch );
-  allMight.setOrientation( bezierPatch );
-  castamere.setOrientation( bezierPatch );
-  coolPants.setOrientation( bezierPatch );
+  allMight.setOrientation( world->getSurface() );
+  castamere.setOrientation( world->getSurface() );
+  coolPants.setOrientation( world->getSurface() );
 
   // create a double-buffered GLUT window at (50,50) with predefined windowsize 
   glutInit( &argc, argv ); 

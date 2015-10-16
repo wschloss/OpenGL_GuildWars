@@ -20,12 +20,13 @@
 #include <math.h>
 #include "Point.h"
 #include "Material.h"
+#include "BezierCurve.h"
+#include "BezierPatch.h"
 #include "WorldLoader.h"
 #include "Campfire.h"
 #include "Light.h"
 #include "Tree.h"
 #include "Building.h"
-#include "BezierPatch.h"
 
 using namespace std;
 
@@ -34,16 +35,26 @@ class World
 	public:
 
 		//** Public Default Constructors and Destructor:
-		World( float xBound, float zBound );
+		World();
 		~World();
+
+		// Configuration
+		void loadWorld( char* world_file_name );
+		void configure();
+
+		// Rendering
+		void draw();
+		void drawForest();
 
 		// Getters:
 		BezierPatch* getSurface();
+		BezierCurve* getPath();
+		Campfire* getCompfire();
 
 		// Setters:
 		void setSurface( BezierPatch* newSurface );
 
-		void drawForest();
+
 
 	private:
 
@@ -51,13 +62,18 @@ class World
 
 		int tree_count, building_count;
 		float xBound, zBound;
+		bool is_configured;
 
 		//** Surface:
 
 		// Instance:
 		BezierPatch* surface;
+		BezierCurve* path;
 
 		//** Objects:
+
+		// FileIO:
+		WorldLoader loader;
 
 		// Campfire, draws and also flickers a light
 		Campfire campfire;

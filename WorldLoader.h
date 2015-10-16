@@ -23,8 +23,13 @@ using namespace std;
 
 class WorldLoader {
 public:
+
+  // Default Constructor
+  WorldLoader();
   // Construct with world file name
   WorldLoader( char* worldfilename );
+  // Default Destructor
+  ~WorldLoader();
 
   // Loads the file into memory, exits the program if an error occurs
   void loadWorldComponentFilenames( char* worldfilename );
@@ -36,6 +41,10 @@ public:
   BezierCurve* constructCurve();
 
 private:
+
+  // configured boolean:
+  bool is_configured;
+
   // Stores the file names for objects to load from
   string* surfaceFilename;
   string* curveFilename;

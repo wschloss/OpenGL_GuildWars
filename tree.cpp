@@ -11,10 +11,8 @@ float branch_rot = 20;
 
 Tree::Tree()
 {
-	bool failed = false;
 	type = PINE;
 	postion = new Point( 0, 0, 0 );
-
 	setup();
 }
 
@@ -357,6 +355,11 @@ void Tree::setType( Tree::Type newType )
 {
 	this->type = newType;
 	setup();
+}
+
+Tree* Tree::self()
+{
+	return( this );
 }
 
 //** Dimensions

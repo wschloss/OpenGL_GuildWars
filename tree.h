@@ -54,6 +54,7 @@ class Tree
 		float getHeight();
 		float getWidth();
 		Tree::Type getType();
+		Tree* self();
 
 		// Setters:
 		void setPostion( Point* newPostion );
