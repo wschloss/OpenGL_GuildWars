@@ -9,6 +9,7 @@ WorldLoader::WorldLoader()
 {
   surfaceFilename = new string();
   curveFilename = new string();
+  treeFileName = new string();
   is_configured = false;
 }
 
@@ -26,6 +27,8 @@ WorldLoader::~WorldLoader()
   surfaceFilename = NULL;
   delete curveFilename;
   curveFilename = NULL;
+  delete treeFileName;
+  treeFileName = NULL;
 }
 
 // Loads the file lines into memory, exits program if an error occurs
@@ -50,6 +53,13 @@ void WorldLoader::loadWorldComponentFilenames( char* worldfilename ) {
   if ( !getline(input, *curveFilename) ) {
     // exit
     printf("The world file format is incorrect (line 2)\n");
+    exit( 1 );
+  }
+
+  // Get the third line, which corresponds to the tree config file name
+  if ( !getline(input, *treeFileName) ) {
+    // exit
+    printf("The world file format is incorrect (line 3)\n");
     exit( 1 );
   }
 
@@ -103,4 +113,37 @@ BezierCurve* WorldLoader::constructCurve() {
 
   // return the constructed curve
   return curve;
+}
+
+vector<Point> WorldLoader::constructTreePoints()
+{
+  if( !is_configured ) exit( 1 );
+
+  vector<Point> treeLocations;
+
+  // Open a file stream
+  ifstream input;
+  input.open( treeFileName->c_str() );
+
+  if( input.fail() ) {
+    // clean up and return
+    input.close();
+    exit( 1 );
+  }
+
+  int treeCount;
+  input >> treeCount;
+  float x, z;
+  float y = 0;
+  char comma;
+
+  for( int i = 0; i < treeCount; i++ ) {
+      input >> x >> comma >> z;
+      treeLocations.push_back( Point(x,y,z) );
+  }
+
+  input.close();
+
+  return( treeLocations );
+
 }

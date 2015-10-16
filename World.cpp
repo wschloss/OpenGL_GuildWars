@@ -8,7 +8,6 @@ World::World()
 {
 	// FileIO:
 	WorldLoader loader;
-
 	// Boolean to that will restricted functionality until
 	is_configured = false;
 }
@@ -25,47 +24,35 @@ void World::draw()
 void World::loadWorld( char* world_file_name )
 {
 	loader.loadWorldComponentFilenames( world_file_name );
+	
 	surface = loader.constructSurface();
 	path = loader.constructCurve();
+	treeLocations = loader.constructTreePoints();
 
 	configure();
 }
 
 void World::configure()
 {
+	tree_count = treeLocations.size();
 	campfire.setOrientation( surface );
 }
 
 void World::drawForest()
 {
-  Tree tree;
-
-  tree.setX( 50 );
-  tree.setZ( 50 );
-  tree.setOrientation( getSurface() );
-  tree.draw();
-
-  tree.setX( -50 );
-  tree.setZ( 50 );
-  tree.setOrientation( getSurface() );
-  tree.draw();
-
-  tree.setType( Tree::BUSH );
-  tree.setX( -50 );
-  tree.setZ( -50 );
-  tree.setOrientation( getSurface() );
-  tree.draw();
-	// for( int i = 0; i < tree_count; i++ ) {
-	// 	if( (i % 2) == 0 ) {
-	// 		pinTree.setX( i );
-	// 		pinTree.setY( i );
-	// 		pinTree.draw();
-	// 	} else {
-	// 		bush.setX( i );
-	// 		bush.setY( i );
-	// 		bush.draw();
-	// 	}
-	// }
+	for( int i = 0; i < tree_count; i++ ) {
+		float x = treeLocations[i].getX();
+		float z = treeLocations[i].getZ();
+		if( (i % 2) == 0 ) {
+			tree.setType( Tree::BUSH );
+		} else {
+			tree.setType( Tree::PINE );
+		}
+		tree.setX( x );
+		tree.setZ( z );
+		tree.setOrientation( getSurface() );
+  		tree.draw();
+	}
 }
 
 //  Simple helper function to return a random number between 0.0f and 1.0f.

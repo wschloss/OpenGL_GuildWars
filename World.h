@@ -77,8 +77,9 @@ class World
 
 		// Campfire, draws and also flickers a light
 		Campfire campfire;
-		Tree pinTree;
-		Tree bush;
+		Tree tree;
+
+		vector<Point> treeLocations;
 
 	//** Functions:
 		float getRand();

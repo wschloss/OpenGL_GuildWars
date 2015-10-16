@@ -8,7 +8,7 @@
 
 // c++ file utilities
 #include <fstream>
-
+#include <iostream>
 #include <string>
 
 // Include the objects that will be constructed
@@ -17,6 +17,7 @@
 
 // Dependencies
 #include "Material.h"
+#include "Point.h"
 #include "Color.h"
 
 using namespace std;
@@ -40,6 +41,8 @@ public:
   // Constructs the curve and returns it.  Exits on file read fail
   BezierCurve* constructCurve();
 
+  vector<Point> constructTreePoints();
+
 private:
 
   // configured boolean:
@@ -48,4 +51,6 @@ private:
   // Stores the file names for objects to load from
   string* surfaceFilename;
   string* curveFilename;
+  string* treeFileName;
+
 };

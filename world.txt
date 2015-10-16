@@ -1,2 +1,3 @@
 worldfiles/surface16.csv
 worldfiles/curve13.csv
+worldfiles/trees.csv

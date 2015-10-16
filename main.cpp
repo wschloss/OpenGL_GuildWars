@@ -254,6 +254,11 @@ void initScene()  {
   generateEnvironmentDL(); 
 } 
 
+// drawStuff() /////////////////////////////////////////////////////////////// 
+// 
+//  Handles all the drawing that needs to be repeated in both view ports.
+//
+//////////////////////////////////////////////////////////////////////////////// 
 void drawStuff(){
   // Reset point light placement
   // NOTE: This light call looks like it doesn't even matter
@@ -351,8 +356,42 @@ void renderScene(void)  {
   // END drawing of Bit map text
 
   // START of Picture in Picture
-
+  glViewport( 0, 0, windowWidth/3, windowHeight/3 );
   // 'blackout' part of the screen
+  glMatrixMode( GL_PROJECTION );
+  glLoadIdentity();
+
+  glPushMatrix();
+  {
+    gluOrtho2D( 0, 1, 0, 1 );
+
+    glDisable( GL_LIGHTING );
+
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    glClear( GL_DEPTH_BUFFER_BIT );
+
+    glPushMatrix();
+    {
+      glColor3f( 0, 0, 0 );
+      glBegin( GL_QUADS );
+      {
+        glVertex2f( 0, 1 );
+        glVertex2f( 1, 1 );
+        glVertex2f( 1, 0 );
+        glVertex2f( 0, 0 );
+      };
+      glEnd();
+    };
+    glPopMatrix();
+
+    glEnable( GL_LIGHTING );
+  };
+  glMatrixMode( GL_PROJECTION );
+  glPopMatrix();
+
+  glMatrixMode( GL_MODELVIEW );
 
   // Actual Pic in Pic
   if(fpToggle)
@@ -672,12 +711,9 @@ int main( int argc, char **argv ) {
     printf( "Usage: %s worldfile.txt\n", argv[0] );
     exit( 1 );
   }
-  
-  world->loadWorld( argv[1] );
 
-  // Read the world file into a loader
-  WorldLoader loader( argv[1] );
-  // Construct object from the data files
+  // load config files
+  world->loadWorld( argv[1] );
 
   // Set AllMight to follow by parameter t
   allMight.setFollowPath( world->getPath() );

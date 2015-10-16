@@ -57,9 +57,10 @@ Build Instructions:
         world.txt ~ This file is simply a list of paths to all other needed
         world building files. The first line contains a valid file path to a 
         file file of valid format. This file will be used to create the world
-        surface second is the a curve.csv. This file must be in the same directory
-        as the guildWars exhaustible, it is passed into the program as it
-        only argument.
+        surface, the second line is the a curve.csv. The third line specify 
+        the trees.csv or were the trees will be placed. This file must be in the 
+        same directory as the guildWars exhaustible, it is passed into the 
+        program as it only argument. 
 
         surface16.csv ~ The first line of this file is the number of points
         That the file contains. The subsequent lines contain each point in
@@ -73,6 +74,10 @@ Build Instructions:
         x,y,z order. This file can handle any number of points needed to create
         a valid BezierCurve. This curve is then used to create a path for the
         two the our hero's to fallow.
+
+        trees.csv ~ This file specify the x,z positions of all the trees in the
+        world, as well as the number of trees to be created. The first line is
+        the number of trees. All subsequent lines are the in x,z data format.
 
 Notes:
         Bugs:
