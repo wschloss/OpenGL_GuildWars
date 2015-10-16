@@ -9,17 +9,12 @@
 
 ## TODO:
 
-* Add functionality to the Tree class. Place some trees
+* Place some trees
 * Add functionality to the building class. Place some buildings
-* Create a file that says where to put all the trees and buildings, add the loading to the WorldLoader.
-* Finish Castamere
-  * Animate on wasd movement
-  * Add materials for some color
+* Update the World class to include buildings.
 * Render first person cam for a hero in a second viewport
-* Render fps to upper left corner.
-* Secondary: Think about improving the efficiency
 * Update each Hero's web page
-* Create presentation
+* Create presentation.
 
 ## Description:
 
