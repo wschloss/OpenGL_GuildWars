@@ -356,43 +356,6 @@ void renderScene(void)  {
   // END drawing of Bit map text
 
   // START of Picture in Picture
-  
-  
-  // glViewport( 0, 0, windowWidth/3, windowHeight/3 );
-  // glMatrixMode( GL_PROJECTION );
-  // glLoadIdentity();
-
-  // glPushMatrix();
-  // {
-  //   gluOrtho2D( 0, 1, 0, 1 );
-
-  //   glDisable( GL_LIGHTING );
-
-  //   glMatrixMode( GL_MODELVIEW );
-  //   glLoadIdentity();
-
-  //   glClear( GL_DEPTH_BUFFER_BIT );
-
-  //   glPushMatrix();
-  //   {
-  //     glColor3f( 0, 0, 0 );
-  //     glBegin( GL_QUADS );
-  //     {
-  //       glVertex2f( 0, 1 );
-  //       glVertex2f( 1, 1 );
-  //       glVertex2f( 1, 0 );
-  //       glVertex2f( 0, 0 );
-  //     };
-  //     glEnd();
-  //   };
-  //   glPopMatrix();
-
-  //   glEnable( GL_LIGHTING );
-  // };
-  // glMatrixMode( GL_PROJECTION );
-  // glPopMatrix();
-
-  // glMatrixMode( GL_MODELVIEW );
 
   // Actual Pic in Pic
   if(fpToggle)
@@ -418,14 +381,14 @@ void renderScene(void)  {
 	  // add a constant as a margin.
 	  glScalef(windowWidth/3 + 2, windowHeight/3 + 2, 1);
 	  glBegin( GL_QUADS );
-	        {
-			  glColor3f(0,0,0);
-	          glVertex2f( 0, 1 );
-	          glVertex2f( 1, 1 );
-	          glVertex2f( 1, 0 );
-	          glVertex2f( 0, 0 );
-	        };
-	        glEnd();
+	  {
+			glColor3f(0.23, 0.508, 0.622);
+	    glVertex2f( 0, 1 );
+	    glVertex2f( 1, 1 );
+	    glVertex2f( 1, 0 );
+	    glVertex2f( 0, 0 );
+	  };
+	  glEnd();
 
 	  glEnable(GL_LIGHTING);
 	  glMatrixMode(GL_PROJECTION);
