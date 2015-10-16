@@ -395,8 +395,8 @@ void renderScene(void)  {
   // glMatrixMode( GL_MODELVIEW );
 
   // Actual Pic in Pic
-  // if(fpToggle)
-  // {
+  if(fpToggle)
+  {
     glViewport( 0, 0, windowWidth/3, windowHeight/3 );
   
     glMatrixMode( GL_PROJECTION );
@@ -418,7 +418,7 @@ void renderScene(void)  {
     ); 
 
     drawStuff();
-  // }
+  }
 
   // END of Picture in Picture
 

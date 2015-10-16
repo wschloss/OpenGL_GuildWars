@@ -26,10 +26,11 @@ Usage:
                 holding and dragging the left mouse button.
                 -> CTRL + click and drag left button zooms the camera.
         First Person: 
-                Selecting this option will show an additional menu of each
-                hero that can be selected. Clicking on a hero name will update
-                the camera to an first person model and set that hero to become
-                its focus.
+                Selecting this option will show an additional menu of witch will
+                allow the user to toggle on a picture in picture display
+                of that characters first person view or each selecting a hero for
+                the large display. Clicking on a hero name will update the camera 
+                to an first person model and set that hero to become its focus.
         Free Cam:
                 This Selection will allow you to fly freely in the would by setting
                 the camera model to a free cam implementation.
