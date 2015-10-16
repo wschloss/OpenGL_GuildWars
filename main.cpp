@@ -61,6 +61,9 @@ static size_t windowWidth  = 640;
 static size_t windowHeight = 480; 
 static float aspectRatio;
 
+// flag to toggle Picture in picture viewport for first person view
+bool fpToggle = false;
+
 // current time in ms, used to find fps
 static double current_time = 0;
 // Number of elapsed frames since last measure
@@ -311,16 +314,6 @@ void renderScene(void)  {
       freeCam.getUpX(), freeCam.getUpY(),  freeCam.getUpZ()       // up vector
     ); 
   }   
-  else if( camTarget == FIRST_PERSON )
-  {
-    gluLookAt( 
-      firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
-      firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
-      firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4,             // camera pos
-      firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
-      firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
-    ); 
-  }
 
   drawStuff();
 
@@ -362,25 +355,30 @@ void renderScene(void)  {
   // 'blackout' part of the screen
 
   // Actual Pic in Pic
-  glViewport( 0, 0, windowWidth/3, windowHeight/3 );
+  if(fpToggle)
+  {
+    glViewport( 0, 0, windowWidth/3, windowHeight/3 );
   
-  glMatrixMode( GL_PROJECTION );
-  glLoadIdentity();
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
 
-  gluPerspective( 45.0, aspectRatio, 0.1, 100000 );
+    gluPerspective( 45.0, aspectRatio, 0.1, 100000 );
 
-  glClear( GL_DEPTH_BUFFER_BIT );
+    glClear( GL_DEPTH_BUFFER_BIT );
 
-  glMatrixMode( GL_MODELVIEW );
-  glLoadIdentity();
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
 
-  gluLookAt(
-    arcballCam.getX(), arcballCam.getY(), arcballCam.getZ(),             // camera pos
-    arcballCam.getLookX(), arcballCam.getLookY(), arcballCam.getLookZ(), // camera lookat
-    arcballCam.getUpX(), arcballCam.getUpY(),  arcballCam.getUpZ()       // up vector
-  );
+    gluLookAt( 
+      firstPerson.getX() + (firstPerson.getLookX() - firstPerson.getX())/4, 
+      firstPerson.getY() + (firstPerson.getLookY() - firstPerson.getY())/4, 
+      firstPerson.getZ() + (firstPerson.getLookZ() - firstPerson.getZ())/4,             // camera pos
+      firstPerson.getLookX(), firstPerson.getLookY(), firstPerson.getLookZ(), // camera lookat
+      firstPerson.getUpX(), firstPerson.getUpY(),  firstPerson.getUpZ()       // up vector
+    ); 
 
-  drawStuff();
+    drawStuff();
+  }
 
   // END of Picture in Picture
 
@@ -596,23 +594,31 @@ void myMenu( int value ) {
   else if ( value == 3 ) {
     // toggle first person viewport on all might
     fpTarget = ALL_MIGHT;
-    camTarget = FIRST_PERSON;
+	fpToggle = true;
+    //camTarget = FIRST_PERSON;
   }
   else if ( value == 4 ) {
     // toggle first person viewport on castamere
     fpTarget = CASTAMERE;
-    camTarget = FIRST_PERSON;
+	fpToggle = true;
+    //camTarget = FIRST_PERSON;
   }
   else if ( value == 5 ) {
     // toggle first person viewport on coolpants
     fpTarget = COOL_PANTS;
-    camTarget = FIRST_PERSON;
+	fpToggle = true;
+    //camTarget = FIRST_PERSON;
   }
   else if ( value == 6 ) {
+    // toggle first person viewport on coolpants
+    fpToggle = !fpToggle;
+    //camTarget = FIRST_PERSON;
+  }
+  else if ( value == 7 ) {
     // main view to free camera with wasd controls
     camTarget = FREE;
   }
-  else if( value == 7 ) { 
+  else if( value == 8 ) { 
     // quit
     cleanup();
     exit( 0 );
@@ -634,6 +640,7 @@ void createMenus() {
 
   // Create the submenu for the first person views in the second viewport
   int firstperson_submenu = glutCreateMenu( myMenu );
+  glutAddMenuEntry( "Toggle First Person", 6 );
   glutAddMenuEntry( "All Might", 3 );
   glutAddMenuEntry( "Castamere", 4 );
   glutAddMenuEntry( "CoolPants", 5 );
@@ -646,8 +653,8 @@ void createMenus() {
   glutAddSubMenu( "First Person", firstperson_submenu );
 
   // Freecam option and quit
-  glutAddMenuEntry( "Free Camera", 6 );
-  glutAddMenuEntry( "Quit", 7 );
+  glutAddMenuEntry( "Free Camera", 7 );
+  glutAddMenuEntry( "Quit", 8 );
 
   // Attach to right mouse
   glutAttachMenu( GLUT_RIGHT_BUTTON );

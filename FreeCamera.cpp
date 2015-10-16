@@ -7,10 +7,11 @@
 
 // Default 'scenic' viewpoint of the origin
 FreeCamera::FreeCamera() {
-  this->x = this->y = this->z = 100;
+  this->x = this->z = 0;
+  this->y = 2000;
   this->r = 20;
-  this->theta = -M_PI/3.0;
-  this->phi = M_PI/2.0;
+  this->theta = 0;
+  this->phi = 0.001;
   this->upX = this->upZ = 0;
   this->upY = 1;
   //this->speed = 0.0;
