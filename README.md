@@ -14,7 +14,6 @@ models.  This code was produced for the midterm project in Computer Graphics.
 ## Usage:
 * Menu: (Right click to view the pop up menu.)
 * When the menu is displayed you will see four options
-
 * Arcball:        
   * Selecting this option will show an additional menu of each
   hero that can be selected. Clicking on a hero name will update
@@ -31,7 +30,7 @@ models.  This code was produced for the midterm project in Computer Graphics.
   will update the camera to a first person model and set that hero
   to become its focus.
 * Free Cam:
-  * This Selection will allow you to fly freely in the would by setting
+  * This Selection will allow you to fly freely in the world by setting
   the camera model to a free cam implementation.
   * -> 'w' will allow you to move forward.
   * -> 'd' will move you backward.
