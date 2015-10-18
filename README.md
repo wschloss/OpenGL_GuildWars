@@ -46,7 +46,7 @@ and lib path.
 * ~/path/to/main.cpp $ make
 
 * if( OS X or *nix )
-      ~/path/to/main.cpp $ ./guildwars world.txt
-  else
-      ~/path/to/main.cpp $ ./guildwars.exe world.txt
-  end
+  * ~/path/to/main.cpp $ ./guildwars world.txt
+* else
+  * ~/path/to/main.cpp $ ./guildwars.exe world.txt
+* end
